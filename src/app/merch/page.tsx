@@ -1,16 +1,16 @@
 import type { Metadata } from "next";
 import { PageHeading } from "@/components/page-heading";
-import { products } from "@/data/shop";
+import { products } from "@/data/merch";
 
 export const metadata: Metadata = {
-  title: "Shop · Hochi Runs",
+  title: "Merch · Hochi Runs",
   description: "Hochi Runs merch.",
 };
 
-export default function ShopPage() {
+export default function MerchPage() {
   return (
     <div className="mx-auto max-w-5xl px-5 py-14">
-      <PageHeading title="Shop" />
+      <PageHeading title="Merch" />
 
       <p className="mb-8 rounded border border-red/40 bg-red/5 px-4 py-3 text-sm text-muted">
         Checkout isn&apos;t connected yet — this is a preview of the merch.

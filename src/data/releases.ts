@@ -35,6 +35,11 @@ export type Release = {
   description?: string;
   tracklist?: Track[];
   links?: StreamingLink[];
+  /**
+   * Roster members involved in this release, by their roster slug.
+   * Powers the "releases" list on each member's page. Optional.
+   */
+  memberSlugs?: string[];
 };
 
 export const releases: Release[] = [
@@ -52,6 +57,7 @@ export const releases: Release[] = [
       { platform: "Bandcamp", url: "https://hochiruns.bandcamp.com/" },
       { platform: "SoundCloud", url: "https://soundcloud.com/hochiruns" },
     ],
+    memberSlugs: ["amal", "dj-swisha", "mr-davinse"],
   },
   {
     code: "HR002",
@@ -87,4 +93,9 @@ export const releases: Release[] = [
 /** Look up a single release by its slug. */
 export function getRelease(slug: string): Release | undefined {
   return releases.find((r) => r.slug === slug);
+}
+
+/** All releases a given roster member (by slug) is credited on. */
+export function getReleasesByMember(memberSlug: string): Release[] {
+  return releases.filter((r) => r.memberSlugs?.includes(memberSlug));
 }

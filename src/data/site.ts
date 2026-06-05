@@ -1,12 +1,12 @@
 /** Site-wide constants: nav links and social profiles. */
 
 export const navLinks = [
+  { label: "Roster", href: "/roster" },
   { label: "Releases", href: "/" },
+  { label: "Merch", href: "/merch" },
   { label: "About", href: "/about" },
-  { label: "Talent", href: "/talent" },
   { label: "Videos", href: "/videos" },
   { label: "Shows", href: "/shows" },
-  { label: "Shop", href: "/shop" },
 ] as const;
 
 export const socials = [

@@ -9,7 +9,7 @@ export type Product = {
   name: string;
   /** display price, e.g. "$47.28 – $53.90" */
   price: string;
-  /** optional image under /public, e.g. "/shop/hoodie.jpg" */
+  /** optional image under /public, e.g. "/merch/hoodie.jpg" */
   image?: string;
   /** optional external purchase link */
   buyUrl?: string;

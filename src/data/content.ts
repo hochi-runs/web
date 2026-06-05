@@ -1,21 +1,8 @@
 /**
- * Editorial content for the secondary pages (talent, videos, shows).
- * Placeholder data — replace with the real roster, videos, and dates.
+ * Editorial content for the videos and shows pages.
+ * Placeholder data — replace with the real videos and dates.
+ * (Roster members now live in roster.ts.)
  */
-
-export type TalentMember = {
-  name: string;
-  /** role / discipline, e.g. "Artist", "Producer", "DJ" */
-  role: string;
-  /** optional link, e.g. an Instagram profile */
-  url?: string;
-};
-
-export const talent: TalentMember[] = [
-  { name: "AMAL", role: "Artist", url: "https://www.instagram.com/hochiruns/" },
-  { name: "DJ Swisha", role: "DJ / Producer" },
-  { name: "mr.davinse", role: "Director" },
-];
 
 export type Video = {
   title: string;
