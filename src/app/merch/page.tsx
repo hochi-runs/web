@@ -9,33 +9,27 @@ export const metadata: Metadata = {
 
 export default function MerchPage() {
   return (
-    <div className="mx-auto max-w-5xl px-5 py-14">
-      <PageHeading title="Merch" />
+    <div className="mx-auto max-w-5xl px-5 pb-28 pt-24 sm:px-8 sm:pb-32 sm:pt-28">
+      <PageHeading title="Shop" />
 
-      <p className="mb-8 rounded border border-red/40 bg-red/5 px-4 py-3 text-sm text-muted">
-        Checkout isn&apos;t connected yet — this is a preview of the merch.
-        We&apos;ll wire up real purchasing (Stripe, Shopify, or Bandcamp links)
-        in a later pass.
-      </p>
-
-      <ul className="grid grid-cols-2 gap-6 sm:grid-cols-3">
+      <ul className="grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-3">
         {products.map((product) => {
           const card = (
-            <div className="flex h-full flex-col">
-              <div className="flex aspect-square items-center justify-center rounded border border-yellow/10 bg-white/5 text-xs text-muted">
+            <div className="group flex h-full flex-col">
+              <div className="flex aspect-square items-center justify-center bg-surface text-xs uppercase tracking-widest text-muted">
                 {product.image ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={product.image}
                     alt={product.name}
-                    className="h-full w-full rounded object-cover"
+                    className="h-full w-full object-cover transition-opacity group-hover:opacity-90"
                   />
                 ) : (
-                  <span>Image coming soon</span>
+                  <span>{product.name}</span>
                 )}
               </div>
               <div className="mt-3">
-                <p className="font-semibold text-yellow">{product.name}</p>
+                <p className="text-sm group-hover:underline">{product.name}</p>
                 <p className="text-sm text-muted">{product.price}</p>
               </div>
             </div>
@@ -47,7 +41,7 @@ export default function MerchPage() {
                   href={product.buyUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block text-yellow! hover:text-yellow!"
+                  className="block"
                 >
                   {card}
                 </a>

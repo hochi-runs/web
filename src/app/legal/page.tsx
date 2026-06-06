@@ -1,0 +1,25 @@
+import type { Metadata } from "next";
+import { PageHeading } from "@/components/page-heading";
+
+export const metadata: Metadata = {
+  title: "Legal · Hochi Runs",
+  description: "Legal information for Hochi Runs.",
+};
+
+export default function LegalPage() {
+  return (
+    <div className="mx-auto max-w-3xl px-5 pb-28 pt-24 sm:px-8 sm:pb-32 sm:pt-28">
+      <PageHeading title="Legal" />
+      <div className="max-w-xl space-y-4 text-sm leading-relaxed text-muted">
+        <p>
+          © {new Date().getFullYear()} Hochi Runs. All rights reserved. This
+          media is under exclusive right to its creators.
+        </p>
+        <p>
+          Placeholder legal copy — replace with the label&apos;s real terms,
+          privacy policy, and licensing information when ready.
+        </p>
+      </div>
+    </div>
+  );
+}

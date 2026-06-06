@@ -9,15 +9,15 @@ export const metadata: Metadata = {
 
 export default function VideosPage() {
   return (
-    <div className="mx-auto max-w-3xl px-5 py-14">
-      <PageHeading title="Music Videos" />
+    <div className="mx-auto max-w-3xl px-5 pb-28 pt-24 sm:px-8 sm:pb-32 sm:pt-28">
+      <PageHeading title="Videos" />
       {videos.length === 0 ? (
         <p className="text-sm text-muted">Videos coming soon.</p>
       ) : (
         <div className="space-y-12">
           {videos.map((video) => (
             <figure key={video.youtubeId}>
-              <div className="aspect-video w-full overflow-hidden rounded border border-yellow/10">
+              <div className="aspect-video w-full overflow-hidden bg-surface">
                 <iframe
                   className="h-full w-full"
                   src={`https://www.youtube.com/embed/${video.youtubeId}`}
@@ -28,7 +28,7 @@ export default function VideosPage() {
                 />
               </div>
               <figcaption className="mt-3">
-                <p className="font-semibold text-yellow">{video.title}</p>
+                <p className="text-sm">{video.title}</p>
                 {video.credit && (
                   <p className="text-sm text-muted">{video.credit}</p>
                 )}

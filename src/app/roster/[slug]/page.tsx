@@ -35,13 +35,16 @@ export default async function MemberPage({
   const memberReleases = getReleasesByMember(member.slug);
 
   return (
-    <article className="mx-auto max-w-3xl px-5 py-14">
-      <Link href="/roster" className="text-xs text-muted hover:text-yellow">
-        ← Roster
+    <article className="mx-auto max-w-3xl px-5 py-16 sm:px-8">
+      <Link
+        href="/roster"
+        className="text-xs uppercase tracking-widest text-muted transition-colors hover:text-foreground"
+      >
+        ← Artists
       </Link>
 
       <header className="mt-6 flex flex-col gap-6 sm:flex-row sm:items-end">
-        <div className="aspect-square w-40 shrink-0 overflow-hidden rounded border border-yellow/10 bg-white/5">
+        <div className="aspect-square w-40 shrink-0 overflow-hidden bg-surface">
           {member.photo ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
@@ -50,16 +53,14 @@ export default async function MemberPage({
               className="h-full w-full object-cover"
             />
           ) : (
-            <div className="flex h-full items-center justify-center text-xs text-muted">
-              Photo coming soon
+            <div className="flex h-full items-center justify-center text-xs uppercase tracking-widest text-muted">
+              {member.name}
             </div>
           )}
         </div>
         <div>
-          <h1 className="text-yellow text-3xl font-bold tracking-tight sm:text-4xl">
-            {member.name}
-          </h1>
-          <p className="mt-1 text-muted">{member.role}</p>
+          <h1 className="text-2xl tracking-tight sm:text-3xl">{member.name}</h1>
+          <p className="mt-1 text-sm text-muted">{member.role}</p>
         </div>
       </header>
 
@@ -70,11 +71,16 @@ export default async function MemberPage({
       )}
 
       {member.socials && member.socials.length > 0 && (
-        <ul className="mt-6 flex flex-wrap gap-x-5 gap-y-1 text-sm">
+        <ul className="mt-6 flex flex-wrap gap-x-5 gap-y-1 text-xs uppercase tracking-widest">
           {member.socials.map((s) => (
             <li key={s.url}>
-              <a href={s.url} target="_blank" rel="noopener noreferrer">
-                {s.platform}
+              <a
+                href={s.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted transition-colors hover:text-foreground"
+              >
+                {s.platform} ↗
               </a>
             </li>
           ))}
@@ -82,22 +88,22 @@ export default async function MemberPage({
       )}
 
       {memberReleases.length > 0 && (
-        <section className="mt-10">
-          <h2 className="text-xs uppercase tracking-widest text-red">
+        <section className="mt-12">
+          <h2 className="text-xs uppercase tracking-widest text-muted">
             Releases
           </h2>
-          <ul className="mt-4 divide-y divide-yellow/10 border-t border-yellow/10">
+          <ul className="mt-4 border-t border-hairline">
             {memberReleases.map((release) => (
-              <li key={release.slug}>
+              <li key={release.slug} className="border-b border-hairline">
                 <Link
                   href={`/releases/${release.slug}`}
-                  className="group flex items-baseline justify-between gap-4 py-3 text-yellow! hover:text-yellow!"
+                  className="group flex items-baseline justify-between gap-4 py-3"
                 >
                   <span className="min-w-0">
-                    <span className="font-semibold group-hover:underline">
-                      {release.artist}
+                    <span className="group-hover:underline">
+                      {release.title}
                     </span>{" "}
-                    <span className="text-sm text-muted">{release.title}</span>
+                    <span className="text-sm text-muted">{release.artist}</span>
                   </span>
                   <span className="font-mono text-xs text-muted">
                     {release.code}

@@ -1,44 +1,60 @@
 @import "tailwindcss";
 
 /*
- * Hochi Runs brand tokens — carried over from the original site:
- *   black background, red (#e94a4a), yellow (#fed766), Mulish type.
- * Layout style is year0001-minimal: lots of whitespace, type-driven.
+ * Hochi Runs — minimal archival label layout (Surf Gang / year0001 lineage).
+ * Monospace, tiny type, neutral palette, fixed-corner chrome. Light/dark via
+ * a `.dark` class on <html> (set pre-paint by the inline script in layout).
  */
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
-  --background: #000000;
-  --foreground: #fed766; /* yellow is the default text colour, as on the old site */
-  --red: #e94a4a;
-  --yellow: #fed766;
-  --muted: #ffd9669e; /* dimmed yellow used for secondary text */
+  --background: #ffffff;
+  --foreground: #1a1a1a;
+  --muted: #9ca3af; /* year0001's secondary gray */
+  --hairline: #e6e6e6;
+  --surface: #f2f2f2;
+}
+
+.dark {
+  --background: #0b0b0b;
+  --foreground: #e6e6e6;
+  --muted: #6b6b6b;
+  --hairline: #222222;
+  --surface: #161616;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-red: var(--red);
-  --color-yellow: var(--yellow);
   --color-muted: var(--muted);
-  --font-sans: var(--font-mulish);
+  --color-hairline: var(--hairline);
+  --color-surface: var(--surface);
+  --font-sans: var(--font-mono);
+  --font-mono: var(--font-mono);
+  /* Pin the small UI type so labels/captions render at 12px (year0001-style).
+     Most of the site uses text-xs; a few accents use text-sm. */
+  --text-xs: 12px;
+  --text-xs--line-height: 1.5;
+  --text-sm: 13px;
+  --text-sm--line-height: 1.5;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans), Helvetica, Arial, sans-serif;
+  font-family: var(--font-mono), ui-monospace, "SFMono-Regular", Menlo, monospace;
+  font-size: 12px;
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 a {
-  color: var(--red);
+  color: inherit;
   text-decoration: none;
 }
 
-a:hover {
-  color: var(--yellow);
-}
-
-/* Selection picks up the brand red */
 ::selection {
-  background: var(--red);
-  color: #000;
+  background: var(--foreground);
+  color: var(--background);
 }

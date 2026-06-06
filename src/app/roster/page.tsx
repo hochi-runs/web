@@ -10,20 +10,14 @@ export const metadata: Metadata = {
 
 export default function RosterPage() {
   return (
-    <div className="mx-auto max-w-5xl px-5 py-14">
-      <PageHeading
-        title="Roster"
-        subtitle="The collective — artists, producers, and directors."
-      />
+    <div className="mx-auto max-w-5xl px-5 pb-28 pt-24 sm:px-8 sm:pb-32 sm:pt-28">
+      <PageHeading title="Artists" />
 
-      <ul className="grid grid-cols-2 gap-x-6 gap-y-8 sm:grid-cols-3">
+      <ul className="grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-3">
         {members.map((member) => (
           <li key={member.slug}>
-            <Link
-              href={`/roster/${member.slug}`}
-              className="group block text-yellow! hover:text-yellow!"
-            >
-              <div className="flex aspect-square items-center justify-center overflow-hidden rounded border border-yellow/10 bg-white/5 text-xs text-muted">
+            <Link href={`/roster/${member.slug}`} className="group block">
+              <div className="flex aspect-square items-center justify-center overflow-hidden bg-surface text-xs uppercase tracking-widest text-muted">
                 {member.photo ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
@@ -32,7 +26,7 @@ export default function RosterPage() {
                     className="h-full w-full object-cover transition-opacity group-hover:opacity-90"
                   />
                 ) : (
-                  <span>Photo coming soon</span>
+                  <span>{member.name}</span>
                 )}
               </div>
               <div className="mt-3">

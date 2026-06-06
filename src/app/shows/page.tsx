@@ -9,24 +9,21 @@ export const metadata: Metadata = {
 
 export default function ShowsPage() {
   return (
-    <div className="mx-auto max-w-3xl px-5 py-14">
-      <PageHeading
-        title="Upcoming Shows"
-        subtitle="No fluff, just real, unforgettable experiences."
-      />
+    <div className="mx-auto max-w-3xl px-5 pb-28 pt-24 sm:px-8 sm:pb-32 sm:pt-28">
+      <PageHeading title="Live" />
       {shows.length === 0 ? (
         <p className="text-sm text-muted">
           No upcoming shows announced. Check back soon.
         </p>
       ) : (
-        <ul className="divide-y divide-yellow/10 border-t border-yellow/10">
+        <ul className="border-t border-hairline">
           {shows.map((show, i) => (
             <li
               key={`${show.date}-${i}`}
-              className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 py-4"
+              className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-b border-hairline py-4"
             >
               <div>
-                <span className="font-semibold text-yellow">{show.venue}</span>{" "}
+                <span>{show.venue}</span>{" "}
                 <span className="text-sm text-muted">— {show.city}</span>
               </div>
               <div className="flex items-baseline gap-4">
@@ -38,9 +35,9 @@ export default function ShowsPage() {
                     href={show.ticketUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-sm text-red!"
+                    className="text-xs uppercase tracking-widest text-muted transition-colors hover:text-foreground"
                   >
-                    Tickets
+                    Tickets ↗
                   </a>
                 )}
               </div>
