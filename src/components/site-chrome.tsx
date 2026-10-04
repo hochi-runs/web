@@ -31,7 +31,7 @@ const SECONDARY = [
   { label: "Legal", href: "/legal" },
 ] as const;
 
-export function SiteChrome() {
+export function SiteChrome({ logoUrl }: { logoUrl?: string }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
 
@@ -46,7 +46,7 @@ export function SiteChrome() {
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/logo.png"
+          src={logoUrl ?? "/logo.png"}
           alt="Hochi Runs"
           width={75}
           height={63}
@@ -67,8 +67,8 @@ export function SiteChrome() {
               href={link.href}
               className={
                 active
-                  ? "text-foreground"
-                  : "text-muted transition-colors hover:text-foreground"
+                  ? "text-accent"
+                  : "text-muted transition-colors hover:text-accent"
               }
             >
               {link.label}
@@ -103,14 +103,14 @@ export function SiteChrome() {
           <Link
             key={link.href}
             href={link.href}
-            className="transition-colors hover:text-foreground"
+            className="transition-colors hover:text-accent"
           >
             {link.label}
           </Link>
         ))}
         <a
           href="mailto:info@hochiruns.com"
-          className="transition-colors hover:text-foreground"
+          className="transition-colors hover:text-accent"
         >
           Contact
         </a>

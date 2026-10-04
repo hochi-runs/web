@@ -10,6 +10,7 @@
 :root {
   --background: #ffffff;
   --foreground: #1a1a1a;
+  --accent: var(--foreground);
   --muted: #9ca3af; /* year0001's secondary gray */
   --hairline: #e6e6e6;
   --surface: #f2f2f2;
@@ -26,6 +27,7 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-accent: var(--accent);
   --color-muted: var(--muted);
   --color-hairline: var(--hairline);
   --color-surface: var(--surface);

@@ -1,14 +1,17 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PageHeading } from "@/components/page-heading";
-import { members } from "@/data/roster";
+import { getArtists } from "@/lib/wordpress";
+
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Roster · Hochi Runs",
   description: "The Hochi Runs roster — artists, producers, and directors.",
 };
 
-export default function RosterPage() {
+export default async function RosterPage() {
+  const members = await getArtists();
   return (
     <div className="mx-auto max-w-5xl px-5 pb-28 pt-24 sm:px-8 sm:pb-32 sm:pt-28">
       <PageHeading title="Artists" />

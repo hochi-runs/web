@@ -1,4 +1,4 @@
-import { releases } from "@/data/releases";
+import { getReleases } from "@/lib/wordpress";
 import { ReleaseFeed } from "@/components/release-feed";
 
 /**
@@ -10,7 +10,10 @@ import { ReleaseFeed } from "@/components/release-feed";
  *
  * Generous vertical padding clears the fixed top/bottom corners.
  */
-export default function Home() {
+export const revalidate = 60;
+
+export default async function Home() {
+  const releases = await getReleases();
   return (
     <div className="px-5 pb-28 pt-24 sm:px-8 sm:pb-32 sm:pt-28">
       <ReleaseFeed releases={releases} />

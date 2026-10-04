@@ -1,13 +1,16 @@
 import type { Metadata } from "next";
 import { PageHeading } from "@/components/page-heading";
-import { shows } from "@/data/content";
+import { getShows } from "@/lib/wordpress";
+
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Shows · Hochi Runs",
   description: "Upcoming Hochi Runs shows and events.",
 };
 
-export default function ShowsPage() {
+export default async function ShowsPage() {
+  const shows = await getShows();
   return (
     <div className="mx-auto max-w-3xl px-5 pb-28 pt-24 sm:px-8 sm:pb-32 sm:pt-28">
       <PageHeading title="Live" />

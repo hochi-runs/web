@@ -1,0 +1,99 @@
+name: Sync Bandcamp catalog
+
+on:
+  # Run away from the top of the hour, when GitHub schedules are busiest.
+  # Schedules require this file on the default branch and Actions enabled.
+  # GitHub disables schedules in public repositories after 60 inactive days.
+  schedule:
+    - cron: "17 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: bandcamp-catalog-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out main
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22"
+          package-manager-cache: false
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Refresh public release metadata
+        run: npm run sync:bandcamp
+
+      - name: Commit changed catalog
+        id: catalog
+        shell: bash
+        run: |
+          set -euo pipefail
+          catalog_path="src/data/bandcamp-catalog.json"
+          git add -- "$catalog_path"
+
+          if git diff --cached --quiet -- "$catalog_path"; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "Catalog is unchanged."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "chore: sync Bandcamp catalog" -- "$catalog_path"
+          # A concurrent main update fails safely; the next run starts fresh.
+          git push origin HEAD:main
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Trigger configured deployment hook
+        if: steps.catalog.outputs.changed == 'true'
+        env:
+          BANDCAMP_DEPLOY_HOOK_URL: ${{ secrets.BANDCAMP_DEPLOY_HOOK_URL }}
+        run: |
+          node --input-type=module <<'NODE'
+          const value = process.env.BANDCAMP_DEPLOY_HOOK_URL;
+
+          if (!value) {
+            console.log("No deploy hook configured. Verify that the hosting Git integration deploys sync bot commits, or add BANDCAMP_DEPLOY_HOOK_URL.");
+            process.exit(0);
+          }
+
+          try {
+            const url = new URL(value);
+            const vercel = url.hostname === "api.vercel.com"
+              && /^\/v1\/integrations\/deploy\/[A-Za-z0-9_-]+\/[A-Za-z0-9_-]+\/?$/.test(url.pathname);
+            const netlify = url.hostname === "api.netlify.com"
+              && /^\/build_hooks\/[A-Za-z0-9_-]+\/?$/.test(url.pathname);
+
+            if (url.protocol !== "https:" || (url.port && url.port !== "443")
+              || url.username || url.password || url.hash || (!vercel && !netlify)) {
+              throw new Error("Invalid deploy hook");
+            }
+
+            const response = await fetch(url, {
+              method: "POST",
+              redirect: "error",
+              signal: AbortSignal.timeout(20_000),
+            });
+
+            if (!response.ok) throw new Error("Deploy hook failed");
+            console.log("Deployment hook accepted the request. Check the hosting dashboard for build completion.");
+          } catch {
+            // Do not log the secret URL, response body, or network error.
+            console.error("::error::Deployment hook failed. The catalog commit is saved; check the hook configuration and trigger a deployment in the hosting dashboard.");
+            process.exitCode = 1;
+          }
+          NODE

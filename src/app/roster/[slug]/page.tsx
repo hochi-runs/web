@@ -1,11 +1,15 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getMember, members } from "@/data/roster";
-import { getReleasesByMember } from "@/data/releases";
+import { getArtist, getArtists, getArtistReleases } from "@/lib/wordpress";
+
+export const revalidate = 60;
+export const dynamic = "force-static";
+export const dynamicParams = true;
 
 /** Pre-render every member page at build time. */
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  const members = await getArtists();
   return members.map((m) => ({ slug: m.slug }));
 }
 
@@ -15,7 +19,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const member = getMember(slug);
+  const member = await getArtist(slug);
   if (!member) return {};
   return {
     title: `${member.name} · Hochi Runs`,
@@ -29,16 +33,16 @@ export default async function MemberPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const member = getMember(slug);
+  const member = await getArtist(slug);
   if (!member) notFound();
 
-  const memberReleases = getReleasesByMember(member.slug);
+  const memberReleases = await getArtistReleases(member);
 
   return (
     <article className="mx-auto max-w-3xl px-5 py-16 sm:px-8">
       <Link
         href="/roster"
-        className="text-xs uppercase tracking-widest text-muted transition-colors hover:text-foreground"
+        className="text-xs uppercase tracking-widest text-muted transition-colors hover:text-accent"
       >
         ← Artists
       </Link>
@@ -78,7 +82,7 @@ export default async function MemberPage({
                 href={s.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-muted transition-colors hover:text-foreground"
+                className="text-muted transition-colors hover:text-accent"
               >
                 {s.platform} ↗
               </a>

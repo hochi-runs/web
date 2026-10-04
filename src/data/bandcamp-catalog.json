@@ -1,0 +1,981 @@
+{
+  "version": 1,
+  "releases": [
+    {
+      "buyUrl": "https://amaldc.bandcamp.com/album/low-top-vanz-amal-techno-remix",
+      "title": "Low Top Vanz (Amal Techno Remix)",
+      "artist": "Rylo Rodriguez",
+      "format": "Album",
+      "year": 2026,
+      "date": "02 Oct 2026",
+      "releasedAt": "2026-10-02T15:09:59.000Z",
+      "cover": "https://f4.bcbits.com/img/a1295612868_10.jpg",
+      "description": "some healing stuff happy bandcamp day",
+      "credits": [
+        {
+          "role": "Credits",
+          "name": "Remix by Amal. Original song \"Low Top Vanz\" by Rylo Rodriguez. Unofficial remix."
+        }
+      ],
+      "tags": [
+        "909",
+        "Electronic",
+        "Rap",
+        "bootleg",
+        "club",
+        "edit",
+        "ghettotech",
+        "gospel house",
+        "hip-hop",
+        "house",
+        "jungle",
+        "remix",
+        "techno",
+        "trap",
+        "Washington"
+      ],
+      "tracklist": [
+        {
+          "title": "Low Top Vanz (Amal Techno Remix Instrumental)",
+          "duration": "4:39"
+        },
+        {
+          "title": "Low Top Vanz (Amal Techno Remix)",
+          "duration": "4:39"
+        }
+      ],
+      "bandcampId": 4115947133,
+      "bandcampType": "album"
+    },
+    {
+      "buyUrl": "https://hochiruns.bandcamp.com/track/breaking-format",
+      "title": "Breaking Format",
+      "artist": "ABUZU",
+      "format": "Single",
+      "year": 2026,
+      "date": "17 Jun 2026",
+      "releasedAt": "2026-06-17T00:00:00.000Z",
+      "cover": "https://f4.bcbits.com/img/a0863084852_10.jpg",
+      "description": "\"Breaking Format\" is the first single from ABUZU's debut album *Con Razón*. Built around rolling percussion, warped grooves, and Caribbean-infused rhythms, the track is a refusal to conform pushing against traditional structures while remaining firmly rooted in dancefloor functionality.\n\nAs an introduction to the world of *Con Razón*, \"Breaking Format\" captures the album's core philosophy: music made with purpose, instinct, and movement. Equal parts club tool and personal statement, it embraces experimentation without losing sight of the groove.",
+      "credits": [
+        {
+          "role": "Credits",
+          "name": "produced + mixed by ABUZU\nmastered Thomas Van De Ven"
+        }
+      ],
+      "tags": [
+        "Latin Club",
+        "Latin Electronic",
+        "Washington DC",
+        "latin house",
+        "Washington"
+      ],
+      "tracklist": [
+        {
+          "title": "Breaking Format",
+          "duration": "4:42"
+        }
+      ],
+      "bandcampId": 384218284,
+      "bandcampType": "track"
+    },
+    {
+      "buyUrl": "https://hochiruns.bandcamp.com/album/sdm2",
+      "title": "SDM2",
+      "artist": "Rxfx",
+      "format": "Album",
+      "year": 2026,
+      "date": "29 May 2026",
+      "releasedAt": "2026-05-29T00:00:00.000Z",
+      "cover": "https://f4.bcbits.com/img/a1393964951_10.jpg",
+      "description": "Campo Grande’s Rxfx returns to Hochi with SDM2 (Som de Maluco 2), a 12-track album that takes the ritmada sound he’s been testing on dancefloors and builds it into a full-length statement.\n\nRxfx links up with a wide cast from Brazil’s new funk wave: Lucas Kid, DJ ALYX, bieL onLine, dudda, Keu, ARTIGO016, JLZ, Malu Silmon, DJ K1TO and Levynn, plus Clementaum and Mc Indiazinha on lead single EU PULO and NOTRN on the already-proven SIRENE FDP 2. Driving triplet patterns and industrial weight, built to hit as hard on full systems as on blown-out speakers.\n\nSDM2 has already landed on editorial playlists across Spotify (Beat Agressivo), Beatport, Apple Music, TIDAL (Electronic: Rising) and Deezer (New Latin).",
+      "credits": [
+        {
+          "role": "Credits",
+          "name": "produced by Rxfx\nfeaturing Lucas Kid, DJ ALYX, bieL onLine, dudda, Keu, ARTIGO016, NOTRN, JLZ, Clementaum, Mc Indiazinha, Malu Silmon, DJ K1TO, Levynn\ncomposed by Rafael Alvarez (Rxfx), with Christian de Paula Gomes and DJ K1TO (see individual tracks)\nlyrics by Clementaum and Malu Silmon\npublished by hochi runs / Rxfx\n℗ © 2026 hochi runs\nHR028"
+        }
+      ],
+      "tags": [
+        "brazilian funk",
+        "brazilian music",
+        "club",
+        "funk",
+        "industrial",
+        "Washington"
+      ],
+      "tracklist": [
+        {
+          "title": "BOTA KRL",
+          "duration": "2:16"
+        },
+        {
+          "title": "Rxfx - E AGORA?",
+          "duration": "2:36"
+        },
+        {
+          "title": "NESSE PIQUE",
+          "duration": "2:49"
+        },
+        {
+          "title": "BALA!",
+          "duration": "2:13"
+        },
+        {
+          "title": "BOTADA FORTE",
+          "duration": "2:38"
+        },
+        {
+          "title": "Rxfx - NA BRISA ELA GEME",
+          "duration": "2:35"
+        },
+        {
+          "title": "FERVO",
+          "duration": "3:01"
+        },
+        {
+          "title": "SIRENE FDP 2",
+          "duration": "2:20"
+        },
+        {
+          "title": "RITMO NOVO",
+          "duration": "2:05"
+        },
+        {
+          "title": "EU PULO",
+          "duration": "2:52"
+        },
+        {
+          "title": "MOVIMENTO",
+          "duration": "2:20"
+        },
+        {
+          "title": "ROMANO ENVERGONHADO",
+          "duration": "2:42"
+        }
+      ],
+      "bandcampId": 1883854658,
+      "bandcampType": "album"
+    },
+    {
+      "buyUrl": "https://amaldc.bandcamp.com/track/like-dat-riddim",
+      "title": "like dat riddim",
+      "artist": "Amal, Kodak Black",
+      "format": "Single",
+      "year": 2026,
+      "date": "01 May 2026",
+      "releasedAt": "2026-05-01T00:00:00.000Z",
+      "cover": "https://f4.bcbits.com/img/a4268976832_10.jpg",
+      "tags": [
+        "Electronic",
+        "Rap",
+        "ghettotech",
+        "house",
+        "jungle",
+        "techno",
+        "Washington"
+      ],
+      "tracklist": [
+        {
+          "title": "like dat riddim",
+          "duration": "3:06"
+        }
+      ],
+      "bandcampId": 1177208920,
+      "bandcampType": "track"
+    },
+    {
+      "buyUrl": "https://hochiruns.bandcamp.com/track/sirene-fdp-2",
+      "title": "SIRENE FDP 2",
+      "artist": "Rxfx, NOTRN",
+      "format": "Single",
+      "year": 2026,
+      "date": "24 Apr 2026",
+      "releasedAt": "2026-04-24T00:00:00.000Z",
+      "cover": "https://f4.bcbits.com/img/a3972931386_10.jpg",
+      "description": "Campo Grande’s Rxfx joins Hochi with SIRENE FDP 2, a peak-time cut that’s already been moving through main stage sets as a sought-after ID. Featuring NOTRN, the track lands with immediate impact.\n\nRooted in the emerging ritimada sound, RXFX pushes things further into industrial territory, built around driving triplet patterns that hit just as hard on full systems as they do on blown-out speakers.\n\nWith early support from São Paulo’s RHR and international co-signs from Skrillex, SIRENE FDP 2 has already proven itself where it matters on the floor.",
+      "credits": [
+        {
+          "role": "Credits",
+          "name": "produced by Rxfx\nfeaturing NOTRN"
+        }
+      ],
+      "tags": [
+        "Brazilian Funk",
+        "Brazilian music",
+        "club",
+        "industrial",
+        "Washington"
+      ],
+      "tracklist": [
+        {
+          "title": "SIRENE FDP 2",
+          "duration": "2:20"
+        }
+      ],
+      "bandcampId": 3703186431,
+      "bandcampType": "track"
+    },
+    {
+      "buyUrl": "https://hochiruns.bandcamp.com/album/losing-sleep",
+      "title": "LOSING SLEEP",
+      "artist": "whoisgeno",
+      "format": "Album",
+      "year": 2026,
+      "date": "03 Apr 2026",
+      "releasedAt": "2026-04-03T00:00:00.000Z",
+      "cover": "https://f4.bcbits.com/img/a4026643672_10.jpg",
+      "description": "Born and raised in New Orleans and now based in Baton Rouge, WHOISGENO is an emerging producer and DJ shaping a sound that moves fluidly across electronic styles. His work pulls from a wide range of club influences, balancing energy, atmosphere, and rhythm without staying locked into one lane.\n\nA member of Baton Rouge collective Frequency, GENO is deeply embedded in his local scene both behind the decks and through the group’s monthly parties, where his sound takes form in real time.\n\nLOSING SLEEP captures that restless momentum late nights, shifting moods, and the push between introspection and the dancefloor.",
+      "credits": [
+        {
+          "role": "Credits",
+          "name": "written and produced by whoisgeno\n\nmixed by whoisgeno\n\nmastered by Amal"
+        }
+      ],
+      "tags": [
+        "Atlanta Bass",
+        "Ghettotech",
+        "House",
+        "Jit",
+        "Miami Bass",
+        "techno",
+        "Washington"
+      ],
+      "tracklist": [
+        {
+          "title": "DONK",
+          "duration": "3:02"
+        },
+        {
+          "title": "DONK [INSTRUMENTAL]",
+          "duration": "3:02"
+        },
+        {
+          "title": "GROOVE MR DJ",
+          "duration": "3:18"
+        },
+        {
+          "title": "GROOVE MR DJ [AMAL MIX]",
+          "duration": "3:45"
+        }
+      ],
+      "bandcampId": 538650830,
+      "bandcampType": "album"
+    },
+    {
+      "buyUrl": "https://amaldc.bandcamp.com/track/sneaky-link",
+      "title": "sneaky link",
+      "artist": "Amal",
+      "format": "Single",
+      "year": 2026,
+      "date": "25 Feb 2026",
+      "releasedAt": "2026-02-25T00:00:00.000Z",
+      "cover": "https://f4.bcbits.com/img/a0327455422_10.jpg",
+      "description": "“sneaky link” a smooth, late-night house banger built for dim rooms, side-eyes, and unspoken agreements.\n\nWarm lows. Slick percussion. Tension that lingers longer than it should.\n\nThis one feels like 2:17am when the function’s thinning out but nobody’s ready to go home.",
+      "credits": [
+        {
+          "role": "Credits",
+          "name": "Mixed by: Amal\nMastered by: eastendmastering \nVisualizer: daniel adeyemi"
+        }
+      ],
+      "tags": [
+        "Electronic",
+        "House",
+        "Jackin House",
+        "Rap",
+        "Soulful House",
+        "ghetto house",
+        "ghettotech",
+        "house",
+        "jungle",
+        "techno",
+        "Washington"
+      ],
+      "tracklist": [
+        {
+          "title": "sneaky link",
+          "duration": "3:52"
+        }
+      ],
+      "bandcampId": 416304257,
+      "bandcampType": "track"
+    },
+    {
+      "buyUrl": "https://hochiruns.bandcamp.com/album/side-orders-v1-2",
+      "title": "Side Orders v1",
+      "artist": "Hochi Runs",
+      "format": "Album",
+      "year": 2025,
+      "date": "05 Dec 2025",
+      "releasedAt": "2025-12-05T00:00:00.000Z",
+      "cover": "https://f4.bcbits.com/img/a1857253865_10.jpg",
+      "description": "Hochi runs presents our first ever compilation \"Side Orders\"",
+      "tags": [
+        "Edits & Flips",
+        "Electronic",
+        "club",
+        "dance",
+        "rap & hip-hop",
+        "Washington"
+      ],
+      "tracklist": [
+        {
+          "title": "PINK TESLA [AMAL]",
+          "duration": "1:53"
+        },
+        {
+          "title": "POP OUT [AMAL + MARVEL]",
+          "duration": "3:24"
+        },
+        {
+          "title": "NOT NICE [HUNCH + TROMAC]",
+          "duration": "2:43"
+        },
+        {
+          "title": "PLEASE MAMA [HUNCH]",
+          "duration": "4:20"
+        },
+        {
+          "title": "HEADSHOTS ONLY [U4L JUDO + AMAL + HUNCH]",
+          "duration": "2:17"
+        },
+        {
+          "title": "BOB BIG BACK [TAYBAND$$$$]",
+          "duration": "2:38"
+        },
+        {
+          "title": "CLUBFESSIONAL [FACIAL_I.D. + CER0]",
+          "duration": "5:56"
+        },
+        {
+          "title": "PAIN & POSSIBILITIES [NEDAJ]",
+          "duration": "2:24"
+        },
+        {
+          "title": "STRETCH [NEDAJ]",
+          "duration": "4:38"
+        },
+        {
+          "title": "LOVE HOW TO DREAM [IHU]",
+          "duration": "3:05"
+        },
+        {
+          "title": "MADONNA [VRANDO + HEXBOYFREN]",
+          "duration": "2:44"
+        },
+        {
+          "title": "NEWMONEY [DJ PEARL]",
+          "duration": "4:09"
+        }
+      ],
+      "bandcampId": 2845728534,
+      "bandcampType": "album"
+    },
+    {
+      "buyUrl": "https://amaldc.bandcamp.com/track/stuck-in-sp",
+      "title": "Stuck in SP",
+      "artist": "Amal, Rxfx",
+      "format": "Single",
+      "year": 2025,
+      "date": "01 Aug 2025",
+      "releasedAt": "2025-08-01T00:00:00.000Z",
+      "cover": "https://f4.bcbits.com/img/a2710504683_10.jpg",
+      "description": "you ever been detained by immigration while on tour? it feels like this.",
+      "credits": [
+        {
+          "role": "Credits",
+          "name": "Amal, Rxfx"
+        }
+      ],
+      "tags": [
+        "Brazil",
+        "Electronic",
+        "Rap",
+        "ghettotech",
+        "house",
+        "jungle",
+        "techno",
+        "Washington"
+      ],
+      "tracklist": [
+        {
+          "title": "Stuck in SP",
+          "duration": "3:00"
+        }
+      ],
+      "bandcampId": 1150633892,
+      "bandcampType": "track"
+    },
+    {
+      "buyUrl": "https://amaldc.bandcamp.com/track/wip",
+      "title": "WIP",
+      "artist": "Amal , Stonie Blue , Sochildish",
+      "format": "Single",
+      "year": 2025,
+      "date": "25 Apr 2025",
+      "releasedAt": "2025-04-25T00:00:00.000Z",
+      "cover": "https://f4.bcbits.com/img/a0303330143_10.jpg",
+      "description": "Amal's next single from his debut album Madness, features BIYDIY's head honcho, Stonie Blue. A fun, bouncy summer anthem GAS UP!!!",
+      "tags": [
+        "Electronic",
+        "Ghettotech",
+        "Miami Bass",
+        "Rap",
+        "RnB",
+        "dance",
+        "electro",
+        "ghettotech",
+        "house",
+        "jungle",
+        "techno",
+        "Washington"
+      ],
+      "tracklist": [
+        {
+          "title": "WIP",
+          "duration": "4:02"
+        }
+      ],
+      "bandcampId": 3784555064,
+      "bandcampType": "track"
+    },
+    {
+      "buyUrl": "https://amaldc.bandcamp.com/track/stadium",
+      "title": "Stadium",
+      "artist": "Amal, Dj Nativesun",
+      "format": "Single",
+      "year": 2025,
+      "date": "17 Feb 2025",
+      "releasedAt": "2025-02-17T00:00:00.000Z",
+      "cover": "https://f4.bcbits.com/img/a3625104045_10.jpg",
+      "description": "NEW DC ANTHEM",
+      "credits": [
+        {
+          "role": "Credits",
+          "name": "Amal, Dj Nativesun"
+        }
+      ],
+      "tags": [
+        "Electronic",
+        "Rap",
+        "ghettotech",
+        "house",
+        "jungle",
+        "techno",
+        "Washington"
+      ],
+      "tracklist": [
+        {
+          "title": "Stadium",
+          "duration": "2:47"
+        }
+      ],
+      "bandcampId": 3592804763,
+      "bandcampType": "track"
+    },
+    {
+      "buyUrl": "https://amaldc.bandcamp.com/track/vague-amal-nedaj",
+      "title": "VAGUE (Amal + Nedaj)",
+      "artist": "Amal, Nedaj",
+      "format": "Single",
+      "year": 2024,
+      "date": "12 Jul 2024",
+      "releasedAt": "2024-07-12T00:00:00.000Z",
+      "cover": "https://f4.bcbits.com/img/a1634325197_10.jpg",
+      "description": "American made phonk featuring Nedaj\n\nGresham the album coming soon... \n\nVisualizer + artwork by Daniel Adey\n\nMastered by East End Mastering",
+      "tags": [
+        "Electronic",
+        "Hard Techno",
+        "Rap",
+        "Techno.",
+        "Warehouse Techno",
+        "dub techno",
+        "ghettotech",
+        "house",
+        "jungle",
+        "phonk",
+        "phonk house",
+        "rave techno",
+        "techno",
+        "techno-industrial",
+        "Washington"
+      ],
+      "tracklist": [
+        {
+          "title": "VAGUE (Amal + Nedaj)",
+          "duration": "3:18"
+        }
+      ],
+      "bandcampId": 3101511279,
+      "bandcampType": "track"
+    },
+    {
+      "buyUrl": "https://hunchhunch.bandcamp.com/album/movement",
+      "title": "MOVEMENT",
+      "artist": "Hunch, Tromac",
+      "format": "Album",
+      "year": 2024,
+      "date": "31 May 2024",
+      "releasedAt": "2024-05-31T00:00:00.000Z",
+      "cover": "https://f4.bcbits.com/img/a4205197754_10.jpg",
+      "description": "Hunch, a Maryland based multi-genre artist is an artist, producer and DJ . His last EP “Second Nature '' dropped in fall under D.C label “Hochi Runs”. Since this release, Hunch has been emerging as an eclectic selector and creative force in a new wave of electronic music.\nTromac, is a seasoned DJ, curator, and producer hailing from Prince George’s County currently based in Baltimore, MD. Tromac's outspoken artistry shines through dynamic performances and creative approach to music production.",
+      "tags": [
+        "Baltimore Club",
+        "Electronic",
+        "House",
+        "breakbeat",
+        "club-music",
+        "experimental-electronic",
+        "global-club-music",
+        "postclub",
+        "techno",
+        "Maryland"
+      ],
+      "tracklist": [
+        {
+          "title": "her majesty",
+          "duration": "3:06"
+        },
+        {
+          "title": "slee",
+          "duration": "1:48"
+        },
+        {
+          "title": "Dieglo",
+          "duration": "2:42"
+        },
+        {
+          "title": "kerosene",
+          "duration": "2:21"
+        },
+        {
+          "title": "WHOWILLSURVIVEINAMERICA",
+          "duration": "2:03"
+        }
+      ],
+      "bandcampId": 329578658,
+      "bandcampType": "album"
+    },
+    {
+      "buyUrl": "https://hochiruns.bandcamp.com/album/dance-concept-2",
+      "title": "DANCE CONCEPT 2",
+      "artist": "Amal",
+      "format": "Album",
+      "year": 2024,
+      "date": "02 May 2024",
+      "releasedAt": "2024-05-02T00:00:00.000Z",
+      "cover": "https://f4.bcbits.com/img/a0266589904_10.jpg",
+      "description": "a tribute to all dancers",
+      "credits": [
+        {
+          "role": "Credits",
+          "name": "prod + mixed by Amal ft Isu and Sammiyy"
+        }
+      ],
+      "tags": [
+        "#Afro",
+        "#Coupedecale",
+        "#club",
+        "#drumandbass",
+        "#footwork #juke",
+        "#housemusic",
+        "#jungle",
+        "Washington"
+      ],
+      "tracklist": [
+        {
+          "title": "CHATTIN",
+          "duration": "2:20"
+        },
+        {
+          "title": "REAL LIVE FT SAMMIYY",
+          "duration": "3:36"
+        },
+        {
+          "title": "DESTRUCTION BOYZ",
+          "duration": "3:04"
+        },
+        {
+          "title": "TACTICAL KILL FT ISU",
+          "duration": "2:28"
+        },
+        {
+          "title": "BONUS ROUND",
+          "duration": "1:16"
+        }
+      ],
+      "bandcampId": 2918903427,
+      "bandcampType": "album"
+    },
+    {
+      "buyUrl": "https://hochiruns.bandcamp.com/track/her-majesty",
+      "title": "Her Majesty",
+      "artist": "Hunch, Tromac",
+      "format": "Single",
+      "year": 2024,
+      "date": "12 Apr 2024",
+      "releasedAt": "2024-04-12T00:00:00.000Z",
+      "cover": "https://f4.bcbits.com/img/a0571188681_10.jpg",
+      "description": "Hunch and Tromac team up for their debut single together. Her Majesty's fast-paced club track with breaks, catchy vocal shots and a hypnotic baseline.",
+      "credits": [
+        {
+          "role": "Credits",
+          "name": "Hunch, Tromac"
+        }
+      ],
+      "tags": [
+        "Baltimore Club",
+        "Electronic",
+        "dance",
+        "Washington"
+      ],
+      "tracklist": [
+        {
+          "title": "Her Majesty",
+          "duration": "3:06"
+        }
+      ],
+      "bandcampId": 3369406867,
+      "bandcampType": "track"
+    },
+    {
+      "buyUrl": "https://amaldc.bandcamp.com/track/hit-dat",
+      "title": "Hit Dat",
+      "artist": "Amal, DJ SWISHA",
+      "format": "Single",
+      "year": 2024,
+      "date": "16 Feb 2024",
+      "releasedAt": "2024-02-16T00:00:00.000Z",
+      "cover": "https://f4.bcbits.com/img/a1963883115_10.jpg",
+      "tags": [
+        "Baltimore Club",
+        "Electronic",
+        "Rap",
+        "club music",
+        "dance",
+        "ghettotech",
+        "house",
+        "jungle",
+        "techno",
+        "Washington"
+      ],
+      "tracklist": [
+        {
+          "title": "Hit Dat",
+          "duration": "3:42"
+        }
+      ],
+      "bandcampId": 2267588142,
+      "bandcampType": "track"
+    },
+    {
+      "buyUrl": "https://autolola333.bandcamp.com/album/sleep",
+      "title": "SLEEP",
+      "artist": "Auto Lola (🩸📱🧎🏾‍♂️)",
+      "format": "Album",
+      "year": 2023,
+      "date": "20 Nov 2023",
+      "releasedAt": "2023-11-20T00:00:00.000Z",
+      "cover": "https://f4.bcbits.com/img/a3219845726_10.jpg",
+      "tags": [
+        "Digital-punk",
+        "Hip-Hop/Rap",
+        "Washington"
+      ],
+      "tracklist": [
+        {
+          "title": "Herringbone floors",
+          "duration": "2:09"
+        },
+        {
+          "title": "Red eye ft Hondees",
+          "duration": "1:58"
+        },
+        {
+          "title": "Right-way",
+          "duration": "3:01"
+        },
+        {
+          "title": "Jet Star",
+          "duration": "2:18"
+        },
+        {
+          "title": "High lyfe ft Nappy Nappy",
+          "duration": "2:30"
+        },
+        {
+          "title": "READY (Howdy)",
+          "duration": "2:13"
+        },
+        {
+          "title": "DEEP SLEEP (N3 INTERLUDE)",
+          "duration": "1:03"
+        },
+        {
+          "title": "DEEP SLEEP (N3) ft Dreamcastmoe",
+          "duration": "1:28"
+        },
+        {
+          "title": "MAKE UP",
+          "duration": "1:44"
+        },
+        {
+          "title": "W*T DREAM",
+          "duration": "2:10"
+        }
+      ],
+      "bandcampId": 453570380,
+      "bandcampType": "album"
+    },
+    {
+      "buyUrl": "https://amaldc.bandcamp.com/album/remix-pack-vol-1",
+      "title": "REMIX PACK VOL 1",
+      "artist": "Amal",
+      "format": "Album",
+      "year": 2023,
+      "date": "07 Oct 2023",
+      "releasedAt": "2023-10-07T00:00:00.000Z",
+      "cover": "https://f4.bcbits.com/img/a4248626786_10.jpg",
+      "description": "First remix pack for the free enjoy!\n\n- mal",
+      "tags": [
+        "Baltimore Club",
+        "Electronic",
+        "Rap",
+        "Trap",
+        "club",
+        "garage",
+        "ghettotech",
+        "house",
+        "jungle",
+        "rave",
+        "techno",
+        "Washington"
+      ],
+      "tracklist": [
+        {
+          "title": "CLIP - CALVIN K (Amal mix)",
+          "duration": "2:29"
+        },
+        {
+          "title": "SEXXY RED - HELLCATS SRTS (Amal mix)",
+          "duration": "3:42"
+        },
+        {
+          "title": "TEEWAY - PRIVATE RYAN (Amal mix)",
+          "duration": "2:59"
+        },
+        {
+          "title": "VRANDO - AIN'T SEE SHIT COMING (Amal mix)",
+          "duration": "2:44"
+        }
+      ],
+      "bandcampId": 3954273039,
+      "bandcampType": "album"
+    },
+    {
+      "buyUrl": "https://amaldc.bandcamp.com/album/pressure",
+      "title": "PRESSURE",
+      "artist": "Amal, Tah, Vrando, Samiy",
+      "format": "Album",
+      "year": 2023,
+      "date": "02 Mar 2023",
+      "releasedAt": "2023-03-02T00:00:00.000Z",
+      "cover": "https://f4.bcbits.com/img/a1604258301_10.jpg",
+      "tags": [
+        "Baltimore Club",
+        "Electronic",
+        "Jersey Club",
+        "Philly Club",
+        "Rap",
+        "club music",
+        "drill",
+        "ghettotech",
+        "house",
+        "jungle",
+        "techno",
+        "Washington"
+      ],
+      "tracklist": [
+        {
+          "title": "SNEAKY W/ TAH",
+          "duration": "2:08"
+        },
+        {
+          "title": "GROUNDED",
+          "duration": "2:36"
+        },
+        {
+          "title": "DICKHEAD",
+          "duration": "2:23"
+        },
+        {
+          "title": "MORTICIA W/ VRANDO + SAMIY",
+          "duration": "2:27"
+        },
+        {
+          "title": "SNEAKY (JANK MIX)",
+          "duration": "2:35"
+        },
+        {
+          "title": "MORTICIA (CLUB MIX)",
+          "duration": "2:17"
+        }
+      ],
+      "bandcampId": 2534163392,
+      "bandcampType": "album"
+    },
+    {
+      "buyUrl": "https://amaldc.bandcamp.com/track/black-kray-bow-bow-amal-mix",
+      "title": "BLACK KRAY - BOW BOW (AMAL MIX)",
+      "artist": "Amal , Black Kray",
+      "format": "Single",
+      "year": 2023,
+      "date": "09 Feb 2023",
+      "releasedAt": "2023-02-09T00:00:00.000Z",
+      "cover": "https://f4.bcbits.com/img/a0375928121_10.jpg",
+      "description": "twin pop yo shit wanna c u do yo thang\n\n-mal",
+      "credits": [
+        {
+          "role": "Credits",
+          "name": "original song by Black Kray,"
+        }
+      ],
+      "tags": [
+        "Drum & Bass",
+        "Electronic",
+        "Rap",
+        "Trap",
+        "ghettotech",
+        "house",
+        "jungle",
+        "liquid dnb",
+        "soundcloud rap",
+        "techno",
+        "Washington"
+      ],
+      "tracklist": [
+        {
+          "title": "BLACK KRAY - BOW BOW (AMAL MIX)",
+          "duration": "3:47"
+        }
+      ],
+      "bandcampId": 1811109069,
+      "bandcampType": "track"
+    },
+    {
+      "buyUrl": "https://amaldc.bandcamp.com/track/pink-pantheress-passion-amal-mix",
+      "title": "PINK PANTHERESS - PASSION (AMAL MIX)",
+      "artist": "Amal, pink pantheress",
+      "format": "Single",
+      "year": 2022,
+      "date": "16 Aug 2022",
+      "releasedAt": "2022-08-16T00:00:00.000Z",
+      "cover": "https://f4.bcbits.com/img/a0891805632_10.jpg",
+      "description": "<3",
+      "tags": [
+        "2-step",
+        "Drum & Bass",
+        "Electronic",
+        "Rap",
+        "RnB",
+        "electronic",
+        "ghettotech",
+        "house",
+        "jungle",
+        "liquid dnb",
+        "techno",
+        "Washington"
+      ],
+      "tracklist": [
+        {
+          "title": "PINK PANTHERESS - PASSION (AMAL MIX)",
+          "duration": "3:36"
+        }
+      ],
+      "bandcampId": 2305642057,
+      "bandcampType": "track"
+    },
+    {
+      "buyUrl": "https://amaldc.bandcamp.com/track/the-villain",
+      "title": "THE VILLAIN",
+      "artist": "Amal",
+      "format": "Single",
+      "year": 2022,
+      "date": "01 Apr 2022",
+      "releasedAt": "2022-04-01T00:00:00.000Z",
+      "cover": "https://f4.bcbits.com/img/a0611877459_10.jpg",
+      "description": "rip doom",
+      "tags": [
+        "DrumandBass",
+        "Electronic",
+        "Rap",
+        "electronic",
+        "ghettotech",
+        "house",
+        "jungle",
+        "rave",
+        "techno",
+        "Washington"
+      ],
+      "tracklist": [
+        {
+          "title": "THE VILLAIN",
+          "duration": "4:22"
+        }
+      ],
+      "bandcampId": 3668964532,
+      "bandcampType": "track"
+    },
+    {
+      "buyUrl": "https://amaldc.bandcamp.com/album/gleam",
+      "title": "GLEAM",
+      "artist": "Amal, The Khan, Nappy Nappa",
+      "format": "Album",
+      "year": 2021,
+      "date": "09 Mar 2021",
+      "releasedAt": "2021-03-09T00:00:00.000Z",
+      "cover": "https://f4.bcbits.com/img/a3272590363_10.jpg",
+      "description": "remain\n\n potent\n\n overcome \n\n everything",
+      "credits": [
+        {
+          "role": "Credits",
+          "name": "music by Amal NAPPY NAPPA & THE KHAN\ncover design/ photography by Verde\ncreative direction set design & styling by Syd\n\nhochi runs 2021"
+        }
+      ],
+      "tags": [
+        "Electronic",
+        "Punk",
+        "Rap",
+        "ghettotech",
+        "hardcore",
+        "house",
+        "jungle",
+        "techno",
+        "Washington"
+      ],
+      "tracklist": [
+        {
+          "title": "shine",
+          "duration": "4:12"
+        },
+        {
+          "title": "glisten",
+          "duration": "4:07"
+        },
+        {
+          "title": "gleam",
+          "duration": "6:17"
+        },
+        {
+          "title": "psychopass",
+          "duration": "4:38"
+        },
+        {
+          "title": "a new dance w/ THE KHAN & NAPPY NAPPA",
+          "duration": "3:13"
+        }
+      ],
+      "bandcampId": 1677398621,
+      "bandcampType": "album"
+    }
+  ]
+}

@@ -6,12 +6,19 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "sync:bandcamp": "node scripts/sync-bandcamp.mjs",
+    "sync:bandcamp:check": "node scripts/sync-bandcamp.mjs --check",
+    "demo:wordpress": "node scripts/wordpress-demo.mjs",
+    "package:wordpress": "node scripts/package-wordpress.mjs",
+    "test:catalog": "node --test scripts/*.test.mjs"
   },
   "dependencies": {
+    "cheerio": "1.2.0",
     "next": "16.2.7",
     "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "react-dom": "19.2.4",
+    "server-only": "^0.0.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

@@ -1,10 +1,15 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getRelease, releases } from "@/data/releases";
+import { getRelease, getReleases } from "@/lib/wordpress";
+
+export const revalidate = 60;
+export const dynamic = "force-static";
+export const dynamicParams = true;
 
 /** Pre-render every release at build time. */
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  const releases = await getReleases();
   return releases.map((r) => ({ slug: r.slug }));
 }
 
@@ -14,7 +19,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const release = getRelease(slug);
+  const release = await getRelease(slug);
   if (!release) return {};
   return {
     title: `${release.artist} — ${release.title} · Hochi Runs`,
@@ -28,7 +33,7 @@ export default async function ReleasePage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const release = getRelease(slug);
+  const release = await getRelease(slug);
   if (!release) notFound();
 
   return (
@@ -36,7 +41,7 @@ export default async function ReleasePage({
       <div className="mx-auto max-w-[100rem]">
         <Link
           href="/"
-          className="text-xs uppercase tracking-widest text-muted transition-colors hover:text-foreground"
+          className="text-xs uppercase tracking-widest text-muted transition-colors hover:text-accent"
         >
           ← Index
         </Link>
@@ -73,7 +78,7 @@ export default async function ReleasePage({
                       href={link.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-muted transition-colors hover:text-foreground"
+                      className="text-muted transition-colors hover:text-accent"
                     >
                       {link.platform} ↗
                     </a>
@@ -86,7 +91,7 @@ export default async function ReleasePage({
                 href={release.buyUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-3 inline-block text-xs uppercase tracking-widest text-muted transition-colors hover:text-foreground"
+                className="mt-3 inline-block text-xs uppercase tracking-widest text-muted transition-colors hover:text-accent"
               >
                 Buy ↗
               </a>

@@ -1,9 +1,13 @@
+import bandcampCatalog from "./bandcamp-catalog.json";
+import { mergeBandcampCatalog } from "../lib/merge-catalog.mjs";
+
 /**
  * Hochi Runs release catalog.
  *
- * Imported from hochiruns.bandcamp.com (covers in /public/covers). Catalog
- * codes run HR020 (newest) → HR001 (oldest). To add a release, append an
- * object below — the index, feed, and per-release pages generate from this.
+ * Manual archive and editorial overrides for the Bandcamp catalog snapshot.
+ * Existing HR codes and slugs are preserved when Bandcamp metadata changes.
+ * The scheduled GitHub sync updates bandcamp-catalog.json; the merged list
+ * drives the index, feed, and per-release pages on the next deployment.
  *
  * Ordering: newest first (rendered in array order).
  */
@@ -43,9 +47,11 @@ export type Release = {
   buyUrl?: string;
   tags?: string[];
   memberSlugs?: string[];
+  bandcampId?: number;
+  bandcampType?: "album" | "track";
 };
 
-export const releases: Release[] = [
+export const releaseArchive: Release[] = [
   {
     code: "HR020",
     slug: "like-dat-riddim",
@@ -57,6 +63,8 @@ export const releases: Release[] = [
     cover: "/covers/like-dat-riddim.jpg",
     links: [{ platform: "Bandcamp", url: "https://amaldc.bandcamp.com/track/like-dat-riddim" }],
     buyUrl: "https://amaldc.bandcamp.com/track/like-dat-riddim",
+    bandcampId: 1177208920,
+    bandcampType: "track",
   },
   {
     code: "HR019",
@@ -69,6 +77,8 @@ export const releases: Release[] = [
     cover: "/covers/sirene-fdp-2.jpg",
     links: [{ platform: "Bandcamp", url: "https://hochiruns.bandcamp.com/track/sirene-fdp-2" }],
     buyUrl: "https://hochiruns.bandcamp.com/track/sirene-fdp-2",
+    bandcampId: 3703186431,
+    bandcampType: "track",
   },
   {
     code: "HR018",
@@ -81,6 +91,8 @@ export const releases: Release[] = [
     cover: "/covers/losing-sleep.jpg",
     links: [{ platform: "Bandcamp", url: "https://hochiruns.bandcamp.com/album/losing-sleep" }],
     buyUrl: "https://hochiruns.bandcamp.com/album/losing-sleep",
+    bandcampId: 538650830,
+    bandcampType: "album",
   },
   {
     code: "HR017",
@@ -93,6 +105,8 @@ export const releases: Release[] = [
     cover: "/covers/sneaky-link.jpg",
     links: [{ platform: "Bandcamp", url: "https://amaldc.bandcamp.com/track/sneaky-link" }],
     buyUrl: "https://amaldc.bandcamp.com/track/sneaky-link",
+    bandcampId: 416304257,
+    bandcampType: "track",
   },
   {
     code: "HR016",
@@ -105,6 +119,8 @@ export const releases: Release[] = [
     cover: "/covers/side-orders-v1.jpg",
     links: [{ platform: "Bandcamp", url: "https://hochiruns.bandcamp.com/album/side-orders-v1-2" }],
     buyUrl: "https://hochiruns.bandcamp.com/album/side-orders-v1-2",
+    bandcampId: 2845728534,
+    bandcampType: "album",
   },
   {
     code: "HR015",
@@ -117,6 +133,8 @@ export const releases: Release[] = [
     cover: "/covers/stuck-in-sp.jpg",
     links: [{ platform: "Bandcamp", url: "https://amaldc.bandcamp.com/track/stuck-in-sp" }],
     buyUrl: "https://amaldc.bandcamp.com/track/stuck-in-sp",
+    bandcampId: 1150633892,
+    bandcampType: "track",
   },
   {
     code: "HR014",
@@ -129,6 +147,8 @@ export const releases: Release[] = [
     cover: "/covers/wip.jpg",
     links: [{ platform: "Bandcamp", url: "https://amaldc.bandcamp.com/track/wip" }],
     buyUrl: "https://amaldc.bandcamp.com/track/wip",
+    bandcampId: 3784555064,
+    bandcampType: "track",
   },
   {
     code: "HR013",
@@ -141,6 +161,8 @@ export const releases: Release[] = [
     cover: "/covers/stadium.jpg",
     links: [{ platform: "Bandcamp", url: "https://amaldc.bandcamp.com/track/stadium" }],
     buyUrl: "https://amaldc.bandcamp.com/track/stadium",
+    bandcampId: 3592804763,
+    bandcampType: "track",
   },
   {
     code: "HR012",
@@ -153,6 +175,8 @@ export const releases: Release[] = [
     cover: "/covers/vague-amal-nedaj.jpg",
     links: [{ platform: "Bandcamp", url: "https://amaldc.bandcamp.com/track/vague-amal-nedaj" }],
     buyUrl: "https://amaldc.bandcamp.com/track/vague-amal-nedaj",
+    bandcampId: 3101511279,
+    bandcampType: "track",
   },
   {
     code: "HR011",
@@ -165,6 +189,8 @@ export const releases: Release[] = [
     cover: "/covers/movement.jpg",
     links: [{ platform: "Bandcamp", url: "https://hunchhunch.bandcamp.com/album/movement" }],
     buyUrl: "https://hunchhunch.bandcamp.com/album/movement",
+    bandcampId: 329578658,
+    bandcampType: "album",
   },
   {
     code: "HR010",
@@ -177,6 +203,8 @@ export const releases: Release[] = [
     cover: "/covers/dance-concept-2.jpg",
     links: [{ platform: "Bandcamp", url: "https://hochiruns.bandcamp.com/album/dance-concept-2" }],
     buyUrl: "https://hochiruns.bandcamp.com/album/dance-concept-2",
+    bandcampId: 2918903427,
+    bandcampType: "album",
   },
   {
     code: "HR009",
@@ -189,6 +217,8 @@ export const releases: Release[] = [
     cover: "/covers/her-majesty.jpg",
     links: [{ platform: "Bandcamp", url: "https://hochiruns.bandcamp.com/track/her-majesty" }],
     buyUrl: "https://hochiruns.bandcamp.com/track/her-majesty",
+    bandcampId: 3369406867,
+    bandcampType: "track",
   },
   {
     code: "HR008",
@@ -201,6 +231,8 @@ export const releases: Release[] = [
     cover: "/covers/hit-dat.jpg",
     links: [{ platform: "Bandcamp", url: "https://amaldc.bandcamp.com/track/hit-dat" }],
     buyUrl: "https://amaldc.bandcamp.com/track/hit-dat",
+    bandcampId: 2267588142,
+    bandcampType: "track",
   },
   {
     code: "HR007",
@@ -213,6 +245,8 @@ export const releases: Release[] = [
     cover: "/covers/sleep.jpg",
     links: [{ platform: "Bandcamp", url: "https://autolola333.bandcamp.com/album/sleep" }],
     buyUrl: "https://autolola333.bandcamp.com/album/sleep",
+    bandcampId: 453570380,
+    bandcampType: "album",
   },
   {
     code: "HR006",
@@ -225,6 +259,8 @@ export const releases: Release[] = [
     cover: "/covers/remix-pack-vol-1.jpg",
     links: [{ platform: "Bandcamp", url: "https://amaldc.bandcamp.com/album/remix-pack-vol-1" }],
     buyUrl: "https://amaldc.bandcamp.com/album/remix-pack-vol-1",
+    bandcampId: 3954273039,
+    bandcampType: "album",
   },
   {
     code: "HR005",
@@ -237,6 +273,8 @@ export const releases: Release[] = [
     cover: "/covers/pressure.jpg",
     links: [{ platform: "Bandcamp", url: "https://amaldc.bandcamp.com/album/pressure" }],
     buyUrl: "https://amaldc.bandcamp.com/album/pressure",
+    bandcampId: 2534163392,
+    bandcampType: "album",
   },
   {
     code: "HR004",
@@ -249,6 +287,8 @@ export const releases: Release[] = [
     cover: "/covers/black-kray-bow-bow-amal-mix.jpg",
     links: [{ platform: "Bandcamp", url: "https://amaldc.bandcamp.com/track/black-kray-bow-bow-amal-mix" }],
     buyUrl: "https://amaldc.bandcamp.com/track/black-kray-bow-bow-amal-mix",
+    bandcampId: 1811109069,
+    bandcampType: "track",
   },
   {
     code: "HR003",
@@ -261,6 +301,8 @@ export const releases: Release[] = [
     cover: "/covers/pink-pantheress-passion-amal-mix.jpg",
     links: [{ platform: "Bandcamp", url: "https://amaldc.bandcamp.com/track/pink-pantheress-passion-amal-mix" }],
     buyUrl: "https://amaldc.bandcamp.com/track/pink-pantheress-passion-amal-mix",
+    bandcampId: 2305642057,
+    bandcampType: "track",
   },
   {
     code: "HR002",
@@ -273,6 +315,8 @@ export const releases: Release[] = [
     cover: "/covers/the-villain.jpg",
     links: [{ platform: "Bandcamp", url: "https://amaldc.bandcamp.com/track/the-villain" }],
     buyUrl: "https://amaldc.bandcamp.com/track/the-villain",
+    bandcampId: 3668964532,
+    bandcampType: "track",
   },
   {
     code: "HR001",
@@ -285,8 +329,15 @@ export const releases: Release[] = [
     cover: "/covers/gleam.jpg",
     links: [{ platform: "Bandcamp", url: "https://amaldc.bandcamp.com/album/gleam" }],
     buyUrl: "https://amaldc.bandcamp.com/album/gleam",
+    bandcampId: 1677398621,
+    bandcampType: "album",
   },
 ];
+
+export const releases: Release[] = mergeBandcampCatalog(
+  releaseArchive,
+  bandcampCatalog as Parameters<typeof mergeBandcampCatalog>[1],
+);
 
 export function getRelease(slug: string): Release | undefined {
   return releases.find((r) => r.slug === slug);

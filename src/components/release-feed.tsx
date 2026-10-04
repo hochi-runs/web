@@ -52,8 +52,8 @@ export function ReleaseFeed({ releases }: { releases: Release[] }) {
                 aria-pressed={format === f}
                 className={
                   format === f
-                    ? "text-foreground"
-                    : "text-muted transition-colors hover:text-foreground"
+                    ? "text-accent"
+                    : "text-muted transition-colors hover:text-accent"
                 }
               >
                 {f}
@@ -73,8 +73,8 @@ export function ReleaseFeed({ releases }: { releases: Release[] }) {
               aria-pressed={year === "All"}
               className={
                 year === "All"
-                  ? "text-foreground"
-                  : "text-muted transition-colors hover:text-foreground"
+                  ? "text-accent"
+                  : "text-muted transition-colors hover:text-accent"
               }
             >
               All
@@ -88,8 +88,8 @@ export function ReleaseFeed({ releases }: { releases: Release[] }) {
                 aria-pressed={year === y}
                 className={
                   year === y
-                    ? "text-foreground"
-                    : "text-muted transition-colors hover:text-foreground"
+                    ? "text-accent"
+                    : "text-muted transition-colors hover:text-accent"
                 }
               >
                 {y}
@@ -107,7 +107,7 @@ export function ReleaseFeed({ releases }: { releases: Release[] }) {
             type="button"
             onClick={() => setFormat(f)}
             aria-pressed={format === f}
-            className={format === f ? "text-foreground" : "text-muted"}
+            className={format === f ? "text-accent" : "text-muted"}
           >
             {f}
           </button>
@@ -116,7 +116,7 @@ export function ReleaseFeed({ releases }: { releases: Release[] }) {
         <button
           type="button"
           onClick={() => setYear("All")}
-          className={year === "All" ? "text-foreground" : "text-muted"}
+          className={year === "All" ? "text-accent" : "text-muted"}
         >
           All yrs
         </button>
@@ -126,7 +126,7 @@ export function ReleaseFeed({ releases }: { releases: Release[] }) {
             type="button"
             onClick={() => setYear(y)}
             aria-pressed={year === y}
-            className={year === y ? "text-foreground" : "text-muted"}
+            className={year === y ? "text-accent" : "text-muted"}
           >
             {y}
           </button>

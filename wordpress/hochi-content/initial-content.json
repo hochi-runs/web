@@ -1,0 +1,742 @@
+{
+  "version": 1,
+  "artists": [
+    {
+      "slug": "amal",
+      "name": "AMAL",
+      "role": "Artist",
+      "bio": "Artist on Hochi Runs. Placeholder bio — replace with the real one.",
+      "socials": [
+        {
+          "platform": "Instagram",
+          "url": "https://www.instagram.com/hochiruns/"
+        }
+      ],
+      "releaseSlugs": [
+        "like-dat-riddim",
+        "sneaky-link",
+        "stuck-in-sp",
+        "wip",
+        "stadium",
+        "vague-amal-nedaj",
+        "dance-concept-2",
+        "hit-dat",
+        "remix-pack-vol-1",
+        "pressure",
+        "black-kray-bow-bow-amal-mix",
+        "pink-pantheress-passion-amal-mix",
+        "the-villain",
+        "gleam"
+      ]
+    },
+    {
+      "slug": "dj-swisha",
+      "name": "DJ Swisha",
+      "role": "DJ / Producer",
+      "bio": "DJ and producer. Placeholder bio — replace with the real one.",
+      "releaseSlugs": [
+        "hit-dat"
+      ]
+    },
+    {
+      "slug": "mr-davinse",
+      "name": "mr.davinse",
+      "role": "Director",
+      "bio": "Director and visual artist. Placeholder bio — replace with the real one.",
+      "releaseSlugs": []
+    }
+  ],
+  "products": [
+    {
+      "name": "Hochi Hoodie",
+      "price": "$47.28 – $53.90"
+    },
+    {
+      "name": "Unisex Softstyle T-Shirt",
+      "price": "$17.28 – $25.53"
+    },
+    {
+      "name": "Hochi Runs Stickers",
+      "price": "$1.81 – $2.91"
+    }
+  ],
+  "shows": [],
+  "pages": {
+    "about": {
+      "paragraphs": [
+        "Hochi Runs is an independent record label, collective, and agency. We put out music, make videos, and put on shows.",
+        "This is placeholder copy — replace it with the real story of the label whenever you're ready. The structure is here; just swap the words."
+      ]
+    },
+    "legal": {
+      "paragraphs": [
+        "© 2026 Hochi Runs. All rights reserved. This media is under exclusive right to its creators.",
+        "Placeholder legal copy — replace with the label's real terms, privacy policy, and licensing information when ready."
+      ]
+    }
+  },
+  "releases": [
+    {
+      "slug": "bandcamp-album-4115947133",
+      "title": "Low Top Vanz (Amal Techno Remix)",
+      "artist": "Rylo Rodriguez",
+      "code": "BC-A4115947133",
+      "cover": "https://f4.bcbits.com/img/a1295612868_10.jpg",
+      "date": "02 Oct 2026",
+      "buyUrl": "https://amaldc.bandcamp.com/album/low-top-vanz-amal-techno-remix",
+      "memberSlugs": [],
+      "description": "some healing stuff happy bandcamp day",
+      "format": "Album",
+      "tags": [
+        "909",
+        "Electronic",
+        "Rap",
+        "bootleg",
+        "club",
+        "edit",
+        "ghettotech",
+        "gospel house",
+        "hip-hop",
+        "house",
+        "jungle",
+        "remix",
+        "techno",
+        "trap",
+        "Washington"
+      ],
+      "credits": [
+        {
+          "role": "Credits",
+          "name": "Remix by Amal. Original song \"Low Top Vanz\" by Rylo Rodriguez. Unofficial remix."
+        }
+      ],
+      "links": []
+    },
+    {
+      "slug": "bandcamp-track-384218284",
+      "title": "Breaking Format",
+      "artist": "ABUZU",
+      "code": "BC-T384218284",
+      "cover": "https://f4.bcbits.com/img/a0863084852_10.jpg",
+      "date": "17 Jun 2026",
+      "buyUrl": "https://hochiruns.bandcamp.com/track/breaking-format",
+      "memberSlugs": [],
+      "description": "\"Breaking Format\" is the first single from ABUZU's debut album *Con Razón*. Built around rolling percussion, warped grooves, and Caribbean-infused rhythms, the track is a refusal to conform pushing against traditional structures while remaining firmly rooted in dancefloor functionality.\n\nAs an introduction to the world of *Con Razón*, \"Breaking Format\" captures the album's core philosophy: music made with purpose, instinct, and movement. Equal parts club tool and personal statement, it embraces experimentation without losing sight of the groove.",
+      "format": "Single",
+      "tags": [
+        "Latin Club",
+        "Latin Electronic",
+        "Washington DC",
+        "latin house",
+        "Washington"
+      ],
+      "credits": [
+        {
+          "role": "Credits",
+          "name": "produced + mixed by ABUZU\nmastered Thomas Van De Ven"
+        }
+      ],
+      "links": []
+    },
+    {
+      "slug": "bandcamp-album-1883854658",
+      "title": "SDM2",
+      "artist": "Rxfx",
+      "code": "BC-A1883854658",
+      "cover": "https://f4.bcbits.com/img/a1393964951_10.jpg",
+      "date": "29 May 2026",
+      "buyUrl": "https://hochiruns.bandcamp.com/album/sdm2",
+      "memberSlugs": [],
+      "description": "Campo Grande’s Rxfx returns to Hochi with SDM2 (Som de Maluco 2), a 12-track album that takes the ritmada sound he’s been testing on dancefloors and builds it into a full-length statement.\n\nRxfx links up with a wide cast from Brazil’s new funk wave: Lucas Kid, DJ ALYX, bieL onLine, dudda, Keu, ARTIGO016, JLZ, Malu Silmon, DJ K1TO and Levynn, plus Clementaum and Mc Indiazinha on lead single EU PULO and NOTRN on the already-proven SIRENE FDP 2. Driving triplet patterns and industrial weight, built to hit as hard on full systems as on blown-out speakers.\n\nSDM2 has already landed on editorial playlists across Spotify (Beat Agressivo), Beatport, Apple Music, TIDAL (Electronic: Rising) and Deezer (New Latin).",
+      "format": "Album",
+      "tags": [
+        "brazilian funk",
+        "brazilian music",
+        "club",
+        "funk",
+        "industrial",
+        "Washington"
+      ],
+      "credits": [
+        {
+          "role": "Credits",
+          "name": "produced by Rxfx\nfeaturing Lucas Kid, DJ ALYX, bieL onLine, dudda, Keu, ARTIGO016, NOTRN, JLZ, Clementaum, Mc Indiazinha, Malu Silmon, DJ K1TO, Levynn\ncomposed by Rafael Alvarez (Rxfx), with Christian de Paula Gomes and DJ K1TO (see individual tracks)\nlyrics by Clementaum and Malu Silmon\npublished by hochi runs / Rxfx\n℗ © 2026 hochi runs\nHR028"
+        }
+      ],
+      "links": []
+    },
+    {
+      "slug": "like-dat-riddim",
+      "title": "like dat riddim",
+      "artist": "Amal, Kodak Black",
+      "code": "HR020",
+      "cover": "https://f4.bcbits.com/img/a4268976832_10.jpg",
+      "date": "01 May 2026",
+      "buyUrl": "https://amaldc.bandcamp.com/track/like-dat-riddim",
+      "memberSlugs": [
+        "amal"
+      ],
+      "description": "",
+      "format": "Single",
+      "tags": [
+        "Electronic",
+        "Rap",
+        "ghettotech",
+        "house",
+        "jungle",
+        "techno",
+        "Washington"
+      ],
+      "credits": [],
+      "links": []
+    },
+    {
+      "slug": "sirene-fdp-2",
+      "title": "SIRENE FDP 2",
+      "artist": "Rxfx, NOTRN",
+      "code": "HR019",
+      "cover": "https://f4.bcbits.com/img/a3972931386_10.jpg",
+      "date": "24 Apr 2026",
+      "buyUrl": "https://hochiruns.bandcamp.com/track/sirene-fdp-2",
+      "memberSlugs": [],
+      "description": "Campo Grande’s Rxfx joins Hochi with SIRENE FDP 2, a peak-time cut that’s already been moving through main stage sets as a sought-after ID. Featuring NOTRN, the track lands with immediate impact.\n\nRooted in the emerging ritimada sound, RXFX pushes things further into industrial territory, built around driving triplet patterns that hit just as hard on full systems as they do on blown-out speakers.\n\nWith early support from São Paulo’s RHR and international co-signs from Skrillex, SIRENE FDP 2 has already proven itself where it matters on the floor.",
+      "format": "Single",
+      "tags": [
+        "Brazilian Funk",
+        "Brazilian music",
+        "club",
+        "industrial",
+        "Washington"
+      ],
+      "credits": [
+        {
+          "role": "Credits",
+          "name": "produced by Rxfx\nfeaturing NOTRN"
+        }
+      ],
+      "links": []
+    },
+    {
+      "slug": "losing-sleep",
+      "title": "LOSING SLEEP",
+      "artist": "whoisgeno",
+      "code": "HR018",
+      "cover": "https://f4.bcbits.com/img/a4026643672_10.jpg",
+      "date": "03 Apr 2026",
+      "buyUrl": "https://hochiruns.bandcamp.com/album/losing-sleep",
+      "memberSlugs": [],
+      "description": "Born and raised in New Orleans and now based in Baton Rouge, WHOISGENO is an emerging producer and DJ shaping a sound that moves fluidly across electronic styles. His work pulls from a wide range of club influences, balancing energy, atmosphere, and rhythm without staying locked into one lane.\n\nA member of Baton Rouge collective Frequency, GENO is deeply embedded in his local scene both behind the decks and through the group’s monthly parties, where his sound takes form in real time.\n\nLOSING SLEEP captures that restless momentum late nights, shifting moods, and the push between introspection and the dancefloor.",
+      "format": "Album",
+      "tags": [
+        "Atlanta Bass",
+        "Ghettotech",
+        "House",
+        "Jit",
+        "Miami Bass",
+        "techno",
+        "Washington"
+      ],
+      "credits": [
+        {
+          "role": "Credits",
+          "name": "written and produced by whoisgeno\n\nmixed by whoisgeno\n\nmastered by Amal"
+        }
+      ],
+      "links": []
+    },
+    {
+      "slug": "sneaky-link",
+      "title": "sneaky link",
+      "artist": "Amal",
+      "code": "HR017",
+      "cover": "https://f4.bcbits.com/img/a0327455422_10.jpg",
+      "date": "25 Feb 2026",
+      "buyUrl": "https://amaldc.bandcamp.com/track/sneaky-link",
+      "memberSlugs": [
+        "amal"
+      ],
+      "description": "“sneaky link” a smooth, late-night house banger built for dim rooms, side-eyes, and unspoken agreements.\n\nWarm lows. Slick percussion. Tension that lingers longer than it should.\n\nThis one feels like 2:17am when the function’s thinning out but nobody’s ready to go home.",
+      "format": "Single",
+      "tags": [
+        "Electronic",
+        "House",
+        "Jackin House",
+        "Rap",
+        "Soulful House",
+        "ghetto house",
+        "ghettotech",
+        "house",
+        "jungle",
+        "techno",
+        "Washington"
+      ],
+      "credits": [
+        {
+          "role": "Credits",
+          "name": "Mixed by: Amal\nMastered by: eastendmastering \nVisualizer: daniel adeyemi"
+        }
+      ],
+      "links": []
+    },
+    {
+      "slug": "side-orders-v1",
+      "title": "Side Orders v1",
+      "artist": "Hochi Runs",
+      "code": "HR016",
+      "cover": "https://f4.bcbits.com/img/a1857253865_10.jpg",
+      "date": "05 Dec 2025",
+      "buyUrl": "https://hochiruns.bandcamp.com/album/side-orders-v1-2",
+      "memberSlugs": [],
+      "description": "Hochi runs presents our first ever compilation \"Side Orders\"",
+      "format": "Album",
+      "tags": [
+        "Edits & Flips",
+        "Electronic",
+        "club",
+        "dance",
+        "rap & hip-hop",
+        "Washington"
+      ],
+      "credits": [],
+      "links": []
+    },
+    {
+      "slug": "stuck-in-sp",
+      "title": "Stuck in SP",
+      "artist": "Amal, Rxfx",
+      "code": "HR015",
+      "cover": "https://f4.bcbits.com/img/a2710504683_10.jpg",
+      "date": "01 Aug 2025",
+      "buyUrl": "https://amaldc.bandcamp.com/track/stuck-in-sp",
+      "memberSlugs": [
+        "amal"
+      ],
+      "description": "you ever been detained by immigration while on tour? it feels like this.",
+      "format": "Single",
+      "tags": [
+        "Brazil",
+        "Electronic",
+        "Rap",
+        "ghettotech",
+        "house",
+        "jungle",
+        "techno",
+        "Washington"
+      ],
+      "credits": [
+        {
+          "role": "Credits",
+          "name": "Amal, Rxfx"
+        }
+      ],
+      "links": []
+    },
+    {
+      "slug": "wip",
+      "title": "WIP",
+      "artist": "Amal , Stonie Blue , Sochildish",
+      "code": "HR014",
+      "cover": "https://f4.bcbits.com/img/a0303330143_10.jpg",
+      "date": "25 Apr 2025",
+      "buyUrl": "https://amaldc.bandcamp.com/track/wip",
+      "memberSlugs": [
+        "amal"
+      ],
+      "description": "Amal's next single from his debut album Madness, features BIYDIY's head honcho, Stonie Blue. A fun, bouncy summer anthem GAS UP!!!",
+      "format": "Single",
+      "tags": [
+        "Electronic",
+        "Ghettotech",
+        "Miami Bass",
+        "Rap",
+        "RnB",
+        "dance",
+        "electro",
+        "ghettotech",
+        "house",
+        "jungle",
+        "techno",
+        "Washington"
+      ],
+      "credits": [],
+      "links": []
+    },
+    {
+      "slug": "stadium",
+      "title": "Stadium",
+      "artist": "Amal, Dj Nativesun",
+      "code": "HR013",
+      "cover": "https://f4.bcbits.com/img/a3625104045_10.jpg",
+      "date": "17 Feb 2025",
+      "buyUrl": "https://amaldc.bandcamp.com/track/stadium",
+      "memberSlugs": [
+        "amal"
+      ],
+      "description": "NEW DC ANTHEM",
+      "format": "Single",
+      "tags": [
+        "Electronic",
+        "Rap",
+        "ghettotech",
+        "house",
+        "jungle",
+        "techno",
+        "Washington"
+      ],
+      "credits": [
+        {
+          "role": "Credits",
+          "name": "Amal, Dj Nativesun"
+        }
+      ],
+      "links": []
+    },
+    {
+      "slug": "vague-amal-nedaj",
+      "title": "VAGUE (Amal + Nedaj)",
+      "artist": "Amal, Nedaj",
+      "code": "HR012",
+      "cover": "https://f4.bcbits.com/img/a1634325197_10.jpg",
+      "date": "12 Jul 2024",
+      "buyUrl": "https://amaldc.bandcamp.com/track/vague-amal-nedaj",
+      "memberSlugs": [
+        "amal"
+      ],
+      "description": "American made phonk featuring Nedaj\n\nGresham the album coming soon... \n\nVisualizer + artwork by Daniel Adey\n\nMastered by East End Mastering",
+      "format": "Single",
+      "tags": [
+        "Electronic",
+        "Hard Techno",
+        "Rap",
+        "Techno.",
+        "Warehouse Techno",
+        "dub techno",
+        "ghettotech",
+        "house",
+        "jungle",
+        "phonk",
+        "phonk house",
+        "rave techno",
+        "techno",
+        "techno-industrial",
+        "Washington"
+      ],
+      "credits": [],
+      "links": []
+    },
+    {
+      "slug": "movement",
+      "title": "MOVEMENT",
+      "artist": "Hunch, Tromac",
+      "code": "HR011",
+      "cover": "https://f4.bcbits.com/img/a4205197754_10.jpg",
+      "date": "31 May 2024",
+      "buyUrl": "https://hunchhunch.bandcamp.com/album/movement",
+      "memberSlugs": [],
+      "description": "Hunch, a Maryland based multi-genre artist is an artist, producer and DJ . His last EP “Second Nature '' dropped in fall under D.C label “Hochi Runs”. Since this release, Hunch has been emerging as an eclectic selector and creative force in a new wave of electronic music.\nTromac, is a seasoned DJ, curator, and producer hailing from Prince George’s County currently based in Baltimore, MD. Tromac's outspoken artistry shines through dynamic performances and creative approach to music production.",
+      "format": "Album",
+      "tags": [
+        "Baltimore Club",
+        "Electronic",
+        "House",
+        "breakbeat",
+        "club-music",
+        "experimental-electronic",
+        "global-club-music",
+        "postclub",
+        "techno",
+        "Maryland"
+      ],
+      "credits": [],
+      "links": []
+    },
+    {
+      "slug": "dance-concept-2",
+      "title": "DANCE CONCEPT 2",
+      "artist": "Amal",
+      "code": "HR010",
+      "cover": "https://f4.bcbits.com/img/a0266589904_10.jpg",
+      "date": "02 May 2024",
+      "buyUrl": "https://hochiruns.bandcamp.com/album/dance-concept-2",
+      "memberSlugs": [
+        "amal"
+      ],
+      "description": "a tribute to all dancers",
+      "format": "Album",
+      "tags": [
+        "#Afro",
+        "#Coupedecale",
+        "#club",
+        "#drumandbass",
+        "#footwork #juke",
+        "#housemusic",
+        "#jungle",
+        "Washington"
+      ],
+      "credits": [
+        {
+          "role": "Credits",
+          "name": "prod + mixed by Amal ft Isu and Sammiyy"
+        }
+      ],
+      "links": []
+    },
+    {
+      "slug": "her-majesty",
+      "title": "Her Majesty",
+      "artist": "Hunch, Tromac",
+      "code": "HR009",
+      "cover": "https://f4.bcbits.com/img/a0571188681_10.jpg",
+      "date": "12 Apr 2024",
+      "buyUrl": "https://hochiruns.bandcamp.com/track/her-majesty",
+      "memberSlugs": [],
+      "description": "Hunch and Tromac team up for their debut single together. Her Majesty's fast-paced club track with breaks, catchy vocal shots and a hypnotic baseline.",
+      "format": "Single",
+      "tags": [
+        "Baltimore Club",
+        "Electronic",
+        "dance",
+        "Washington"
+      ],
+      "credits": [
+        {
+          "role": "Credits",
+          "name": "Hunch, Tromac"
+        }
+      ],
+      "links": []
+    },
+    {
+      "slug": "hit-dat",
+      "title": "Hit Dat",
+      "artist": "Amal, DJ SWISHA",
+      "code": "HR008",
+      "cover": "https://f4.bcbits.com/img/a1963883115_10.jpg",
+      "date": "16 Feb 2024",
+      "buyUrl": "https://amaldc.bandcamp.com/track/hit-dat",
+      "memberSlugs": [
+        "amal",
+        "dj-swisha"
+      ],
+      "description": "",
+      "format": "Single",
+      "tags": [
+        "Baltimore Club",
+        "Electronic",
+        "Rap",
+        "club music",
+        "dance",
+        "ghettotech",
+        "house",
+        "jungle",
+        "techno",
+        "Washington"
+      ],
+      "credits": [],
+      "links": []
+    },
+    {
+      "slug": "sleep",
+      "title": "SLEEP",
+      "artist": "Auto Lola (🩸📱🧎🏾‍♂️)",
+      "code": "HR007",
+      "cover": "https://f4.bcbits.com/img/a3219845726_10.jpg",
+      "date": "20 Nov 2023",
+      "buyUrl": "https://autolola333.bandcamp.com/album/sleep",
+      "memberSlugs": [],
+      "description": "",
+      "format": "Album",
+      "tags": [
+        "Digital-punk",
+        "Hip-Hop/Rap",
+        "Washington"
+      ],
+      "credits": [],
+      "links": []
+    },
+    {
+      "slug": "remix-pack-vol-1",
+      "title": "REMIX PACK VOL 1",
+      "artist": "Amal",
+      "code": "HR006",
+      "cover": "https://f4.bcbits.com/img/a4248626786_10.jpg",
+      "date": "07 Oct 2023",
+      "buyUrl": "https://amaldc.bandcamp.com/album/remix-pack-vol-1",
+      "memberSlugs": [
+        "amal"
+      ],
+      "description": "First remix pack for the free enjoy!\n\n- mal",
+      "format": "Album",
+      "tags": [
+        "Baltimore Club",
+        "Electronic",
+        "Rap",
+        "Trap",
+        "club",
+        "garage",
+        "ghettotech",
+        "house",
+        "jungle",
+        "rave",
+        "techno",
+        "Washington"
+      ],
+      "credits": [],
+      "links": []
+    },
+    {
+      "slug": "pressure",
+      "title": "PRESSURE",
+      "artist": "Amal, Tah, Vrando, Samiy",
+      "code": "HR005",
+      "cover": "https://f4.bcbits.com/img/a1604258301_10.jpg",
+      "date": "02 Mar 2023",
+      "buyUrl": "https://amaldc.bandcamp.com/album/pressure",
+      "memberSlugs": [
+        "amal"
+      ],
+      "description": "",
+      "format": "Album",
+      "tags": [
+        "Baltimore Club",
+        "Electronic",
+        "Jersey Club",
+        "Philly Club",
+        "Rap",
+        "club music",
+        "drill",
+        "ghettotech",
+        "house",
+        "jungle",
+        "techno",
+        "Washington"
+      ],
+      "credits": [],
+      "links": []
+    },
+    {
+      "slug": "black-kray-bow-bow-amal-mix",
+      "title": "BLACK KRAY - BOW BOW (AMAL MIX)",
+      "artist": "Amal , Black Kray",
+      "code": "HR004",
+      "cover": "https://f4.bcbits.com/img/a0375928121_10.jpg",
+      "date": "09 Feb 2023",
+      "buyUrl": "https://amaldc.bandcamp.com/track/black-kray-bow-bow-amal-mix",
+      "memberSlugs": [
+        "amal"
+      ],
+      "description": "twin pop yo shit wanna c u do yo thang\n\n-mal",
+      "format": "Single",
+      "tags": [
+        "Drum & Bass",
+        "Electronic",
+        "Rap",
+        "Trap",
+        "ghettotech",
+        "house",
+        "jungle",
+        "liquid dnb",
+        "soundcloud rap",
+        "techno",
+        "Washington"
+      ],
+      "credits": [
+        {
+          "role": "Credits",
+          "name": "original song by Black Kray,"
+        }
+      ],
+      "links": []
+    },
+    {
+      "slug": "pink-pantheress-passion-amal-mix",
+      "title": "PINK PANTHERESS - PASSION (AMAL MIX)",
+      "artist": "Amal, pink pantheress",
+      "code": "HR003",
+      "cover": "https://f4.bcbits.com/img/a0891805632_10.jpg",
+      "date": "16 Aug 2022",
+      "buyUrl": "https://amaldc.bandcamp.com/track/pink-pantheress-passion-amal-mix",
+      "memberSlugs": [
+        "amal"
+      ],
+      "description": "<3",
+      "format": "Single",
+      "tags": [
+        "2-step",
+        "Drum & Bass",
+        "Electronic",
+        "Rap",
+        "RnB",
+        "electronic",
+        "ghettotech",
+        "house",
+        "jungle",
+        "liquid dnb",
+        "techno",
+        "Washington"
+      ],
+      "credits": [],
+      "links": []
+    },
+    {
+      "slug": "the-villain",
+      "title": "THE VILLAIN",
+      "artist": "Amal",
+      "code": "HR002",
+      "cover": "https://f4.bcbits.com/img/a0611877459_10.jpg",
+      "date": "01 Apr 2022",
+      "buyUrl": "https://amaldc.bandcamp.com/track/the-villain",
+      "memberSlugs": [
+        "amal"
+      ],
+      "description": "rip doom",
+      "format": "Single",
+      "tags": [
+        "DrumandBass",
+        "Electronic",
+        "Rap",
+        "electronic",
+        "ghettotech",
+        "house",
+        "jungle",
+        "rave",
+        "techno",
+        "Washington"
+      ],
+      "credits": [],
+      "links": []
+    },
+    {
+      "slug": "gleam",
+      "title": "GLEAM",
+      "artist": "Amal, The Khan, Nappy Nappa",
+      "code": "HR001",
+      "cover": "https://f4.bcbits.com/img/a3272590363_10.jpg",
+      "date": "09 Mar 2021",
+      "buyUrl": "https://amaldc.bandcamp.com/album/gleam",
+      "memberSlugs": [
+        "amal"
+      ],
+      "description": "remain\n\n potent\n\n overcome \n\n everything",
+      "format": "Album",
+      "tags": [
+        "Electronic",
+        "Punk",
+        "Rap",
+        "ghettotech",
+        "hardcore",
+        "house",
+        "jungle",
+        "techno",
+        "Washington"
+      ],
+      "credits": [
+        {
+          "role": "Credits",
+          "name": "music by Amal NAPPY NAPPA & THE KHAN\ncover design/ photography by Verde\ncreative direction set design & styling by Syd\n\nhochi runs 2021"
+        }
+      ],
+      "links": []
+    }
+  ]
+}

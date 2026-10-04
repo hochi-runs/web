@@ -1,13 +1,16 @@
 import type { Metadata } from "next";
 import { PageHeading } from "@/components/page-heading";
-import { products } from "@/data/merch";
+import { getProducts } from "@/lib/wordpress";
+
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Merch · Hochi Runs",
   description: "Hochi Runs merch.",
 };
 
-export default function MerchPage() {
+export default async function MerchPage() {
+  const products = await getProducts();
   return (
     <div className="mx-auto max-w-5xl px-5 pb-28 pt-24 sm:px-8 sm:pb-32 sm:pt-28">
       <PageHeading title="Shop" />
