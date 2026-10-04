@@ -15,11 +15,11 @@ export default async function ShowsPage() {
     <div className="mx-auto max-w-3xl px-5 pb-28 pt-24 sm:px-8 sm:pb-32 sm:pt-28">
       <PageHeading title="Live" />
       {shows.length === 0 ? (
-        <p className="text-sm text-muted">
+        <p className="reading-surface inline-block text-sm text-muted">
           No upcoming shows announced. Check back soon.
         </p>
       ) : (
-        <ul className="border-t border-hairline">
+        <ul className="reading-surface border-t border-hairline">
           {shows.map((show, i) => (
             <li
               key={`${show.date}-${i}`}

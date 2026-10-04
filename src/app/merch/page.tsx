@@ -31,7 +31,7 @@ export default async function MerchPage() {
                   <span>{product.name}</span>
                 )}
               </div>
-              <div className="mt-3">
+              <div className="reading-surface mt-3">
                 <p className="text-sm group-hover:underline">{product.name}</p>
                 <p className="text-sm text-muted">{product.price}</p>
               </div>

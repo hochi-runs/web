@@ -42,7 +42,7 @@ export function ReleaseFeed({ releases }: { releases: Release[] }) {
   return (
     <>
       {/* Left edge: format filters (fixed, desktop only) */}
-      <aside className="fixed left-[20px] top-1/2 z-40 hidden -translate-y-1/2 lg:block">
+      <aside className="corner-surface fixed left-[20px] top-1/2 z-40 hidden -translate-y-1/2 lg:block">
         <ul className="space-y-1.5 text-xs uppercase tracking-widest">
           {(["All", "Albums", "Singles"] as const).map((f) => (
             <li key={f}>
@@ -64,7 +64,7 @@ export function ReleaseFeed({ releases }: { releases: Release[] }) {
       </aside>
 
       {/* Right edge: year index (fixed, desktop only) */}
-      <aside className="fixed right-[20px] top-1/2 z-40 hidden -translate-y-1/2 text-right lg:block">
+      <aside className="corner-surface fixed right-[20px] top-1/2 z-40 hidden -translate-y-1/2 text-right lg:block">
         <ul className="space-y-1.5 font-mono text-xs">
           <li>
             <button
@@ -100,7 +100,7 @@ export function ReleaseFeed({ releases }: { releases: Release[] }) {
       </aside>
 
       {/* Mobile filter bar (inline, above feed) */}
-      <div className="mx-auto mb-10 flex max-w-md flex-wrap items-center gap-x-4 gap-y-2 text-xs uppercase tracking-widest lg:hidden">
+      <div className="reading-surface mx-auto mb-10 flex max-w-md flex-wrap items-center gap-x-4 gap-y-2 text-xs uppercase tracking-widest lg:hidden">
         {(["All", "Albums", "Singles"] as const).map((f) => (
           <button
             key={f}
@@ -116,6 +116,7 @@ export function ReleaseFeed({ releases }: { releases: Release[] }) {
         <button
           type="button"
           onClick={() => setYear("All")}
+          aria-pressed={year === "All"}
           className={year === "All" ? "text-accent" : "text-muted"}
         >
           All yrs
@@ -157,7 +158,7 @@ export function ReleaseFeed({ releases }: { releases: Release[] }) {
                     </div>
                   )}
                 </div>
-                <div className="mt-3 flex items-baseline justify-between gap-4">
+                <div className="release-caption mt-3 flex items-baseline justify-between gap-4">
                   <div className="min-w-0">
                     <p className="truncate text-xs group-hover:underline">
                       {release.title}

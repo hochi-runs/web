@@ -41,12 +41,12 @@ export default async function ReleasePage({
       <div className="mx-auto max-w-[100rem]">
         <Link
           href="/"
-          className="text-xs uppercase tracking-widest text-muted transition-colors hover:text-accent"
+          className="reading-label text-xs uppercase tracking-widest text-muted transition-colors hover:text-accent"
         >
           ← Index
         </Link>
 
-        <h1 className="mt-6 text-xl tracking-tight sm:text-2xl">
+        <h1 className="reading-surface mt-6 w-fit text-xl tracking-tight sm:text-2xl">
           : {release.artist} — {release.title}
         </h1>
 
@@ -71,7 +71,7 @@ export default async function ReleasePage({
 
             {/* Streaming links as small text icons under the art */}
             {release.links && release.links.length > 0 && (
-              <ul className="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-xs uppercase tracking-widest">
+              <ul className="reading-label mt-5 flex w-fit flex-wrap gap-x-5 gap-y-2 text-xs uppercase tracking-widest">
                 {release.links.map((link) => (
                   <li key={link.url}>
                     <a
@@ -91,7 +91,7 @@ export default async function ReleasePage({
                 href={release.buyUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-3 inline-block text-xs uppercase tracking-widest text-muted transition-colors hover:text-accent"
+                className="reading-label mt-3 inline-block text-xs uppercase tracking-widest text-muted transition-colors hover:text-accent"
               >
                 Buy ↗
               </a>
@@ -99,7 +99,7 @@ export default async function ReleasePage({
           </div>
 
           {/* Metadata + credits + tracklist */}
-          <div className="text-sm">
+          <div className="reading-surface h-fit text-sm">
             <p className="font-mono text-xs uppercase tracking-widest text-muted">
               {release.code}
             </p>

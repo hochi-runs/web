@@ -32,7 +32,7 @@ export default async function RosterPage() {
                   <span>{member.name}</span>
                 )}
               </div>
-              <div className="mt-3">
+              <div className="reading-surface mt-3">
                 <p className="font-semibold group-hover:underline">
                   {member.name}
                 </p>

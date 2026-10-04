@@ -27,7 +27,7 @@ export default function VideosPage() {
                   allowFullScreen
                 />
               </div>
-              <figcaption className="mt-3">
+              <figcaption className="reading-surface mt-3">
                 <p className="text-sm">{video.title}</p>
                 {video.credit && (
                   <p className="text-sm text-muted">{video.credit}</p>

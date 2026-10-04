@@ -10,7 +10,7 @@ export function PageHeading({
   subtitle?: string;
 }) {
   return (
-    <header className="mb-12 border-b border-hairline pb-4">
+    <header className="reading-surface mb-12 border-b border-hairline pb-4">
       <h1 className="text-xl tracking-tight sm:text-2xl">{title}</h1>
       {subtitle && (
         <p className="mt-2 max-w-xl text-sm text-muted">{subtitle}</p>

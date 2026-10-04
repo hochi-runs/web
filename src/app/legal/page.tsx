@@ -15,7 +15,7 @@ export default async function LegalPage() {
   return (
     <div className="mx-auto max-w-3xl px-5 pb-28 pt-24 sm:px-8 sm:pb-32 sm:pt-28">
       <PageHeading title="Legal" />
-      <div className="max-w-xl space-y-4 text-sm leading-relaxed text-muted">
+      <div className="reading-surface max-w-xl space-y-4 text-sm leading-relaxed text-muted">
         {paragraphs.map((paragraph, index) => <p key={index}>{paragraph}</p>)}
       </div>
     </div>

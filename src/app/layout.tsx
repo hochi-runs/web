@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { SiteChrome } from "@/components/site-chrome";
+import { SiteBackdrop } from "@/components/site-backdrop";
 import type { CSSProperties } from "react";
 import { getAppearance } from "@/lib/wordpress";
 import { appearanceCssVariables } from "@/lib/wordpress-core.mjs";
@@ -65,17 +66,10 @@ export default async function RootLayout({
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
-      <body className="min-h-full" style={backgroundStyle}>
+      <body className="min-h-full" style={backgroundStyle} data-custom-background={appearance.backgroundImageUrl ? "true" : undefined}>
         {/* Fixed wordmark backdrop — sits behind everything, doesn't scroll.
             Inverts in dark mode so the black art shows on the dark bg. */}
-        <div
-          aria-hidden
-          className="pointer-events-none fixed inset-0 z-0 bg-[length:min(90vw,1100px)_auto] bg-center bg-no-repeat opacity-100 dark:invert"
-          style={{
-            backgroundImage: `url(${JSON.stringify(appearance.backgroundLogoUrl ?? "/hochi-wordmark.png")})`,
-            opacity: appearance.backgroundLogoOpacity,
-          }}
-        />
+        <SiteBackdrop imageUrl={appearance.backgroundLogoUrl} opacity={appearance.backgroundLogoOpacity} />
         {/* Fixed-corner chrome floats over the page; only content scrolls. */}
         <SiteChrome logoUrl={appearance.logoUrl} />
         <main className="relative z-10">{children}</main>

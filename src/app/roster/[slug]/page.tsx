@@ -39,10 +39,10 @@ export default async function MemberPage({
   const memberReleases = await getArtistReleases(member);
 
   return (
-    <article className="mx-auto max-w-3xl px-5 py-16 sm:px-8">
+    <article className="mx-auto max-w-3xl px-5 pb-28 pt-24 sm:px-8 sm:pb-32 sm:pt-28">
       <Link
         href="/roster"
-        className="text-xs uppercase tracking-widest text-muted transition-colors hover:text-accent"
+        className="reading-label text-xs uppercase tracking-widest text-muted transition-colors hover:text-accent"
       >
         ← Artists
       </Link>
@@ -62,20 +62,20 @@ export default async function MemberPage({
             </div>
           )}
         </div>
-        <div>
+        <div className="reading-surface">
           <h1 className="text-2xl tracking-tight sm:text-3xl">{member.name}</h1>
           <p className="mt-1 text-sm text-muted">{member.role}</p>
         </div>
       </header>
 
       {member.bio && (
-        <p className="mt-8 max-w-xl text-sm leading-relaxed text-muted">
+        <p className="reading-surface mt-8 max-w-xl whitespace-pre-line text-sm leading-relaxed text-muted">
           {member.bio}
         </p>
       )}
 
       {member.socials && member.socials.length > 0 && (
-        <ul className="mt-6 flex flex-wrap gap-x-5 gap-y-1 text-xs uppercase tracking-widest">
+        <ul className="reading-surface mt-6 flex w-fit flex-wrap gap-x-5 gap-y-1 text-xs uppercase tracking-widest">
           {member.socials.map((s) => (
             <li key={s.url}>
               <a
@@ -92,7 +92,7 @@ export default async function MemberPage({
       )}
 
       {memberReleases.length > 0 && (
-        <section className="mt-12">
+        <section className="reading-surface mt-12">
           <h2 className="text-xs uppercase tracking-widest text-muted">
             Releases
           </h2>

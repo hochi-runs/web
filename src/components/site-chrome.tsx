@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { socials } from "@/data/site";
+import { SocialLinks } from "@/components/social-links";
 import { ThemeToggle } from "@/components/theme-toggle";
 
 /**
@@ -13,7 +13,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
  *
  *   top-left     → logo
  *   top-right    → primary nav (Releases · Live · Shop) + mobile menu button
- *   bottom-left  → theme toggle (quiet)
+ *   bottom-left  → label social profiles
  *   bottom-right → About · Legal · Contact
  *
  * On small screens the nav collapses into a single overlay menu so the fixed
@@ -29,6 +29,7 @@ const PRIMARY = [
 const SECONDARY = [
   { label: "About", href: "/about" },
   { label: "Legal", href: "/legal" },
+  { label: "Contact", href: "/contact" },
 ] as const;
 
 export function SiteChrome({ logoUrl }: { logoUrl?: string }) {
@@ -57,7 +58,7 @@ export function SiteChrome({ logoUrl }: { logoUrl?: string }) {
       {/* Top-right: primary nav (desktop) */}
       <nav
         aria-label="Primary"
-        className="fixed right-[20px] top-[20px] z-50 hidden items-center gap-[15px] text-xs uppercase tracking-widest sm:flex"
+        className="corner-surface fixed right-[20px] top-[20px] z-50 hidden items-center gap-[15px] text-xs uppercase tracking-widest sm:flex"
       >
         {PRIMARY.map((link) => {
           const active = link.href === pathname;
@@ -83,7 +84,7 @@ export function SiteChrome({ logoUrl }: { logoUrl?: string }) {
         onClick={() => setMenuOpen((v) => !v)}
         aria-label={menuOpen ? "Close menu" : "Open menu"}
         aria-expanded={menuOpen}
-        className="fixed right-[20px] top-[20px] z-50 text-xs uppercase tracking-widest text-foreground sm:hidden"
+        className="corner-surface fixed right-[20px] top-[20px] z-50 text-xs uppercase tracking-widest text-foreground sm:hidden"
       >
         {menuOpen ? "Close" : "Menu"}
       </button>
@@ -94,10 +95,13 @@ export function SiteChrome({ logoUrl }: { logoUrl?: string }) {
         <ThemeToggle />
       </div>
 
+      {/* Bottom-left: social profiles (desktop) */}
+      <SocialLinks className="corner-surface fixed bottom-[16px] left-[16px] z-50 hidden sm:block" />
+
       {/* Bottom-right: secondary nav */}
       <nav
         aria-label="Secondary"
-        className="fixed bottom-[20px] right-[20px] z-50 hidden items-center gap-[15px] text-xs uppercase tracking-widest text-muted sm:flex"
+        className="corner-surface fixed bottom-[20px] right-[20px] z-50 hidden items-center gap-[15px] text-xs uppercase tracking-widest text-muted sm:flex"
       >
         {SECONDARY.map((link) => (
           <Link
@@ -108,12 +112,6 @@ export function SiteChrome({ logoUrl }: { logoUrl?: string }) {
             {link.label}
           </Link>
         ))}
-        <a
-          href="mailto:info@hochiruns.com"
-          className="transition-colors hover:text-accent"
-        >
-          Contact
-        </a>
       </nav>
 
       {/* Mobile overlay menu */}
@@ -130,23 +128,11 @@ export function SiteChrome({ logoUrl }: { logoUrl?: string }) {
                 {link.label}
               </Link>
             ))}
-            <a
-              href="mailto:info@hochiruns.com"
-              className="text-foreground"
-              onClick={() => setMenuOpen(false)}
-            >
-              Contact
-            </a>
           </nav>
-          <ul className="flex flex-wrap gap-x-5 gap-y-1 text-xs uppercase tracking-widest text-muted">
-            {socials.map((s) => (
-              <li key={s.url}>
-                <a href={s.url} target="_blank" rel="noopener noreferrer">
-                  {s.label}
-                </a>
-              </li>
-            ))}
-          </ul>
+          <SocialLinks
+            className="corner-surface -ml-3 w-fit"
+            onNavigate={() => setMenuOpen(false)}
+          />
         </div>
       )}
     </>
