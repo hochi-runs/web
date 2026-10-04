@@ -38,20 +38,25 @@ export default async function ReleasePage({
 
   return (
     <article className="px-5 pb-28 pt-24 sm:px-8 sm:pb-32 sm:pt-28">
-      <div className="mx-auto max-w-[100rem]">
+      <div className="mx-auto max-w-[76rem]">
         <Link
           href="/"
-          className="reading-label text-xs uppercase tracking-widest text-muted transition-colors hover:text-accent"
+          className="reading-label inline-flex min-h-10 items-center text-xs uppercase tracking-widest text-muted transition-colors hover:text-accent"
         >
           ← Index
         </Link>
 
-        <h1 className="reading-surface mt-6 w-fit text-xl tracking-tight sm:text-2xl">
-          : {release.artist} — {release.title}
-        </h1>
+        <header className="reading-surface mt-6 max-w-4xl">
+          <p className="break-words text-xs uppercase tracking-widest text-muted">
+            {release.artist}
+          </p>
+          <h1 className="mt-3 max-w-[28ch] text-[clamp(1.5rem,3.6vw,3rem)] leading-[1.15] tracking-[-0.04em] [overflow-wrap:anywhere]">
+            {release.title}
+          </h1>
+        </header>
 
         {/* Two columns: artwork left, metadata + tracklist right */}
-        <div className="mt-10 grid grid-cols-1 gap-x-16 gap-y-12 lg:grid-cols-[minmax(0,32rem)_minmax(0,1fr)]">
+        <div className="mt-10 grid grid-cols-1 items-start gap-x-14 gap-y-10 lg:mt-12 lg:grid-cols-[minmax(0,32rem)_minmax(0,1fr)]">
           {/* Artwork */}
           <div>
             <div className="aspect-square w-full overflow-hidden bg-surface">
@@ -60,6 +65,9 @@ export default async function ReleasePage({
                 <img
                   src={release.cover}
                   alt={`${release.artist} — ${release.title}`}
+                  loading="eager"
+                  fetchPriority="high"
+                  decoding="async"
                   className="h-full w-full object-cover"
                 />
               ) : (
@@ -71,14 +79,14 @@ export default async function ReleasePage({
 
             {/* Streaming links as small text icons under the art */}
             {release.links && release.links.length > 0 && (
-              <ul className="reading-label mt-5 flex w-fit flex-wrap gap-x-5 gap-y-2 text-xs uppercase tracking-widest">
+              <ul className="reading-label mt-4 flex w-fit flex-wrap gap-x-5 text-xs uppercase tracking-widest">
                 {release.links.map((link) => (
                   <li key={link.url}>
                     <a
                       href={link.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-muted transition-colors hover:text-accent"
+                      className="inline-flex min-h-10 items-center text-muted transition-colors hover:text-accent"
                     >
                       {link.platform} ↗
                     </a>
@@ -91,7 +99,7 @@ export default async function ReleasePage({
                 href={release.buyUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="reading-label mt-3 inline-block text-xs uppercase tracking-widest text-muted transition-colors hover:text-accent"
+                className="reading-label mt-1 inline-flex min-h-10 items-center text-xs uppercase tracking-widest transition-colors hover:underline"
               >
                 Buy ↗
               </a>
@@ -99,12 +107,12 @@ export default async function ReleasePage({
           </div>
 
           {/* Metadata + credits + tracklist */}
-          <div className="reading-surface h-fit text-sm">
+          <div className="reading-surface min-w-0 text-sm">
             <p className="font-mono text-xs uppercase tracking-widest text-muted">
               {release.code}
             </p>
 
-            <dl className="mt-6 space-y-1.5">
+            <dl className="mt-6 space-y-3">
               <MetaRow label="Album / Release" value={release.title} />
               <MetaRow label="Artist" value={release.artist} />
               <MetaRow label="Release Type" value={release.format} />
@@ -119,7 +127,7 @@ export default async function ReleasePage({
             </dl>
 
             {release.credits && release.credits.length > 0 && (
-              <dl className="mt-6 space-y-1.5">
+              <dl className="mt-6 space-y-3">
                 {release.credits.map((credit, i) => (
                   <MetaRow
                     key={`${credit.role}-${i}`}
@@ -131,26 +139,26 @@ export default async function ReleasePage({
             )}
 
             {release.description && (
-              <p className="mt-6 max-w-md leading-relaxed text-muted">
+              <p className="mt-8 max-w-prose whitespace-pre-line text-[14px] leading-[1.8] text-muted [overflow-wrap:anywhere]">
                 {release.description}
               </p>
             )}
 
             {release.tracklist && release.tracklist.length > 0 && (
-              <section className="mt-10">
+              <section className="mt-8">
                 <h2 className="text-xs uppercase tracking-widest text-muted">
                   Tracks
                 </h2>
-                <ol className="mt-3 space-y-1.5">
+                <ol className="mt-4 space-y-3">
                   {release.tracklist.map((track, i) => (
                     <li
                       key={`${track.title}-${i}`}
                       className="flex items-baseline gap-3"
                     >
-                      <span className="font-mono text-xs text-muted">
+                      <span className="w-6 shrink-0 font-mono text-xs text-muted">
                         {i + 1}.
                       </span>
-                      <span>
+                      <span className="min-w-0 [overflow-wrap:anywhere]">
                         {track.title}
                         {track.feat && (
                           <span className="text-muted"> {track.feat}</span>
@@ -177,9 +185,9 @@ export default async function ReleasePage({
 /** One metadata row in the "Label: …" liner-note style. */
 function MetaRow({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex gap-2">
+    <div className="grid grid-cols-1 gap-x-4 gap-y-0.5 sm:grid-cols-[8.5rem_minmax(0,1fr)]">
       <dt className="text-muted">{label}:</dt>
-      <dd>{value}</dd>
+      <dd className="min-w-0 [overflow-wrap:anywhere]">{value}</dd>
     </div>
   );
 }

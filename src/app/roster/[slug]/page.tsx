@@ -42,7 +42,7 @@ export default async function MemberPage({
     <article className="mx-auto max-w-3xl px-5 pb-28 pt-24 sm:px-8 sm:pb-32 sm:pt-28">
       <Link
         href="/roster"
-        className="reading-label text-xs uppercase tracking-widest text-muted transition-colors hover:text-accent"
+        className="reading-label inline-flex min-h-10 items-center text-xs uppercase tracking-widest text-muted transition-colors hover:text-accent"
       >
         ← Artists
       </Link>
@@ -54,6 +54,8 @@ export default async function MemberPage({
             <img
               src={member.photo}
               alt={member.name}
+              loading="eager"
+              decoding="async"
               className="h-full w-full object-cover"
             />
           ) : (
@@ -62,27 +64,27 @@ export default async function MemberPage({
             </div>
           )}
         </div>
-        <div className="reading-surface">
-          <h1 className="text-2xl tracking-tight sm:text-3xl">{member.name}</h1>
-          <p className="mt-1 text-sm text-muted">{member.role}</p>
+        <div className="reading-surface min-w-0">
+          <h1 className="text-[clamp(1.75rem,4vw,3rem)] leading-[1.15] tracking-[-0.04em] [overflow-wrap:anywhere]">{member.name}</h1>
+          <p className="mt-3 break-words text-sm text-muted">{member.role}</p>
         </div>
       </header>
 
       {member.bio && (
-        <p className="reading-surface mt-8 max-w-xl whitespace-pre-line text-sm leading-relaxed text-muted">
+        <p className="reading-surface mt-8 max-w-prose whitespace-pre-line text-[14px] leading-[1.8] text-muted [overflow-wrap:anywhere]">
           {member.bio}
         </p>
       )}
 
       {member.socials && member.socials.length > 0 && (
-        <ul className="reading-surface mt-6 flex w-fit flex-wrap gap-x-5 gap-y-1 text-xs uppercase tracking-widest">
+        <ul className="reading-surface mt-5 flex w-fit flex-wrap gap-x-5 text-xs uppercase tracking-widest">
           {member.socials.map((s) => (
             <li key={s.url}>
               <a
                 href={s.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-muted transition-colors hover:text-accent"
+                className="inline-flex min-h-10 items-center text-muted transition-colors hover:text-accent"
               >
                 {s.platform} ↗
               </a>
@@ -101,15 +103,15 @@ export default async function MemberPage({
               <li key={release.slug} className="border-b border-hairline">
                 <Link
                   href={`/releases/${release.slug}`}
-                  className="group flex items-baseline justify-between gap-4 py-3"
+                  className="group flex items-baseline justify-between gap-4 py-4"
                 >
-                  <span className="min-w-0">
-                    <span className="group-hover:underline">
+                  <span className="min-w-0 [overflow-wrap:anywhere]">
+                    <span className="block group-hover:underline">
                       {release.title}
-                    </span>{" "}
-                    <span className="text-sm text-muted">{release.artist}</span>
+                    </span>
+                    <span className="mt-1 block text-xs text-muted">{release.artist}</span>
                   </span>
-                  <span className="font-mono text-xs text-muted">
+                  <span className="shrink-0 font-mono text-xs text-muted">
                     {release.code}
                   </span>
                 </Link>
