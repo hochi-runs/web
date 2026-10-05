@@ -9,6 +9,7 @@
 
 .player {
   display: flex;
+  justify-content: center;
   width: 100%;
   height: 42px;
 }
@@ -53,8 +54,9 @@
   cursor: pointer;
 }
 
-/* The strip fills the footer gap, with 20px clearance from both link groups. */
+/* Center the capped player in the footer gap, keeping both link groups clear. */
 @media (min-width: 640px) {
   .player { width: auto; right: 213px; }
   .player, .reopen { left: 156px; }
+  .reopen { right: 213px; width: max-content; margin-inline: auto; }
 }
