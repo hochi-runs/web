@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useCallback, useContext, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import styles from "./site-player.module.css";
 
@@ -40,7 +40,18 @@ export function SitePlayerProvider({ releases, children }: {
     return releases.find((release) => release.slug === slug) ?? releases[0];
   });
   const [open, setOpen] = useState(Boolean(selected));
+  const frameRef = useRef<HTMLIFrameElement>(null);
+  const reopenRef = useRef<HTMLButtonElement>(null);
+  const restoreFocus = useRef(false);
   const activeKey = selected ? releaseKey(selected) : undefined;
+
+  useEffect(() => {
+    if (restoreFocus.current) {
+      if (open) frameRef.current?.focus();
+      else reopenRef.current?.focus();
+      restoreFocus.current = false;
+    }
+  }, [open]);
 
   const loadRelease = useCallback((id: number, type: PlayerRelease["type"]) => {
     const release = releases.find((item) => item.id === id && item.type === type);
@@ -54,45 +65,36 @@ export function SitePlayerProvider({ releases, children }: {
       {children}
       {selected && (open ? (
         <section id="site-music-player" className={styles.player} aria-label="Music player">
-          <div className={styles.toolbar}>
-            <span className={styles.label}>Listen</span>
-            <select
-              aria-label="Choose a release"
-              className={styles.select}
-              value={activeKey}
-              onChange={(event) => {
-                const release = releases.find((item) => releaseKey(item) === event.target.value);
-                if (release) loadRelease(release.id, release.type);
-              }}
-            >
-              {releases.map((release) => (
-                <option key={releaseKey(release)} value={releaseKey(release)}>
-                  {release.artist} — {release.title}
-                </option>
-              ))}
-            </select>
-            <button
-              type="button"
-              aria-label="Stop and close music player"
-              className={styles.close}
-              onClick={() => setOpen(false)}
-            >
-              <span aria-hidden="true">×</span>
-            </button>
-          </div>
-          <div className={styles.frame}>
-            {/* Keep one native player. Bandcamp supplies its own Play control;
-                it does not support starting playback from a parent button. */}
-            <iframe
-              key={activeKey}
-              src={`https://bandcamp.com/EmbeddedPlayer/${selected.type}=${selected.id}/size=small/bgcol=ffffff/linkcol=333333/artwork=none/transparent=true/`}
-              title={`Bandcamp player: ${selected.artist} — ${selected.title}`}
-              className={styles.iframe}
-            />
-          </div>
+          <iframe
+            ref={frameRef}
+            key={activeKey}
+            src={`https://bandcamp.com/EmbeddedPlayer/${selected.type}=${selected.id}/size=small/bgcol=ffffff/linkcol=333333/artwork=none/transparent=true/`}
+            title={`Bandcamp player: ${selected.artist} — ${selected.title}`}
+            className={styles.iframe}
+          />
+          <button
+            type="button"
+            aria-label="Stop and close music player"
+            className={styles.close}
+            onClick={() => {
+              restoreFocus.current = true;
+              setOpen(false);
+            }}
+          >
+            <span aria-hidden="true">×</span>
+          </button>
         </section>
       ) : (
-        <button type="button" className={styles.reopen} onClick={() => setOpen(true)}>
+        <button
+          ref={reopenRef}
+          type="button"
+          aria-label="Open music player"
+          className={styles.reopen}
+          onClick={() => {
+            restoreFocus.current = true;
+            setOpen(true);
+          }}
+        >
           Listen
         </button>
       ))}

@@ -2,58 +2,47 @@
 .reopen {
   position: fixed;
   z-index: 35;
-  left: 50%;
-  bottom: max(1rem, env(safe-area-inset-bottom));
-  transform: translateX(-50%);
+  left: 0;
+  bottom: env(safe-area-inset-bottom, 0px);
   font: inherit;
 }
 
 .player {
-  width: min(26rem, calc(100% - 2.5rem));
-  background: var(--background);
-  border-top: 1px solid var(--hairline);
-}
-
-.toolbar {
   display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  min-height: 30px;
+  width: 100%;
+  height: 42px;
 }
 
-.label {
-  color: var(--muted);
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-
-.select {
+/* Use Bandcamp's native Slim format without clipping its interactive content. */
+.iframe {
+  display: block;
   flex: 1;
   min-width: 0;
-  max-width: 100%;
-  padding: 0.25rem 0;
+  max-width: 700px;
+  height: 42px;
   border: 0;
-  border-radius: 0;
-  background: var(--background);
-  color: var(--foreground);
-  font: inherit;
-  font-size: 10px;
-  cursor: pointer;
 }
 
 .close {
-  flex: 0 0 30px;
-  height: 30px;
+  flex: 0 0 28px;
+  height: 42px;
+  border-top: 1px solid var(--hairline);
+  background: var(--background);
+  color: var(--muted);
   font: inherit;
-  font-size: 18px;
+  font-size: 16px;
   cursor: pointer;
 }
 
-.close:hover { color: var(--muted); }
-.frame { position: relative; height: 42px; }
-.iframe { display: block; width: 100%; height: 42px; border: 0; }
+.close:hover { color: var(--foreground); }
+.close:focus-visible,
+.reopen:focus-visible {
+  outline: 1px solid var(--foreground);
+  outline-offset: -2px;
+}
+
 .reopen {
+  min-height: 42px;
   padding: 0.5rem 0.75rem;
   border-top: 1px solid var(--hairline);
   background: var(--background);
@@ -64,7 +53,8 @@
   cursor: pointer;
 }
 
-/* Leave the corner navigation clear when a narrow desktop menu is visible. */
-@media (min-width: 640px) and (max-width: 1023px) {
-  .player, .reopen { bottom: 3.25rem; }
+/* The strip fills the footer gap, with 20px clearance from both link groups. */
+@media (min-width: 640px) {
+  .player { width: auto; right: 213px; }
+  .player, .reopen { left: 156px; }
 }
