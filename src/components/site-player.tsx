@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
+import { createContext, useCallback, useContext, useState } from "react";
 import { usePathname } from "next/navigation";
 import styles from "./site-player.module.css";
 
@@ -39,65 +39,28 @@ export function SitePlayerProvider({ releases, children }: {
     const slug = pathname.match(/^\/releases\/([^/]+)\/?$/)?.[1];
     return releases.find((release) => release.slug === slug) ?? releases[0];
   });
-  const [open, setOpen] = useState(Boolean(selected));
-  const frameRef = useRef<HTMLIFrameElement>(null);
-  const reopenRef = useRef<HTMLButtonElement>(null);
-  const restoreFocus = useRef(false);
+  const open = Boolean(selected);
   const activeKey = selected ? releaseKey(selected) : undefined;
-
-  useEffect(() => {
-    if (restoreFocus.current) {
-      if (open) frameRef.current?.focus();
-      else reopenRef.current?.focus();
-      restoreFocus.current = false;
-    }
-  }, [open]);
 
   const loadRelease = useCallback((id: number, type: PlayerRelease["type"]) => {
     const release = releases.find((item) => item.id === id && item.type === type);
     if (!release) return;
     setSelected(release);
-    setOpen(true);
   }, [releases]);
 
   return (
     <PlayerContext.Provider value={{ activeKey, open, loadRelease }}>
       {children}
-      {selected && (open ? (
+      {selected && (
         <section id="site-music-player" className={styles.player} aria-label="Music player">
           <iframe
-            ref={frameRef}
             key={activeKey}
             src={`https://bandcamp.com/EmbeddedPlayer/${selected.type}=${selected.id}/size=small/bgcol=ffffff/linkcol=333333/artwork=none/transparent=true/`}
             title={`Bandcamp player: ${selected.artist} — ${selected.title}`}
             className={styles.iframe}
           />
-          <button
-            type="button"
-            aria-label="Stop and close music player"
-            className={styles.close}
-            onClick={() => {
-              restoreFocus.current = true;
-              setOpen(false);
-            }}
-          >
-            <span aria-hidden="true">×</span>
-          </button>
         </section>
-      ) : (
-        <button
-          ref={reopenRef}
-          type="button"
-          aria-label="Open music player"
-          className={styles.reopen}
-          onClick={() => {
-            restoreFocus.current = true;
-            setOpen(true);
-          }}
-        >
-          Listen
-        </button>
-      ))}
+      )}
     </PlayerContext.Provider>
   );
 }

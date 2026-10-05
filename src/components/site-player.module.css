@@ -1,5 +1,4 @@
-.player,
-.reopen {
+.player {
   position: fixed;
   z-index: 35;
   left: 0;
@@ -24,39 +23,7 @@
   border: 0;
 }
 
-.close {
-  flex: 0 0 28px;
-  height: 42px;
-  border-top: 1px solid var(--hairline);
-  background: var(--background);
-  color: var(--muted);
-  font: inherit;
-  font-size: 16px;
-  cursor: pointer;
-}
-
-.close:hover { color: var(--foreground); }
-.close:focus-visible,
-.reopen:focus-visible {
-  outline: 1px solid var(--foreground);
-  outline-offset: -2px;
-}
-
-.reopen {
-  min-height: 42px;
-  padding: 0.5rem 0.75rem;
-  border-top: 1px solid var(--hairline);
-  background: var(--background);
-  color: var(--muted);
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  cursor: pointer;
-}
-
 /* Center the capped player in the footer gap, keeping both link groups clear. */
 @media (min-width: 640px) {
-  .player { width: auto; right: 213px; }
-  .player, .reopen { left: 156px; }
-  .reopen { right: 213px; width: max-content; margin-inline: auto; }
+  .player { width: auto; left: 156px; right: 213px; }
 }
