@@ -7,6 +7,10 @@ hochi_content_register_types();
 wp_set_current_user(1);
 $_POST = array();
 delete_option('hochi_connection');
+// Exercise portable plugin asset URLs on a public HTTPS origin inside isolated WordPress.
+add_filter('plugins_url', function ($url, $path, $plugin) {
+    return basename($plugin) === 'hochi-content.php' ? 'https://cms.hochiruns.com/wp-content/plugins/hochi-content/' . ltrim($path, '/') : $url;
+}, 10, 3);
 
 $hochi_setup_checks = 0;
 function hochi_setup_test($condition, $message) {
@@ -28,6 +32,35 @@ $fixture = json_decode(file_get_contents('/wordpress/wp-content/plugins/hochi-co
 $prepared = hochi_setup_prepare_import($fixture);
 hochi_setup_test(!is_wp_error($prepared), 'Bundled initial content must completely validate');
 $expected = count($prepared['records']);
+
+// Optional flyers survive setup and use the same public image validation as the editor.
+$flyer_fixture = $fixture;
+$flyer_fixture['shows'] = array(array('date' => 'Sep 4, 2026', 'venue' => 'HOCHI HOUR', 'city' => 'New York City', 'image' => 'https://cdn.hochiruns.com/event-flyer.jpg', 'ticketUrl' => 'https://ra.co/events/2525516'));
+$flyer_prepared = hochi_setup_prepare_import($flyer_fixture);
+hochi_setup_test(!is_wp_error($flyer_prepared), 'Initial event flyer validates');
+$event_records = array_values(array_filter($flyer_prepared['records'], function ($record) { return $record['type'] === 'hochi_show'; }));
+hochi_setup_test(count($event_records) === 1 && $event_records[0]['meta']['image'] === $flyer_fixture['shows'][0]['image'], 'Initial event flyer maps into editable image metadata');
+$flyer_fixture['shows'][0]['image'] = 'https://cdn.hochiruns.com/master.mp3';
+hochi_setup_test(is_wp_error(hochi_setup_prepare_import($flyer_fixture)), 'Invalid initial flyer rejects the import before writes');
+
+// Packaged artwork resolves on the receiving WordPress account, without a developer CMS hostname.
+$bundled_shows = array_values(array_filter($fixture['shows'], function ($item) { return isset($item['bundledImage']); }));
+$bundled_products = array_values(array_filter($fixture['products'], function ($item) { return isset($item['bundledImage']); }));
+hochi_setup_test(count($bundled_shows) > 0 && count($bundled_products) > 0, 'The prepared handoff includes actual event and merch artwork');
+$bundled_show = $bundled_shows[0];
+$bundled_product = $bundled_products[0];
+$bundled_show_url = 'https://cms.hochiruns.com/wp-content/plugins/hochi-content/assets/' . $bundled_show['bundledImage'];
+$bundled_product_url = 'https://cms.hochiruns.com/wp-content/plugins/hochi-content/assets/' . $bundled_product['bundledImage'];
+hochi_setup_test(hochi_setup_image($bundled_show) === $bundled_show_url && hochi_setup_image($bundled_product) === $bundled_product_url, 'Real packaged event and merch assets resolve through receiving-site plugins_url');
+foreach (array('../shows/flyer.png', 'shows/../merch/shirt.png', 'shows/%2e%2e/flyer.png', '/shows/flyer.png', 'https://cdn.hochiruns.com/flyer.png', 'shows/flyer.svg', 'shows/missing-image.png', 'shows/flyer.png?x=1', null, array()) as $path) {
+    $invalid_artwork = array('bundledImage' => $path);
+    hochi_setup_test(is_wp_error(hochi_setup_image($invalid_artwork)), 'Bundled image resolver rejects traversal, schemes, missing files, unsupported types, and non-string paths');
+}
+hochi_setup_test(is_wp_error(hochi_setup_image(array('bundledImage' => $bundled_show['bundledImage'], 'image' => 'https://cdn.hochiruns.com/conflicting.jpg'))), 'Ambiguous bundled and external images are rejected');
+$invalid_artwork_fixture = $fixture;
+$invalid_artwork_fixture['shows'][0]['bundledImage'] = 'shows/../../setup.php';
+unset($invalid_artwork_fixture['shows'][0]['image']);
+hochi_setup_test(is_wp_error(hochi_setup_import_content($invalid_artwork_fixture)) && hochi_setup_test_posts() === array(), 'A bad bundled file rejects the complete import before any post is written');
 
 // Any later bad record invalidates the entire import, before the first database write.
 $bad = $fixture;
@@ -78,6 +111,13 @@ hochi_setup_test(get_post_status($owner_release) === 'publish', 'Import preserve
 hochi_setup_test(get_option('hochi_appearance') === $appearance, 'Import leaves appearance unchanged');
 hochi_setup_test(count(hochi_setup_test_posts('hochi_show')) === count($fixture['shows']), 'An empty event list imports no demo event');
 hochi_setup_test(count(hochi_content_catalog()) === count($fixture['releases']), 'Import populates the release picker');
+$bundled_show_posts = get_posts(array('post_type' => 'hochi_show', 'post_status' => 'publish', 'numberposts' => 1, 'meta_key' => '_hochi_venue', 'meta_value' => $bundled_show['venue']));
+hochi_setup_test(count($bundled_show_posts) === 1 && get_post_meta($bundled_show_posts[0]->ID, '_hochi_image', true) === $bundled_show_url, 'First import publishes bundled event artwork as an editable public URL');
+$bundled_product_posts = get_posts(array('post_type' => 'hochi_product', 'post_status' => 'publish', 'numberposts' => 1000));
+$bundled_product_post = null;
+foreach ($bundled_product_posts as $post) { if ($post->post_title === $bundled_product['name']) { $bundled_product_post = $post; break; } }
+hochi_setup_test($bundled_product_post !== null && get_post_meta($bundled_product_post->ID, '_hochi_image', true) === $bundled_product_url, 'First import publishes bundled shirt artwork on the receiving site');
+update_post_meta($bundled_show_posts[0]->ID, '_hochi_image', 'https://cdn.hochiruns.com/owner-updated-flyer.jpg');
 
 foreach (hochi_setup_test_posts('hochi_release') as $release) {
     if ($release->ID === $owner_release) { continue; }
@@ -89,6 +129,7 @@ foreach (hochi_setup_test_posts('hochi_release') as $release) {
 }
 $again = hochi_setup_import_content($fixture);
 hochi_setup_test(!is_wp_error($again) && $again['created'] === 0 && $again['skipped'] === $expected, 'Repeating import is idempotent');
+hochi_setup_test(get_post_meta($bundled_show_posts[0]->ID, '_hochi_image', true) === 'https://cdn.hochiruns.com/owner-updated-flyer.jpg', 'Retrying a bundled import preserves the owner’s subsequent artwork edit');
 $products = hochi_setup_test_posts('hochi_product');
 $product_id = $products[0]->ID;
 wp_update_post(array('ID' => $product_id, 'post_title' => 'Owner renamed item'));

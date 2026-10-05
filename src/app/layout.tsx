@@ -3,8 +3,9 @@ import { JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { SiteChrome } from "@/components/site-chrome";
 import { SiteBackdrop } from "@/components/site-backdrop";
+import { SitePlayerProvider, type PlayerRelease } from "@/components/site-player";
 import type { CSSProperties } from "react";
-import { getAppearance } from "@/lib/wordpress";
+import { getAppearance, getReleases } from "@/lib/wordpress";
 import { appearanceCssVariables } from "@/lib/wordpress-core.mjs";
 
 export const revalidate = 60;
@@ -49,7 +50,12 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const appearance = await getAppearance();
+  const [appearance, releases] = await Promise.all([getAppearance(), getReleases()]);
+  const playerReleases: PlayerRelease[] = releases.flatMap((release) =>
+    release.bandcampId && Number.isSafeInteger(release.bandcampId) && release.bandcampId > 0 && release.bandcampType
+      ? [{ id: release.bandcampId, type: release.bandcampType, slug: release.slug, title: release.title, artist: release.artist }]
+      : [],
+  );
   const backgroundStyle: CSSProperties | undefined = appearance.backgroundImageUrl ? {
     backgroundImage: `url(${JSON.stringify(appearance.backgroundImageUrl)})`,
     backgroundSize: "cover",
@@ -70,9 +76,11 @@ export default async function RootLayout({
         {/* Fixed wordmark backdrop — sits behind everything, doesn't scroll.
             Inverts in dark mode so the black art shows on the dark bg. */}
         <SiteBackdrop imageUrl={appearance.backgroundLogoUrl} opacity={appearance.backgroundLogoOpacity} />
-        {/* Fixed-corner chrome floats over the page; only content scrolls. */}
-        <SiteChrome logoUrl={appearance.logoUrl} />
-        <main className="relative z-10">{children}</main>
+        <SitePlayerProvider releases={playerReleases}>
+          {/* Fixed-corner chrome floats over the page; only content scrolls. */}
+          <SiteChrome logoUrl={appearance.logoUrl} />
+          <main className="relative z-10">{children}</main>
+        </SitePlayerProvider>
       </body>
     </html>
   );

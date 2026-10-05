@@ -66,8 +66,7 @@ a {
 }
 
 .reading-panel,
-.release-caption,
-.corner-surface {
+.release-caption {
   background: var(--background);
 }
 
@@ -94,7 +93,11 @@ body[data-custom-background="true"] :is(.reading-surface, .reading-label) {
 }
 
 .corner-surface {
-  outline: 5px solid var(--background);
+  background: transparent;
+  /* Protect only the letter edges where the wordmark passes behind them. */
+  text-shadow:
+    0 0 1px var(--background),
+    0 0 2px var(--background);
 }
 
 :where(a, button, input, textarea, select):focus-visible {

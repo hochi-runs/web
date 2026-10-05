@@ -9,12 +9,13 @@
       "socials": [
         {
           "platform": "Instagram",
-          "url": "https://www.instagram.com/hochiruns/"
+          "url": "https://www.instagram.com/_amaldc/"
         }
       ],
       "releaseSlugs": [
         "like-dat-riddim",
         "sneaky-link",
+        "side-orders-v1",
         "stuck-in-sp",
         "wip",
         "stadium",
@@ -39,14 +40,67 @@
       ]
     },
     {
-      "slug": "mr-davinse",
-      "name": "mr.davinse",
-      "role": "Director",
-      "bio": "Director and visual artist. Placeholder bio — replace with the real one.",
+      "slug": "tromac",
+      "name": "Tromac",
+      "role": "Artist",
+      "releaseSlugs": [
+        "side-orders-v1",
+        "movement",
+        "her-majesty"
+      ]
+    },
+    {
+      "slug": "taylor-spencer",
+      "name": "Taylor Spencer",
+      "role": "Artist",
+      "socials": [
+        {
+          "platform": "Instagram",
+          "url": "https://www.instagram.com/taylorspenxer/"
+        }
+      ],
       "releaseSlugs": []
+    },
+    {
+      "slug": "hunch",
+      "name": "Hunch",
+      "role": "Artist",
+      "socials": [
+        {
+          "platform": "Instagram",
+          "url": "https://www.instagram.com/hunch.pn/"
+        }
+      ],
+      "releaseSlugs": [
+        "side-orders-v1",
+        "movement",
+        "her-majesty"
+      ]
+    },
+    {
+      "slug": "geno",
+      "name": "Geno",
+      "role": "Artist",
+      "releaseSlugs": [
+        "losing-sleep"
+      ]
+    },
+    {
+      "slug": "nedaj",
+      "name": "Nedaj",
+      "role": "Artist",
+      "releaseSlugs": [
+        "side-orders-v1",
+        "vague-amal-nedaj"
+      ]
     }
   ],
   "products": [
+    {
+      "name": "Hochi Runs — Limited T-Shirt",
+      "price": "Limited event release",
+      "bundledImage": "merch/hochi-runs-limited-shirt-2026.jpg"
+    },
     {
       "name": "Hochi Hoodie",
       "price": "$47.28 – $53.90"
@@ -60,7 +114,78 @@
       "price": "$1.81 – $2.91"
     }
   ],
-  "shows": [],
+  "shows": [
+    {
+      "date": "Sep 4, 2026",
+      "venue": "HOCHI HOUR · Bossa Nova Civic Club",
+      "city": "New York City",
+      "ticketUrl": "https://ra.co/events/2525516",
+      "bundledImage": "shows/ra-2525516.png"
+    },
+    {
+      "date": "May 22, 2026 · 11 PM–3 AM EDT",
+      "venue": "Hochi Runs Label Takeover · Songbyrd Music House",
+      "city": "Washington DC",
+      "ticketUrl": "https://www.instagram.com/p/DW9LfoMjUbR/",
+      "bundledImage": "shows/hochi-runs-label-takeover-2026.jpg"
+    },
+    {
+      "date": "May 16, 2026",
+      "venue": "Amal (all night) · Shanklin Hall DC",
+      "city": "Washington DC",
+      "ticketUrl": "https://ra.co/events/2443350",
+      "bundledImage": "shows/ra-2443350.png"
+    },
+    {
+      "date": "Nov 15, 2025",
+      "venue": "Groove Haul X hochi runs: SHIESTY · City State Brewery",
+      "city": "Washington DC",
+      "ticketUrl": "https://ra.co/events/2286094",
+      "bundledImage": "shows/ra-2286094.png"
+    },
+    {
+      "date": "Oct 11, 2025",
+      "venue": "DJ Slugo / Nanoos / shekdash presented By hochi runs x Members Only · TRANSMISSION DC",
+      "city": "Washington DC",
+      "ticketUrl": "https://ra.co/events/2264258",
+      "bundledImage": "shows/ra-2264258.png"
+    },
+    {
+      "date": "Aug 9, 2025",
+      "venue": "9th Street Social Club presents: Hochi Runs x NO BIAS · TBA - 9TH STREET SOCIAL CLUB",
+      "city": "San Francisco/Oakland",
+      "ticketUrl": "https://ra.co/events/2211253",
+      "bundledImage": "shows/ra-2211253.png"
+    },
+    {
+      "date": "Apr 19, 2025",
+      "venue": "hochi runs & Astroturf presents 'Field Trip' · 618 DC",
+      "city": "Washington DC",
+      "ticketUrl": "https://ra.co/events/2136084",
+      "bundledImage": "shows/ra-2136084.png"
+    },
+    {
+      "date": "Apr 18, 2025",
+      "venue": "'Pre-Trip' hochi runs + Astroturf Official Pre Party · Vagabond",
+      "city": "Washington DC",
+      "ticketUrl": "https://ra.co/events/2145066",
+      "bundledImage": "shows/ra-2145066.png"
+    },
+    {
+      "date": "Jan 18, 2025",
+      "venue": "Hochi presents Amal's Birthday · 618 DC",
+      "city": "Washington DC",
+      "ticketUrl": "https://ra.co/events/2083513",
+      "bundledImage": "shows/ra-2083513.png"
+    },
+    {
+      "date": "Dec 28, 2024",
+      "venue": "Stop Requested · 618 Cocktail and Whiskey Lounge",
+      "city": "Washington DC",
+      "ticketUrl": "https://ra.co/events/2066593",
+      "bundledImage": "shows/ra-2066593.png"
+    }
+  ],
   "pages": {
     "about": {
       "paragraphs": [
@@ -224,7 +349,9 @@
       "cover": "https://f4.bcbits.com/img/a4026643672_10.jpg",
       "date": "03 Apr 2026",
       "buyUrl": "https://hochiruns.bandcamp.com/album/losing-sleep",
-      "memberSlugs": [],
+      "memberSlugs": [
+        "geno"
+      ],
       "description": "Born and raised in New Orleans and now based in Baton Rouge, WHOISGENO is an emerging producer and DJ shaping a sound that moves fluidly across electronic styles. His work pulls from a wide range of club influences, balancing energy, atmosphere, and rhythm without staying locked into one lane.\n\nA member of Baton Rouge collective Frequency, GENO is deeply embedded in his local scene both behind the decks and through the group’s monthly parties, where his sound takes form in real time.\n\nLOSING SLEEP captures that restless momentum late nights, shifting moods, and the push between introspection and the dancefloor.",
       "format": "Album",
       "tags": [
@@ -286,7 +413,12 @@
       "cover": "https://f4.bcbits.com/img/a1857253865_10.jpg",
       "date": "05 Dec 2025",
       "buyUrl": "https://hochiruns.bandcamp.com/album/side-orders-v1-2",
-      "memberSlugs": [],
+      "memberSlugs": [
+        "amal",
+        "tromac",
+        "hunch",
+        "nedaj"
+      ],
       "description": "Hochi runs presents our first ever compilation \"Side Orders\"",
       "format": "Album",
       "tags": [
@@ -400,7 +532,8 @@
       "date": "12 Jul 2024",
       "buyUrl": "https://amaldc.bandcamp.com/track/vague-amal-nedaj",
       "memberSlugs": [
-        "amal"
+        "amal",
+        "nedaj"
       ],
       "description": "American made phonk featuring Nedaj\n\nGresham the album coming soon... \n\nVisualizer + artwork by Daniel Adey\n\nMastered by East End Mastering",
       "format": "Single",
@@ -432,7 +565,10 @@
       "cover": "https://f4.bcbits.com/img/a4205197754_10.jpg",
       "date": "31 May 2024",
       "buyUrl": "https://hunchhunch.bandcamp.com/album/movement",
-      "memberSlugs": [],
+      "memberSlugs": [
+        "tromac",
+        "hunch"
+      ],
       "description": "Hunch, a Maryland based multi-genre artist is an artist, producer and DJ . His last EP “Second Nature '' dropped in fall under D.C label “Hochi Runs”. Since this release, Hunch has been emerging as an eclectic selector and creative force in a new wave of electronic music.\nTromac, is a seasoned DJ, curator, and producer hailing from Prince George’s County currently based in Baltimore, MD. Tromac's outspoken artistry shines through dynamic performances and creative approach to music production.",
       "format": "Album",
       "tags": [
@@ -489,7 +625,10 @@
       "cover": "https://f4.bcbits.com/img/a0571188681_10.jpg",
       "date": "12 Apr 2024",
       "buyUrl": "https://hochiruns.bandcamp.com/track/her-majesty",
-      "memberSlugs": [],
+      "memberSlugs": [
+        "tromac",
+        "hunch"
+      ],
       "description": "Hunch and Tromac team up for their debut single together. Her Majesty's fast-paced club track with breaks, catchy vocal shots and a hypnotic baseline.",
       "format": "Single",
       "tags": [

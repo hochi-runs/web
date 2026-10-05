@@ -7,7 +7,7 @@ export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Roster · Hochi Runs",
-  description: "The Hochi Runs roster — artists, producers, and directors.",
+  description: "The Hochi Runs roster — artists, producers, and DJs.",
 };
 
 export default async function RosterPage() {

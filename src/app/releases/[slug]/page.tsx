@@ -2,6 +2,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getRelease, getReleases } from "@/lib/wordpress";
+import { ReleasePrototype } from "@/components/release-prototype";
+import { ReleaseArtwork } from "@/components/release-artwork";
 
 export const revalidate = 60;
 export const dynamic = "force-static";
@@ -36,6 +38,8 @@ export default async function ReleasePage({
   const release = await getRelease(slug);
   if (!release) notFound();
 
+  if (slug === "like-dat-riddim") return <ReleasePrototype release={release} />;
+
   return (
     <article className="px-5 pb-28 pt-24 sm:px-8 sm:pb-32 sm:pt-28">
       <div className="mx-auto max-w-[100rem]">
@@ -54,20 +58,13 @@ export default async function ReleasePage({
         <div className="mt-10 grid grid-cols-1 gap-x-16 gap-y-12 lg:grid-cols-[minmax(0,32rem)_minmax(0,1fr)]">
           {/* Artwork */}
           <div>
-            <div className="aspect-square w-full overflow-hidden bg-surface">
-              {release.cover ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={release.cover}
-                  alt={`${release.artist} — ${release.title}`}
-                  className="h-full w-full object-cover"
-                />
-              ) : (
-                <div className="flex h-full w-full items-center justify-center font-mono text-sm uppercase tracking-widest text-muted">
-                  {release.code}
-                </div>
-              )}
-            </div>
+            <ReleaseArtwork
+              src={release.cover}
+              title={`${release.artist} — ${release.title}`}
+              code={release.code}
+              id={release.bandcampId}
+              type={release.bandcampType}
+            />
 
             {/* Streaming links as small text icons under the art */}
             {release.links && release.links.length > 0 && (

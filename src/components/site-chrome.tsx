@@ -19,18 +19,24 @@ import { ThemeToggle } from "@/components/theme-toggle";
  * On small screens the nav collapses into a single overlay menu so the fixed
  * corners never collide.
  */
-const PRIMARY = [
+type NavigationItem = {
+  label: string;
+  href: string;
+  disabled?: boolean;
+};
+
+const PRIMARY: readonly NavigationItem[] = [
   { label: "Artists", href: "/roster" },
   { label: "Releases", href: "/" },
   { label: "Live", href: "/shows" },
-  { label: "Shop", href: "/merch" },
-] as const;
+  { label: "Shop", href: "/merch", disabled: true },
+];
 
-const SECONDARY = [
+const SECONDARY: readonly NavigationItem[] = [
   { label: "About", href: "/about" },
   { label: "Legal", href: "/legal" },
   { label: "Contact", href: "/contact" },
-] as const;
+];
 
 export function SiteChrome({ logoUrl }: { logoUrl?: string }) {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -61,6 +67,19 @@ export function SiteChrome({ logoUrl }: { logoUrl?: string }) {
         className="corner-surface fixed right-[20px] top-[20px] z-50 hidden items-center gap-[15px] text-xs uppercase tracking-widest sm:flex"
       >
         {PRIMARY.map((link) => {
+          if (link.disabled) {
+            return (
+              <span
+                key={link.href}
+                role="link"
+                aria-disabled="true"
+                title="Shop is not available yet"
+                className="cursor-default text-muted opacity-50"
+              >
+                {link.label}
+              </span>
+            );
+          }
           const active = link.href === pathname;
           return (
             <Link
@@ -118,16 +137,28 @@ export function SiteChrome({ logoUrl }: { logoUrl?: string }) {
       {menuOpen && (
         <div className="fixed inset-0 z-40 flex flex-col justify-center gap-8 bg-background px-8 sm:hidden">
           <nav aria-label="Mobile" className="flex flex-col gap-5 text-sm uppercase tracking-widest">
-            {[...PRIMARY, ...SECONDARY].map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() => setMenuOpen(false)}
-                className="text-foreground"
-              >
-                {link.label}
-              </Link>
-            ))}
+            {[...PRIMARY, ...SECONDARY].map((link) =>
+              link.disabled ? (
+                <span
+                  key={link.href}
+                  role="link"
+                  aria-disabled="true"
+                  title="Shop is not available yet"
+                  className="cursor-default text-muted opacity-50"
+                >
+                  {link.label}
+                </span>
+              ) : (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setMenuOpen(false)}
+                  className="text-foreground"
+                >
+                  {link.label}
+                </Link>
+              ),
+            )}
           </nav>
           <SocialLinks
             className="corner-surface -ml-3 w-fit"

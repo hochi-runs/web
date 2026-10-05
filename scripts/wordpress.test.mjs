@@ -87,6 +87,19 @@ test('invalid schema, duplicate website slugs and unsafe links fail the whole co
   ]) assert.throws(() => parsePluginContent(input));
 });
 
+test('event flyers are optional public image files and preserve existing event details', () => {
+  const show = { date: '4 Sep 2026', venue: 'HOCHI HOUR', city: 'New York City', ticketUrl: 'https://ra.co/events/2525516' };
+  const image = 'https://cms.hochiruns.com/wp-content/uploads/2026/09/hochi-hour.jpg?size=large';
+  const parsed = parsePluginContent({ ...content([]), shows: [show, { ...show, image }] }).shows;
+  assert.deepEqual(parsed[0], { ...show, image: undefined });
+  assert.deepEqual(parsed[1], { ...show, image });
+  for (const value of [
+    'http://cms.hochiruns.com/flyer.jpg', 'https://cms.hochiruns.com/song.mp3',
+    'https://cms.hochiruns.com/flyer.svg', 'https://127.0.0.1/flyer.jpg',
+    'https://user:secret@cms.hochiruns.com/flyer.jpg', 'data:image/png,bad',
+  ]) assert.throws(() => parsePluginContent({ ...content([]), shows: [{ ...show, image: value }] }));
+});
+
 test('native posts import managed published text and image only; drafts, protected and unrelated posts stay excluded', () => {
   const artists = parseNativeArtists([
     post(), post('dj-swisha', 'draft'), post('blog-news'),
@@ -196,12 +209,17 @@ test('explicit local WordPress prototype accepts only loopback plugin endpoints 
 test('local demo images must match the exact WordPress uploads origin; purchase and social links remain HTTPS', () => {
   const options = { localDemo: true, imageOrigin: 'http://127.0.0.1:9401' };
   const image = 'http://127.0.0.1:9401/wp-content/uploads/2026/10/photo.png';
-  const parsed = parsePluginContent({ ...content([{ ...artist, photo: image }]), products: [{ name: 'Shirt', price: '$20', image }], appearance: { logoUrl: image } }, options);
+  const show = { date: '4 Sep 2026', venue: 'HOCHI HOUR', city: 'New York City' };
+  const parsed = parsePluginContent({ ...content([{ ...artist, photo: image }]), products: [{ name: 'Shirt', price: '$20', image }], shows: [{ ...show, image }], appearance: { logoUrl: image } }, options);
   assert.equal(parsed.artists[0].photo, image);
   assert.equal(parsed.products[0].image, image);
+  assert.equal(parsed.shows[0].image, image);
   assert.equal(parsed.appearance.logoUrl, image);
   for (const value of [image.replace('9401', '9402'), image.replace('127.0.0.1', 'localhost'), image.replace('/wp-content/uploads/', '/private/'), image.replace('.png', '.mp3'),
-    'http://user:pass@127.0.0.1:9401/wp-content/uploads/photo.png']) assert.throws(() => parsePluginContent(content([{ ...artist, photo: value }]), options));
+    'http://user:pass@127.0.0.1:9401/wp-content/uploads/photo.png']) {
+    assert.throws(() => parsePluginContent(content([{ ...artist, photo: value }]), options));
+    assert.throws(() => parsePluginContent({ ...content([]), shows: [{ ...show, image: value }] }, options));
+  }
   assert.throws(() => parsePluginContent(content([{ ...artist, photo: image }])));
   assert.throws(() => parsePluginContent(content([{ ...artist, socials: [{ platform: 'Instagram', url: image }] }]), options));
   assert.throws(() => parsePluginContent({ ...content([]), products: [{ name: 'Shirt', price: '$20', buyUrl: image }] }, options));

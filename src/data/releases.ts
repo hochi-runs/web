@@ -83,6 +83,7 @@ export const releaseArchive: Release[] = [
   {
     code: "HR018",
     slug: "losing-sleep",
+    memberSlugs: ["geno"],
     artist: "whoisgeno",
     title: "LOSING SLEEP",
     year: 2026,
@@ -111,6 +112,7 @@ export const releaseArchive: Release[] = [
   {
     code: "HR016",
     slug: "side-orders-v1",
+    memberSlugs: ["amal", "hunch", "tromac", "nedaj"],
     artist: "Hochi Runs",
     title: "Side Orders v1",
     year: 2025,
@@ -167,6 +169,7 @@ export const releaseArchive: Release[] = [
   {
     code: "HR012",
     slug: "vague-amal-nedaj",
+    memberSlugs: ["amal", "nedaj"],
     artist: "Amal, Nedaj",
     title: "VAGUE (Amal + Nedaj)",
     year: 2024,
@@ -181,6 +184,7 @@ export const releaseArchive: Release[] = [
   {
     code: "HR011",
     slug: "movement",
+    memberSlugs: ["hunch", "tromac"],
     artist: "Hunch, Tromac",
     title: "MOVEMENT",
     year: 2024,
@@ -209,6 +213,7 @@ export const releaseArchive: Release[] = [
   {
     code: "HR009",
     slug: "her-majesty",
+    memberSlugs: ["hunch", "tromac"],
     artist: "Hunch, Tromac",
     title: "Her Majesty",
     year: 2024,

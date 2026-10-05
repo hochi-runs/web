@@ -5,6 +5,7 @@ import { spawnSync } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
 import { readSiteData } from './read-site-data.mjs';
 import { createWordPressCatalog } from '../src/lib/wordpress-catalog.mjs';
+import { bundleWordPressImages } from './wordpress-assets.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const [catalog, roster, merch, content, pages] = await Promise.all(
@@ -30,12 +31,16 @@ const releases = picker.releases.map((release, index) => {
     links: (source.links ?? []).filter((link) => link.platform.toLowerCase() !== 'bandcamp'),
   };
 });
-const initial = {
-  version: 1, artists, products: merch.products, shows: content.shows,
-  pages: pages.getLocalPageParagraphs(), releases,
-};
 const pluginDirectory = path.join(root, 'wordpress/hochi-content');
 await mkdir(pluginDirectory, { recursive: true });
+const bundled = await bundleWordPressImages(
+  { products: merch.products, shows: content.shows },
+  path.join(root, 'public'), path.join(pluginDirectory, 'assets'),
+);
+const initial = {
+  version: 1, artists, ...bundled.collections,
+  pages: pages.getLocalPageParagraphs(), releases,
+};
 await writeFile(path.join(pluginDirectory, 'initial-content.json'), JSON.stringify(initial, null, 2) + '\n');
 console.log(`Prepared existing content: ${artists.length} artists, ${merch.products.length} products, ${content.shows.length} events, ${releases.length} release choices, and About/Legal.`);
 if (!process.argv.includes('--prepare')) {
@@ -43,6 +48,7 @@ if (!process.argv.includes('--prepare')) {
   const archive = path.join(root, 'wordpress/hochi-runs-content-bridge.zip');
   const temporary = path.join(root, 'wordpress/hochi-runs-content-bridge.' + randomUUID() + '.zip');
   const files = ['hochi-content/hochi-content.php', 'hochi-content/setup.php', 'hochi-content/initial-content.json', 'hochi-content/README.md'];
+  files.push(...bundled.files.map((assetPath) => 'hochi-content/assets/' + assetPath));
   try {
     const packaged = spawnSync('zip', ['-q', temporary, ...files], { cwd: path.join(root, 'wordpress'), encoding: 'utf8' });
     if (packaged.status !== 0) throw new Error('Could not package the WordPress plugin');

@@ -16,6 +16,11 @@ export type Product = {
 };
 
 export const products: Product[] = [
+  {
+    name: "Hochi Runs — Limited T-Shirt",
+    price: "Limited event release",
+    image: "/merch/hochi-runs-limited-shirt-2026.jpg",
+  },
   { name: "Hochi Hoodie", price: "$47.28 – $53.90" },
   { name: "Unisex Softstyle T-Shirt", price: "$17.28 – $25.53" },
   { name: "Hochi Runs Stickers", price: "$1.81 – $2.91" },

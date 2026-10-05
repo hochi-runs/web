@@ -35,7 +35,7 @@ export const members: Member[] = [
     role: "Artist",
     bio: "Artist on Hochi Runs. Placeholder bio — replace with the real one.",
     socials: [
-      { platform: "Instagram", url: "https://www.instagram.com/hochiruns/" },
+      { platform: "Instagram", url: "https://www.instagram.com/_amaldc/" },
     ],
   },
   {
@@ -45,10 +45,35 @@ export const members: Member[] = [
     bio: "DJ and producer. Placeholder bio — replace with the real one.",
   },
   {
-    slug: "mr-davinse",
-    name: "mr.davinse",
-    role: "Director",
-    bio: "Director and visual artist. Placeholder bio — replace with the real one.",
+    slug: "tromac",
+    name: "Tromac",
+    role: "Artist",
+  },
+  {
+    slug: "taylor-spencer",
+    name: "Taylor Spencer",
+    role: "Artist",
+    socials: [
+      { platform: "Instagram", url: "https://www.instagram.com/taylorspenxer/" },
+    ],
+  },
+  {
+    slug: "hunch",
+    name: "Hunch",
+    role: "Artist",
+    socials: [
+      { platform: "Instagram", url: "https://www.instagram.com/hunch.pn/" },
+    ],
+  },
+  {
+    slug: "geno",
+    name: "Geno",
+    role: "Artist",
+  },
+  {
+    slug: "nedaj",
+    name: "Nedaj",
+    role: "Artist",
   },
 ];
 

@@ -95,6 +95,24 @@ function hochi_setup_record($type, $title, $meta, $order, $status = 'publish') {
     return array('type' => $type, 'title' => $title, 'meta' => $meta, 'order' => $order, 'status' => $status, 'identity' => $identity, 'post_name' => $post_name);
 }
 
+function hochi_setup_image($item) {
+    if (!array_key_exists('bundledImage', $item)) { return isset($item['image']) ? $item['image'] : ''; }
+    $relative = $item['bundledImage'];
+    if (!is_string($relative) || strlen($relative) > 159 || !preg_match('/\A(?:shows|merch)\/[A-Za-z0-9][A-Za-z0-9_-]*\.(?:png|jpe?g|webp|gif|avif)\z/i', $relative) || (isset($item['image']) && $item['image'] !== '')) {
+        return hochi_setup_error('The bundled artwork path is unsupported. No content was imported.');
+    }
+    $base = realpath(__DIR__ . '/assets');
+    $file = __DIR__ . '/assets/' . $relative;
+    $resolved = realpath($file);
+    if (!$base || strpos($base, __DIR__ . DIRECTORY_SEPARATOR) !== 0 || !$resolved || strpos($resolved, $base . DIRECTORY_SEPARATOR) !== 0 || !is_file($file) || !is_readable($file) || is_link($file) || !in_array(wp_get_image_mime($file), array('image/png', 'image/jpeg', 'image/webp', 'image/gif', 'image/avif'), true)) {
+        return hochi_setup_error('Bundled artwork is missing or invalid. Ask the developer for the complete plugin ZIP.');
+    }
+    $url = plugins_url('assets/' . $relative, __DIR__ . '/hochi-content.php');
+    $url = preg_replace('/\Ahttp:/', 'https:', $url);
+    $valid = hochi_content_url($url, true);
+    return $valid ? $valid : hochi_setup_error('The plugin artwork URL is unsupported. No content was imported.');
+}
+
 function hochi_setup_prepare_import($input) {
     if (!is_array($input) || !isset($input['version'], $input['artists'], $input['products'], $input['shows'], $input['pages'], $input['releases']) || $input['version'] !== 1 || !is_array($input['pages'])) { return hochi_setup_error(); }
     foreach (array('artists', 'products', 'shows') as $key) { if (!hochi_setup_is_list($input[$key], 500)) { return hochi_setup_error(); } }
@@ -110,11 +128,11 @@ function hochi_setup_prepare_import($input) {
     }
     foreach ($input['products'] as $order => $item) {
         if (!is_array($item) || !isset($item['name'], $item['price'])) { return hochi_setup_error(); }
-        $records[] = hochi_setup_record('hochi_product', $item['name'], array('price' => $item['price'], 'image' => isset($item['image']) ? $item['image'] : '', 'buy_url' => isset($item['buyUrl']) ? $item['buyUrl'] : ''), $order);
+        $records[] = hochi_setup_record('hochi_product', $item['name'], array('price' => $item['price'], 'image' => hochi_setup_image($item), 'buy_url' => isset($item['buyUrl']) ? $item['buyUrl'] : ''), $order);
     }
     foreach ($input['shows'] as $order => $item) {
         if (!is_array($item) || !isset($item['date'], $item['venue'], $item['city']) || !is_string($item['venue'])) { return hochi_setup_error(); }
-        $records[] = hochi_setup_record('hochi_show', $item['venue'], array('date' => $item['date'], 'venue' => $item['venue'], 'city' => $item['city'], 'ticket_url' => isset($item['ticketUrl']) ? $item['ticketUrl'] : ''), $order);
+        $records[] = hochi_setup_record('hochi_show', $item['venue'], array('date' => $item['date'], 'venue' => $item['venue'], 'city' => $item['city'], 'image' => hochi_setup_image($item), 'ticket_url' => isset($item['ticketUrl']) ? $item['ticketUrl'] : ''), $order);
     }
     foreach ($input['pages'] as $key => $item) {
         if (!is_array($item) || !isset($item['paragraphs']) || !hochi_setup_is_list($item['paragraphs'], 30)) { return hochi_setup_error(); }

@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Hochi Runs Content Bridge
  * Description: Edit Hochi Runs content and branding in WordPress and publish it to the connected Next.js website.
- * Version: 1.2.0
+ * Version: 1.3.0
  * Requires at least: 6.4
  * Requires PHP: 7.4
  * License: GPL-2.0-or-later
@@ -50,7 +50,7 @@ function hochi_content_instructions() {
     echo '<p>For an existing artist, use the current website route name, for example <code>amal</code> for <code>/roster/amal</code>. The artist route name becomes permanent after its first publication. Artist route names and About/Legal page choices must be unique among published entries.</p>';
     echo '<p>Artist release links use existing website route names, such as <code>like-dat-riddim</code> or <code>bandcamp-album-1883854658</code>. Music uploads and purchases remain on Bandcamp.</p>';
     echo '<p>Release entries provide optional descriptions, credits, tags, streaming links, artist associations, and visibility overrides. Bandcamp still supplies the music, release title, artwork, dates, and purchase URL. Empty override lists leave the catalog available.</p>';
-    echo '<p>Images use HTTPS URLs. Upload an image in WordPress’s Media Library, copy its File URL, then paste it into the image field. This plugin adds no audio uploads or media downloads.</p>';
+    echo '<p>Use Choose image to upload or select a Media Library image. On a published artist, product, or event, you can also paste a direct HTTPS image file URL and use Copy linked image to Media Library to save a permanent WordPress copy. This plugin adds no audio uploads or music downloads.</p>';
     echo '<p>Lower Order values appear first. This plugin supplies content; the existing website controls the design. It does not change your WordPress theme, page builder, or other pages.</p>';
     echo '<h2>Website content endpoint</h2><p><code>' . esc_html(rest_url('hochi/v1/content')) . '</code></p><p>This read-only URL exposes published Hochi content only. It contains no user accounts, private posts, or connection credentials.</p></div>';
 }
@@ -74,6 +74,7 @@ function hochi_content_fields($type) {
             'date' => array('Event date', 'text', 100, 'Display date, for example: Oct 23, 2026 · 9 PM. Include the timezone if needed.'),
             'venue' => array('Venue', 'text', 200, 'Venue or event name.'),
             'city' => array('City', 'text', 200, 'For example: Washington, D.C.'),
+            'image' => array('Flyer image URL', 'url', 2048, 'Optional flyer. Choose an image from Media Library or paste its public HTTPS image URL.'),
             'ticket_url' => array('Ticket URL', 'url', 2048, 'Optional HTTPS ticket link.'),
         ),
         'hochi_page' => array(
@@ -129,9 +130,68 @@ function hochi_content_picker($key, $value, $choices) {
     echo '</span>';
 }
 
-function hochi_content_image_buttons($target) {
+function hochi_content_image_buttons($target, $post = null, $key = '') {
     if (!current_user_can('upload_files')) { return; }
     echo '<br><button class="button hochi-select-image" type="button" data-target="' . esc_attr($target) . '">Choose image</button> <button class="button hochi-clear-image" type="button" data-target="' . esc_attr($target) . '">Use default / clear</button>';
+    if ($post && $post->post_status === 'publish' && current_user_can('edit_post', $post->ID) && in_array($key, array('photo', 'image'), true)) {
+        echo ' <button class="button" type="submit" name="hochi_copy_linked_image" value="' . esc_attr($key) . '">Copy linked image to Media Library</button><br><span class="description">Paste an image file URL above, then copy it to keep a permanent WordPress upload. This also saves the entry. Maximum 8 MB.</span>';
+    }
+}
+
+function hochi_content_copy_linked_image($post_id, $key, $source) {
+    $post = get_post($post_id);
+    if (!hochi_content_has_form($post_id) || !current_user_can('upload_files')) { return new WP_Error('hochi_image_permission', 'You need permission to edit this entry and upload media, with a valid editing form.'); }
+    $fields = $post ? hochi_content_fields($post->post_type) : array();
+    if (!$post || $post->post_status !== 'publish' || !in_array($key, array('photo', 'image'), true) || !isset($fields[$key])) { return new WP_Error('hochi_image_field', 'Copy linked images only on a published artist, product, or event image field.'); }
+    $source = hochi_content_url($source, true);
+    if (!$source || wp_parse_url($source, PHP_URL_SCHEME) !== 'https') { return new WP_Error('hochi_image_url', 'Paste a public HTTPS image file URL before copying.'); }
+    // An already-owned upload can be reused without duplicating the Media Library entry.
+    if (attachment_url_to_postid($source)) { return $source; }
+    require_once ABSPATH . 'wp-admin/includes/file.php';
+    require_once ABSPATH . 'wp-admin/includes/media.php';
+    require_once ABSPATH . 'wp-admin/includes/image.php';
+    $limit = min(8 * 1024 * 1024, (int) wp_max_upload_size());
+    if ($limit < 1) { return new WP_Error('hochi_image_upload_limit', 'WordPress is not allowing new media uploads.'); }
+    $temporary = wp_tempnam('hochi-linked-image');
+    if (!$temporary) { return new WP_Error('hochi_image_temp', 'WordPress could not create a temporary image file.'); }
+    $response = wp_safe_remote_get($source, array('timeout' => 20, 'redirection' => 0, 'stream' => true, 'filename' => $temporary, 'limit_response_size' => $limit + 1));
+    if (is_wp_error($response)) {
+        @unlink($temporary);
+        return new WP_Error('hochi_image_download', 'Image download failed: ' . $response->get_error_message());
+    }
+    $status = wp_remote_retrieve_response_code($response);
+    if ($status !== 200) {
+        @unlink($temporary);
+        return new WP_Error('hochi_image_http', 'The image server returned HTTP ' . (int) $status . '. Use a current direct image link.');
+    }
+    clearstatcache(true, $temporary);
+    $size = filesize($temporary);
+    if (!$size || $size > $limit) {
+        @unlink($temporary);
+        return new WP_Error('hochi_image_size', 'The downloaded image is empty or exceeds the upload limit of ' . size_format($limit) . '.');
+    }
+    $mime = wp_get_image_mime($temporary);
+    $extensions = array('image/jpeg' => 'jpg', 'image/png' => 'png', 'image/gif' => 'gif', 'image/webp' => 'webp', 'image/avif' => 'avif');
+    $dimensions = wp_getimagesize($temporary);
+    if (!isset($extensions[$mime]) || !in_array($mime, get_allowed_mime_types(), true) || !$dimensions || empty($dimensions[0]) || empty($dimensions[1])) {
+        @unlink($temporary);
+        return new WP_Error('hochi_image_type', 'The download is not a supported image. Use a JPG, PNG, GIF, WebP, or AVIF file allowed by WordPress.');
+    }
+    if ($dimensions[0] * $dimensions[1] > 20 * 1000 * 1000) {
+        @unlink($temporary);
+        return new WP_Error('hochi_image_dimensions', 'Use an image under 20 megapixels.');
+    }
+    $attachment = media_handle_sideload(array('name' => 'hochi-' . (int) $post_id . '-' . $key . '.' . $extensions[$mime], 'tmp_name' => $temporary), $post_id, $post->post_title);
+    if (is_wp_error($attachment)) {
+        @unlink($temporary);
+        return new WP_Error('hochi_image_media', 'WordPress could not save the image: ' . $attachment->get_error_message());
+    }
+    $url = hochi_content_url(wp_get_attachment_url($attachment), true);
+    if (!$url) {
+        wp_delete_attachment($attachment, true);
+        return new WP_Error('hochi_image_media_url', 'WordPress saved an image URL that this website cannot use. Check that Media Library URLs use public HTTPS.');
+    }
+    return $url;
 }
 
 function hochi_content_media_assets($hook) {
@@ -141,7 +201,7 @@ function hochi_content_media_assets($hook) {
         wp_add_inline_script('wp-color-picker', 'jQuery(function ($) { $(".hochi-color-picker").wpColorPicker(); });');
     }
     $screen = get_current_screen();
-    if (!current_user_can('upload_files') || (!$screen || (!in_array($screen->post_type, array('hochi_artist', 'hochi_product'), true) && $hook !== 'hochi-runs_page_hochi-appearance'))) { return; }
+    if (!current_user_can('upload_files') || (!$screen || (!in_array($screen->post_type, array('hochi_artist', 'hochi_product', 'hochi_show'), true) && $hook !== 'hochi-runs_page_hochi-appearance'))) { return; }
     wp_enqueue_media();
     wp_add_inline_script('media-editor', <<<'JS'
 document.addEventListener('DOMContentLoaded', function () {
@@ -219,7 +279,7 @@ function hochi_content_meta_box($post) {
         } else {
             $locked = $key === 'slug' && get_post_meta($post->ID, '_hochi_slug_locked', true);
             echo '<input class="large-text" type="' . esc_attr($field[1] === 'catalog_slug' ? 'text' : $field[1]) . '" id="' . esc_attr($id) . '" name="hochi[' . esc_attr($key) . ']" value="' . esc_attr($value) . '" maxlength="' . (int) $field[2] . '"' . ($locked ? ' readonly' : '') . '>';
-            if (in_array($key, array('photo', 'image'), true)) { hochi_content_image_buttons($id); }
+            if (in_array($key, array('photo', 'image'), true)) { hochi_content_image_buttons($id, $post, $key); }
         }
         echo '<br><span class="description">' . esc_html($field[3]) . '</span></p>';
     }
@@ -325,7 +385,7 @@ function hochi_content_validate($post_id, $type, $title, $values) {
     }
     foreach (array('photo', 'image', 'buy_url', 'ticket_url') as $key) {
         if (!empty($values[$key]) && !hochi_content_url($values[$key], in_array($key, array('photo', 'image'), true))) {
-            return new WP_Error('hochi_invalid_url', 'Use valid HTTPS URLs; photo and product image URLs must be image files.');
+            return new WP_Error('hochi_invalid_url', 'Use valid HTTPS URLs; photos, product images, and event flyers must be image files.');
         }
     }
     if ($type === 'hochi_artist') {
@@ -416,7 +476,19 @@ function hochi_content_save($post_id, $post) {
     if (!in_array($post->post_type, hochi_content_types(), true) || wp_is_post_revision($post_id) || wp_is_post_autosave($post_id) || (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE)) { return; }
     if (!empty($GLOBALS['hochi_rejected_save'][$post_id])) { unset($GLOBALS['hochi_rejected_save'][$post_id]); return; }
     if (hochi_content_has_form($post_id)) {
-        foreach (hochi_content_values($post_id, $post->post_type, true) as $key => $value) {
+        $values = hochi_content_values($post_id, $post->post_type, true);
+        if (isset($_POST['hochi_copy_linked_image'])) {
+            $image_key = is_string($_POST['hochi_copy_linked_image']) ? sanitize_key(wp_unslash($_POST['hochi_copy_linked_image'])) : '';
+            $copied = hochi_content_copy_linked_image($post_id, $image_key, isset($values[$image_key]) ? $values[$image_key] : '');
+            if (is_wp_error($copied)) {
+                foreach (array('photo', 'image') as $key) { if (array_key_exists($key, $values)) { $values[$key] = get_post_meta($post_id, '_hochi_' . $key, true); } }
+                set_transient('hochi_notice_' . get_current_user_id(), $copied->get_error_message() . ' Your previous image was kept.', 120);
+            } else {
+                $values[$image_key] = $copied;
+                delete_transient('hochi_notice_' . get_current_user_id());
+            }
+        }
+        foreach ($values as $key => $value) {
             update_post_meta($post_id, '_hochi_' . $key, $value);
         }
     }
@@ -498,6 +570,7 @@ function hochi_content_payload() {
                 $payload['products'][] = $product;
             } elseif ($type === 'hochi_show') {
                 $show = array('date' => $values['date'], 'venue' => $values['venue'], 'city' => $values['city']);
+                if ($values['image'] !== '') { $show['image'] = hochi_content_url($values['image'], true); }
                 if ($values['ticket_url'] !== '') { $show['ticketUrl'] = hochi_content_url($values['ticket_url']); }
                 $payload['shows'][] = $show;
             } elseif ($type === 'hochi_release') {

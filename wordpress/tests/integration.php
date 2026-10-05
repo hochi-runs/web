@@ -29,7 +29,8 @@ hochi_test(get_post_status($artist) === 'publish', 'Valid native form must publi
 hochi_test(get_post_meta($artist, '_hochi_slug_locked', true) === '1', 'Artist slug must lock after publication');
 update_post_meta($artist, '_hochi_private_note', 'private-account-note');
 $product = hochi_test_form('hochi_product', 'Hochi Hoodie', array('price' => '$25', 'image' => 'https://cdn.hochiruns.com/hoodie.webp', 'buy_url' => 'https://hochiruns.bandcamp.com/merch/hoodie'));
-$show = hochi_test_form('hochi_show', 'Launch show', array('date' => 'Oct 23, 2026 · 9 PM EDT', 'venue' => 'Test venue', 'city' => 'Washington, D.C.', 'ticket_url' => 'https://tickets.hochiruns.com/show'));
+$show_fields = array('date' => 'Oct 23, 2026 · 9 PM EDT', 'venue' => 'Test venue', 'city' => 'Washington, D.C.', 'image' => 'https://cdn.hochiruns.com/event-flyer.jpg', 'ticket_url' => 'https://tickets.hochiruns.com/show');
+$show = hochi_test_form('hochi_show', 'Launch show', $show_fields);
 $about = hochi_test_form('hochi_page', 'About website', array('page_key' => 'about', 'paragraphs' => "First paragraph.\n\nSecond paragraph."));
 $draft = hochi_test_form('hochi_artist', 'Draft Artist', array('slug' => 'draft-artist', 'role' => 'DJ'), 'draft');
 $private = hochi_test_form('hochi_artist', 'Private Artist', array('slug' => 'private-artist', 'role' => 'DJ'), 'private');
@@ -44,6 +45,12 @@ hochi_test($payload['artists'][0]['bio'] === 'Updated owner biography', 'Plain b
 hochi_test($payload['artists'][0]['releaseSlugs'] === array('like-dat-riddim', 'bandcamp-album-1883854658'), 'Artist links retain existing route names');
 hochi_test($payload['products'][0]['buyUrl'] === 'https://hochiruns.bandcamp.com/merch/hoodie', 'Product checkout link mapping');
 hochi_test($payload['shows'][0]['venue'] === 'Test venue', 'Event fields mapping');
+hochi_test($payload['shows'][0]['image'] === $show_fields['image'], 'Event flyer persists and exports through native forms');
+ob_start();
+hochi_content_meta_box(get_post($show));
+$event_screen = ob_get_clean();
+hochi_test(strpos($event_screen, 'Flyer image URL') !== false && strpos($event_screen, 'data-target="hochi-image"') !== false && strpos($event_screen, 'Choose image') !== false, 'Event editor exposes its flyer field and Media Library picker');
+hochi_test(strpos($event_screen, 'name="hochi_copy_linked_image" value="image"') !== false && strpos($event_screen, 'Copy linked image to Media Library') !== false, 'Published event editor exposes the linked-image copy submit button');
 hochi_test($payload['pages']->about['paragraphs'] === array('First paragraph.', 'Second paragraph.'), 'About paragraphs mapping');
 $encoded = wp_json_encode($payload);
 hochi_test(strpos($encoded, 'private-account-note') === false && strpos($encoded, 'not-public') === false && strpos($encoded, 'user_email') === false, 'No private metadata, passwords, or user fields exported');
@@ -71,6 +78,79 @@ $duplicate_page = hochi_test_form('hochi_page', 'Duplicate About', array('page_k
 hochi_test(get_post_status($duplicate_page) === 'draft', 'Duplicate About page must not publish');
 $bad_image = hochi_test_form('hochi_product', 'Music file', array('price' => '$10', 'image' => 'https://cdn.hochiruns.com/master.mp3'));
 hochi_test(get_post_status($bad_image) === 'draft', 'Audio files cannot be used as images');
+$bad_flyer = hochi_test_form('hochi_show', 'Invalid flyer', array_merge($show_fields, array('image' => 'https://cdn.hochiruns.com/master.mp3')));
+hochi_test(get_post_status($bad_flyer) === 'draft', 'Event flyers reject audio files before publication');
+$_POST = array('hochi_content_nonce' => wp_create_nonce('hochi_content_save_' . $show), 'hochi' => array_merge($show_fields, array('image' => 'http://cdn.hochiruns.com/event-flyer.jpg')));
+wp_update_post(array('ID' => $show));
+$_POST = array();
+hochi_test(hochi_content_payload()['shows'][0]['image'] === $show_fields['image'], 'Invalid flyer updates preserve the previously published image');
+$_POST = array('hochi_content_nonce' => wp_create_nonce('hochi_content_save_' . $show), 'hochi' => array_merge($show_fields, array('image' => '')));
+wp_update_post(array('ID' => $show));
+$_POST = array();
+hochi_test(!isset(hochi_content_payload()['shows'][0]['image']), 'Clearing a flyer retains a supported text-only event');
+
+// Copy a supplied linked image through the same native form, preserving previous media on failure.
+$image_source = 'https://wordpress.org/hochi-linked-image-test.png?source=fixture';
+$image_request_count = 0;
+$image_request_arguments = array();
+$image_download_mode = 'success';
+$image_download_mock = function ($preempt, $arguments, $url) use (&$image_request_count, &$image_request_arguments, &$image_download_mode, $image_source) {
+    if ($url !== $image_source) { return $preempt; }
+    $image_request_count++;
+    $image_request_arguments = $arguments;
+    if ($image_download_mode === 'error') { return new WP_Error('expired_fixture', 'Source link expired.'); }
+    $bytes = base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jQ3cAAAAASUVORK5CYII=');
+    if ($image_download_mode === 'html') { $bytes = '<html>Sign in to view this image.</html>'; }
+    if ($image_download_mode === 'oversize') { $bytes = str_repeat('x', 8 * 1024 * 1024 + 1); }
+    file_put_contents($arguments['filename'], $bytes);
+    return array('headers' => array(), 'body' => '', 'response' => array('code' => $image_download_mode === 'redirect' ? 302 : 200, 'message' => 'Fixture response'), 'cookies' => array());
+};
+$image_upload_urls = function ($uploads) {
+    $uploads['baseurl'] = 'https://cms.hochiruns.com/wp-content/uploads';
+    $uploads['url'] = $uploads['baseurl'] . $uploads['subdir'];
+    return $uploads;
+};
+add_filter('pre_http_request', $image_download_mock, 1, 3);
+add_filter('upload_dir', $image_upload_urls);
+$_POST = array('hochi_content_nonce' => wp_create_nonce('hochi_content_save_' . $show));
+hochi_test(is_wp_error(hochi_content_copy_linked_image($show, 'ticket_url', $image_source)), 'Linked image action cannot target a non-image field');
+$_POST['hochi_content_nonce'] = wp_create_nonce('hochi_content_save_' . $draft);
+hochi_test(is_wp_error(hochi_content_copy_linked_image($draft, 'photo', $image_source)), 'Linked image action is limited to published entries');
+$_POST['hochi_content_nonce'] = 'forged';
+hochi_test(is_wp_error(hochi_content_copy_linked_image($show, 'image', $image_source)) && $image_request_count === 0, 'Forged image-copy nonce cannot download or create media');
+$_POST['hochi_content_nonce'] = wp_create_nonce('hochi_content_save_' . $show);
+$admin = wp_get_current_user();
+$admin->add_cap('upload_files', false);
+hochi_test(current_user_can('edit_post', $show) && is_wp_error(hochi_content_copy_linked_image($show, 'image', $image_source)) && $image_request_count === 0, 'Edit permission alone cannot bypass media upload permission');
+$admin->remove_cap('upload_files');
+wp_set_current_user(0);
+hochi_test(is_wp_error(hochi_content_copy_linked_image($show, 'image', $image_source)) && $image_request_count === 0, 'Anonymous linked-image imports cannot download or upload');
+wp_set_current_user(1);
+$_POST = array('hochi_content_nonce' => wp_create_nonce('hochi_content_save_' . $show), 'hochi' => array_merge($show_fields, array('image' => $image_source)), 'hochi_copy_linked_image' => 'image');
+wp_update_post(array('ID' => $show));
+$_POST = array();
+$owned_image = get_post_meta($show, '_hochi_image', true);
+$owned_attachment = attachment_url_to_postid($owned_image);
+hochi_test(strpos($owned_image, 'https://cms.hochiruns.com/wp-content/uploads/') === 0 && $owned_image !== $image_source && $owned_attachment, 'Native linked-image submit replaces the external URL with a durable Media Library URL');
+hochi_test(get_post($owned_attachment)->post_parent === $show && hochi_content_payload()['shows'][0]['image'] === $owned_image, 'Copied media belongs to the entry and exports to the website');
+hochi_test($image_request_arguments['reject_unsafe_urls'] === true && $image_request_arguments['redirection'] === 0 && $image_request_arguments['timeout'] === 20 && $image_request_arguments['stream'] === true && $image_request_arguments['limit_response_size'] <= 8 * 1024 * 1024 + 1, 'Linked image requests use safe HTTP, bounded disk streaming, timeout, and no redirects');
+$attachment_count = count(get_posts(array('post_type' => 'attachment', 'post_status' => 'inherit', 'numberposts' => -1)));
+foreach (array('error', 'html', 'oversize', 'redirect') as $mode) {
+    $image_download_mode = $mode;
+    $_POST = array('hochi_content_nonce' => wp_create_nonce('hochi_content_save_' . $show), 'hochi' => array_merge($show_fields, array('image' => $image_source)), 'hochi_copy_linked_image' => 'image');
+    wp_update_post(array('ID' => $show));
+    $_POST = array();
+    hochi_test(get_post_meta($show, '_hochi_image', true) === $owned_image && count(get_posts(array('post_type' => 'attachment', 'post_status' => 'inherit', 'numberposts' => -1))) === $attachment_count, 'Failed, invalid, oversized, or redirected copies preserve the existing image and create no attachment');
+    hochi_test(strpos(get_transient('hochi_notice_1'), 'Your previous image was kept.') !== false, 'Image-copy failures display an actionable editing notice');
+    if ($mode === 'error') { hochi_test(strpos(get_transient('hochi_notice_1'), 'Source link expired.') !== false, 'Image-copy notice contains the actual download error'); }
+}
+$_POST = array('hochi_content_nonce' => wp_create_nonce('hochi_content_save_' . $show), 'hochi' => array_merge($show_fields, array('image' => $owned_image)), 'hochi_copy_linked_image' => 'image');
+$image_request_before = $image_request_count;
+wp_update_post(array('ID' => $show));
+$_POST = array();
+hochi_test($image_request_count === $image_request_before && count(get_posts(array('post_type' => 'attachment', 'post_status' => 'inherit', 'numberposts' => -1))) === $attachment_count, 'Copying an owned Media Library URL reuses its existing attachment');
+remove_filter('pre_http_request', $image_download_mock, 1);
+remove_filter('upload_dir', $image_upload_urls);
 $bad_link = hochi_test_form('hochi_artist', 'Invalid Link', array('slug' => 'invalid-link', 'role' => 'DJ', 'socials' => 'Instagram | javascript:alert(1)'));
 hochi_test(get_post_status($bad_link) === 'draft', 'Unsafe social links must not publish');
 

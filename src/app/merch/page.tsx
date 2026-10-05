@@ -25,7 +25,7 @@ export default async function MerchPage() {
                   <img
                     src={product.image}
                     alt={product.name}
-                    className="h-full w-full object-cover transition-opacity group-hover:opacity-90"
+                    className="h-full w-full object-contain transition-opacity group-hover:opacity-90"
                   />
                 ) : (
                   <span>{product.name}</span>

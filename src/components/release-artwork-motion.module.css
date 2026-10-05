@@ -1,0 +1,71 @@
+.artwork {
+  width: 100%;
+}
+
+.frame {
+  position: relative;
+  aspect-ratio: 1;
+  width: 100%;
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.image,
+.canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.image {
+  display: block;
+  object-fit: cover;
+}
+
+.canvas {
+  pointer-events: none;
+  opacity: 0;
+}
+
+.canvas[data-ready="true"] {
+  opacity: 1;
+}
+
+.toggle {
+  position: absolute;
+  right: 0.5rem;
+  bottom: 0.5rem;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: rgb(0 0 0 / 65%);
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 140ms ease;
+}
+
+.toggle:hover,
+.toggle:focus-visible {
+  background: rgb(0 0 0 / 85%);
+}
+
+.toggle:focus-visible {
+  outline: 1px solid #fff;
+  outline-offset: -3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .canvas {
+    display: none;
+  }
+
+  .toggle {
+    transition: none;
+  }
+}

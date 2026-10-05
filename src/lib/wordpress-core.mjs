@@ -206,6 +206,7 @@ export function parsePluginContent(input, options = {}) {
       date: plainWordPressText(show.date, 'show date', 200, true),
       venue: plainWordPressText(show.venue, 'show venue', 500, true),
       city: plainWordPressText(show.city, 'show city', 500, true), ticketUrl: optionalUrl(show.ticketUrl),
+      image: optionalImageUrl(show.image, options),
     };
   });
   const pageInput = object(data.pages, 'pages');
