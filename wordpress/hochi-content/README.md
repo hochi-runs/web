@@ -11,7 +11,7 @@ It needs WordPress 6.4+ and PHP 7.4+. Install it on a WordPress host that permit
 1. In WordPress, open **Plugins → Add New → Upload Plugin**, select `hochi-runs-content-bridge.zip`, install, and activate.
 2. Open **Hochi Runs**. Its overview shows the public content endpoint, normally `https://YOUR-WORDPRESS-HOST/wp-json/hochi/v1/content`.
 3. Open **Hochi Runs → Setup → Import existing site content**. This copies the bundled current artists, products, events, and About/Legal text into published editing forms. Release editorial entries start as drafts and their titles populate the artist checkboxes immediately. Review the imported placeholders and add real bios, shop links, and event information as needed. Existing matching entries, including drafts and Trash, are skipped; appearance settings are preserved. Activating the plugin alone does not import anything.
-4. Give the developer the endpoint. Set `WORDPRESS_CONTENT_URL` on the Next.js host, then redeploy with the plugin adapter enabled according to the project handoff.
+4. Give the developer the endpoint. Set `WORDPRESS_CONTENT_URL` on the Next.js host, then redeploy. See the project README for the server settings.
 5. Verify a small published edit on the website. Drafts, private entries, password-protected entries, and trash are excluded.
 6. On **Setup**, save the connected website's public catalog URL, such as `https://YOUR-SITE/api/wordpress/catalog`, and click **Refresh release choices**. The existing live `vercel.app` address can be used before connecting a custom domain. See the catalog refresh details below.
 
