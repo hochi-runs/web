@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { RadioBetaAudio } from "@/lib/radio-beta-audio";
+import { RadioBetaTabAudio } from "@/lib/radio-beta-tab-audio";
 import { createRadioVisualizer, type RadioColor } from "@/lib/radio-beta-visualizer";
 import styles from "./radio-beta.module.css";
 
@@ -10,6 +11,16 @@ const GRAY: [RadioColor, RadioColor, RadioColor] = [
   [0.102, 0.102, 0.102], [0.102, 0.102, 0.102], [0.102, 0.102, 0.102],
 ];
 const REFERENCE_WORDMARK = "https://catalog.radio/assets/icons/logo/logo-wordmark.svg";
+
+type AudioSource = "local" | "bandcamp";
+type BandcampRelease = {
+  id: number;
+  type: "album" | "track";
+  slug: string;
+  title: string;
+  artist: string;
+  cover?: string;
+};
 
 function VolumeIcon({ muted }: { muted: boolean }) {
   return <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
@@ -38,9 +49,11 @@ function Wordmark({ reference }: { reference: boolean }) {
   );
 }
 
-export function RadioBeta() {
+export function RadioBeta({ releases }: { releases: BandcampRelease[] }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const engineRef = useRef<RadioBetaAudio | null>(null);
+  const tabAudioRef = useRef<RadioBetaTabAudio | null>(null);
+  const sourceRef = useRef<AudioSource>("bandcamp");
   const busyRef = useRef(false);
   const aliveRef = useRef(true);
   const purchaseUntilRef = useRef(0);
@@ -50,6 +63,7 @@ export function RadioBeta() {
   const purchaseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const paletteVersionRef = useRef(0);
+  const bandsRef = useRef<[number, number, number]>([0, 0, 0]);
   const [started, setStarted] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -61,6 +75,17 @@ export function RadioBeta() {
   const [error, setError] = useState("");
   const [webglUnavailable, setWebglUnavailable] = useState(false);
   const [paletteName, setPaletteName] = useState("Monochrome");
+  const [audioSource, setAudioSource] = useState<AudioSource>("bandcamp");
+  const [captureActive, setCaptureActive] = useState(false);
+  const [captureSupport, setCaptureSupport] = useState<string>();
+  const [releaseSlug, setReleaseSlug] = useState(releases[0]?.slug);
+  const [audioLevels, setAudioLevels] = useState<[number, number, number]>([0, 0, 0]);
+  const selectedRelease = releases.find((release) => release.slug === releaseSlug) ?? releases[0];
+
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => setCaptureSupport(RadioBetaTabAudio.supportMessage()));
+    return () => cancelAnimationFrame(frame);
+  }, []);
 
   useEffect(() => {
     aliveRef.current = true;
@@ -69,6 +94,8 @@ export function RadioBeta() {
       if (purchaseTimerRef.current) clearTimeout(purchaseTimerRef.current);
       void engineRef.current?.dispose();
       engineRef.current = null;
+      void tabAudioRef.current?.dispose();
+      tabAudioRef.current = null;
     };
   }, []);
 
@@ -81,16 +108,26 @@ export function RadioBeta() {
     try {
       return createRadioVisualizer(canvas, () => {
         const engine = engineRef.current;
+        const capture = tabAudioRef.current;
+        const analyser = sourceRef.current === "bandcamp"
+          ? capture?.active ? capture.analyser : undefined
+          : engine?.playing ? engine.analyser : undefined;
         let bands: [number, number, number] = [0.35, 0.35, 0.35];
-        if (engine?.playing) {
-          engine.analyser.getFloatFrequencyData(frequencies);
+        if (analyser) {
+          analyser.getFloatFrequencyData(frequencies);
           const average = (from: number, to: number) => {
             let sum = 0;
             for (let i = from; i <= to; i++) sum += (Math.min(-30, Math.max(-100, frequencies[i])) + 100) / 70;
             return sum / (to - from + 1);
           };
-          bands = [average(0, 7), average(9, 46), average(48, 279)];
+          // Captured tab audio can run at 48 kHz; map frequencies to its actual FFT bins.
+          const bin = (hz: number) => Math.min(frequencies.length - 1,
+            Math.round(hz * analyser.fftSize / analyser.context.sampleRate));
+          const lowEnd = bin(300);
+          const midEnd = bin(2_000);
+          bands = [average(0, lowEnd), average(lowEnd + 2, midEnd), average(midEnd + 2, bin(12_000))];
         }
+        bandsRef.current = analyser ? bands : [0, 0, 0];
         return { bands, colors: colorsRef.current, purchase: performance.now() < purchaseUntilRef.current };
       }, () => setWebglUnavailable(true));
     } catch {
@@ -99,6 +136,13 @@ export function RadioBeta() {
       return () => clearTimeout(timer);
     }
   }, []);
+
+  useEffect(() => {
+    if (!infoOpen) return;
+    // A small diagnostic display shares the shader's samples without re-rendering every frame.
+    const timer = setInterval(() => setAudioLevels([...bandsRef.current]), 250);
+    return () => clearInterval(timer);
+  }, [infoOpen]);
 
   useEffect(() => {
     if (!infoOpen) return;
@@ -117,6 +161,10 @@ export function RadioBeta() {
 
   const togglePlaying = async () => {
     if (busyRef.current) return;
+    if (sourceRef.current === "bandcamp") {
+      setStarted(true);
+      return;
+    }
     busyRef.current = true;
     setBusy(true);
     setError("");
@@ -130,6 +178,47 @@ export function RadioBeta() {
       }
     } catch (reason) {
       if (aliveRef.current) setError(reason instanceof Error ? reason.message : "Could not start audio. Try again.");
+    } finally {
+      busyRef.current = false;
+      if (aliveRef.current) setBusy(false);
+    }
+  };
+
+  const switchSource = (next: AudioSource) => {
+    if (busyRef.current) return;
+    tabAudioRef.current?.stop();
+    engineRef.current?.pause();
+    sourceRef.current = next;
+    setAudioSource(next);
+    setCaptureActive(false);
+    setPlaying(false);
+    setError("");
+  };
+
+  const toggleTabCapture = async () => {
+    if (busyRef.current) return;
+    if (tabAudioRef.current?.active) {
+      tabAudioRef.current.stop();
+      setCaptureActive(false);
+      return;
+    }
+    busyRef.current = true;
+    setBusy(true);
+    setError("");
+    try {
+      if (!tabAudioRef.current) {
+        tabAudioRef.current = new RadioBetaTabAudio(() => {
+          const ended = tabAudioRef.current;
+          tabAudioRef.current = null;
+          void ended?.dispose();
+          if (aliveRef.current) setCaptureActive(false);
+        });
+      }
+      // The browser picker opens from this click. Only the visitor can grant sharing.
+      await tabAudioRef.current.connect();
+      if (aliveRef.current) setCaptureActive(tabAudioRef.current.active);
+    } catch (reason) {
+      if (aliveRef.current) setError(reason instanceof Error ? reason.message : "Could not connect tab audio.");
     } finally {
       busyRef.current = false;
       if (aliveRef.current) setBusy(false);
@@ -152,6 +241,7 @@ export function RadioBeta() {
 
   const loadLocalFile = async (file?: File) => {
     if (!file || busyRef.current) return;
+    switchSource("local");
     busyRef.current = true;
     setBusy(true);
     setError("");
@@ -188,7 +278,15 @@ export function RadioBeta() {
       const context = surface.getContext("2d");
       if (!context) return;
       context.drawImage(image, 0, 0, 96, 96);
-      const pixels = context.getImageData(0, 0, 96, 96).data;
+      let pixels: Uint8ClampedArray;
+      try {
+        pixels = context.getImageData(0, 0, 96, 96).data;
+      } catch {
+        colorsRef.current = GRAY;
+        setPaletteName("Monochrome");
+        setError("This artwork cannot supply a color palette. Audio analysis is still available.");
+        return;
+      }
       const counts = new Map<string, number>();
       for (let i = 0; i < pixels.length; i += 32) {
         const key = [pixels[i], pixels[i + 1], pixels[i + 2]].map((value) => Math.min(255, Math.round(value / 40) * 40)).join(",");
@@ -205,12 +303,18 @@ export function RadioBeta() {
       if (aliveRef.current) setPaletteName("Artwork colors");
     };
     image.onerror = () => {
-      if (aliveRef.current && version === paletteVersionRef.current) setError("The artwork palette could not be loaded.");
+      if (aliveRef.current && version === paletteVersionRef.current) {
+        colorsRef.current = GRAY;
+        setPaletteName("Monochrome");
+        setError("The artwork palette could not be loaded. Audio analysis is still available.");
+      }
     };
+    image.crossOrigin = "anonymous";
     image.src = path;
   };
 
-  return <section className={styles.radio} aria-label="Radio beta" data-playing={playing} data-purchase={purchaseActive}>
+  return <section className={styles.radio} aria-label="Radio beta" data-playing={playing} data-purchase={purchaseActive}
+    data-audio-source={audioSource} data-tab-capture={captureActive}>
     <canvas ref={canvasRef} className={styles.canvas} aria-hidden="true" />
     <div className={styles.centerMark} aria-hidden="true">
       <div className={styles.wordmarkLayer}><Wordmark reference={reference} /></div>
@@ -230,7 +334,34 @@ export function RadioBeta() {
     {infoOpen && <aside id="radio-beta-info" className={styles.info} aria-label="Radio beta settings">
       <p className={styles.infoTitle}>Radio study</p>
       <p>The Catalog Radio layout and audio-reactive effect, reconstructed for this local beta.</p>
-      <p>Audio is a generated test signal. Test cosign simulates the 15-second purchase effect; it makes no payment.</p>
+      <p>Choose a Bandcamp release and press its play button. Enable reactive audio and approve sharing this browser tab with sound.</p>
+      <p>Audio analysis stays in your browser. Test cosign simulates the 15-second purchase effect; it makes no payment.</p>
+      <div className={styles.optionGroup}>
+        <span className={styles.optionLabel}>Audio source</span>
+        <div className={styles.options}>
+          <button aria-pressed={audioSource === "bandcamp"} disabled={busy} onClick={() => switchSource("bandcamp")}>Bandcamp</button>
+          <button aria-pressed={audioSource === "local"} disabled={busy} onClick={() => switchSource("local")}>Local audio</button>
+        </div>
+        {audioSource === "bandcamp" && <>
+          <label className={styles.optionLabel} htmlFor="radio-bandcamp-release">Release</label>
+          <select id="radio-bandcamp-release" className={styles.releaseSelect} value={selectedRelease?.slug ?? ""}
+            onChange={(event) => {
+              setReleaseSlug(event.target.value);
+              choosePalette(releases.find((release) => release.slug === event.target.value)?.cover);
+            }}>
+            {releases.map((release) => <option key={release.slug} value={release.slug}>{release.artist} — {release.title}</option>)}
+          </select>
+          <span className={styles.fine}>{captureSupport ?? "Choose this tab in the browser prompt. If it offers Share tab audio, turn that on. Desktop Chrome or Edge supports tab-audio sharing."}</span>
+        </>}
+      </div>
+      <div className={styles.optionGroup} aria-label="Audio input levels">
+        <span className={styles.optionLabel}>Audio input</span>
+        {(["Bass", "Mids", "Treble"] as const).map((label, index) => <label key={label} className={styles.audioLevel}>
+          <span>{label}</span>
+          <meter min={0} max={1} value={audioLevels[index]} aria-label={`${label} audio level`} />
+          <span className={styles.levelValue} aria-hidden="true">{Math.round(audioLevels[index] * 100)}%</span>
+        </label>)}
+      </div>
       <div className={styles.optionGroup}>
         <span className={styles.optionLabel}>Wordmark</span>
         <div className={styles.options}>
@@ -261,30 +392,43 @@ export function RadioBeta() {
     {error && <p className={styles.error} role="alert">{error}</p>}
 
     <footer className={styles.soundbar} aria-label="Radio audio controls">
-      <button className={styles.transport} onClick={() => void togglePlaying()} disabled={busy}
+      {audioSource === "bandcamp" ? <>
+        <button className={`${styles.transport} ${styles.captureTransport}`} onClick={() => void toggleTabCapture()}
+          disabled={busy || Boolean(captureSupport)} aria-label={captureActive ? "Disconnect reactive audio" : "Enable reactive audio"}>
+          <span className={styles.airDot} data-active={captureActive} />
+          <span className={styles.airText}>{busy ? "CONNECTING" : captureActive ? "REACTIVE ON" : "ENABLE REACTIVE"}</span>
+        </button>
+        <div className={styles.bandcampPlayer}>
+          {selectedRelease ? <iframe
+            key={selectedRelease.slug}
+            src={`https://bandcamp.com/EmbeddedPlayer/${selectedRelease.type}=${selectedRelease.id}/size=small/bgcol=262626/linkcol=ffffff/artwork=none/transparent=true/`}
+            title={`Bandcamp player: ${selectedRelease.artist} — ${selectedRelease.title}`} className={styles.bandcampFrame} />
+            : <span className={styles.fine}>No Bandcamp releases are available.</span>}
+        </div>
+      </> : <><button className={styles.transport} onClick={() => void togglePlaying()} disabled={busy}
         aria-label={playing ? "Pause radio" : "Play radio"}>
         <span className={styles.airDot} data-active={playing} />
         <span className={styles.airText}>{playing ? "TEST SIGNAL" : started ? "PAUSED" : "OFF AIR"}</span>
         {started && <PlayIcon playing={playing} />}
       </button>
-      <span className={styles.trackName}>{started ? sourceName : ""}</span>
+      <span className={styles.trackName}>{started ? sourceName : ""}</span></>}
       <button className={styles.cosign} onClick={testPurchase} aria-pressed={purchaseActive}>
         {purchaseActive ? "COSIGN EFFECT" : "TEST COSIGN"}<span aria-hidden="true"> ↗</span>
       </button>
-      <div className={styles.volume}>
+      {audioSource === "local" && <div className={styles.volume}>
         <button aria-label={volume === 0 ? "Unmute radio" : "Mute radio"}
           onClick={() => updateVolume(volume === 0 ? previousVolumeRef.current : 0)}><VolumeIcon muted={volume === 0} /></button>
         <div className={styles.volumePopover}>
           <input type="range" aria-label="Radio volume" min="0" max="1" step="0.01" value={volume}
             onChange={(event) => updateVolume(Number(event.target.value))} />
         </div>
-      </div>
+      </div>}
     </footer>
 
     <button className={`${styles.splash} ${started ? styles.splashGone : ""}`} aria-label="Start radio beta"
       tabIndex={started ? -1 : 0} disabled={busy || started} onClick={() => void togglePlaying()} aria-hidden={started}>
       <span className={styles.splashWordmark}><Wordmark reference={reference} /></span>
-      <span className={styles.startPrompt}>{busy ? "Starting…" : "Click anywhere to start listening"}</span>
+      <span className={styles.startPrompt}>{busy ? "Starting…" : audioSource === "bandcamp" ? "Click anywhere to open Bandcamp radio" : "Click anywhere to start listening"}</span>
     </button>
   </section>;
 }
