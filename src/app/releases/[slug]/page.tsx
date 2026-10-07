@@ -64,8 +64,6 @@ export default async function ReleasePage({
               src={release.cover}
               title={`${release.artist} — ${release.title}`}
               code={release.code}
-              id={release.bandcampId}
-              type={release.bandcampType}
             />
 
             {/* Streaming links as small text icons under the art */}

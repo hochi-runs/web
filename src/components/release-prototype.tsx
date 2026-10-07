@@ -21,8 +21,6 @@ export function ReleasePrototype({ release }: { release: Release }) {
             src={release.cover}
             title={`${release.artist} — ${release.title}`}
             code={release.code}
-            id={release.bandcampId}
-            type={release.bandcampType}
           />
 
           <div className={styles.links}>
