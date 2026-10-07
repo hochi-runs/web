@@ -51,7 +51,7 @@ export function SitePlayerProvider({ releases, children }: {
   return (
     <PlayerContext.Provider value={{ activeKey, open, loadRelease }}>
       {children}
-      {selected && (
+      {selected && !pathname.startsWith("/beta/radio") && (
         <section id="site-music-player" className={styles.player} aria-label="Music player">
           <iframe
             key={activeKey}

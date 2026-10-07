@@ -42,6 +42,8 @@ export function SiteChrome({ logoUrl }: { logoUrl?: string }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
 
+  if (pathname.startsWith("/beta/radio")) return null;
+
   return (
     <>
       {/* Top-left: logo */}
