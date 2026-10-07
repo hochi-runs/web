@@ -14,6 +14,12 @@ const GRAY: [RadioColor, RadioColor, RadioColor] = [
 ];
 
 type AudioSource = "local" | "bandcamp";
+type DisplayMode = "artwork" | "wordmark" | "both";
+const DISPLAY_MODES = [
+  { value: "artwork", label: "Artwork" },
+  { value: "wordmark", label: "Wordmark" },
+  { value: "both", label: "Both" },
+] as const;
 type BandcampRelease = {
   id: number;
   type: "album" | "track";
@@ -77,7 +83,7 @@ export function RadioBeta({ releases, customBandcampPreview = false }: {
   const [purchaseActive, setPurchaseActive] = useState(false);
   const [error, setError] = useState("");
   const [webglUnavailable, setWebglUnavailable] = useState(false);
-  const [paletteName, setPaletteName] = useState("Monochrome");
+  const [displayMode, setDisplayMode] = useState<DisplayMode>("artwork");
   const [audioSource, setAudioSource] = useState<AudioSource>("bandcamp");
   const [captureActive, setCaptureActive] = useState(false);
   const [captureSupport, setCaptureSupport] = useState<string>();
@@ -89,9 +95,10 @@ export function RadioBeta({ releases, customBandcampPreview = false }: {
   const [unavailableCover, setUnavailableCover] = useState<string>();
   const selectedRelease = releases.find((release) => release.slug === releaseSlug) ?? releases[0];
   const customControls = audioSource === "local" || customBandcampPreview;
-  const showReleaseArtwork = audioSource === "bandcamp" && selectedRelease?.cover
+  const artworkAvailable = audioSource === "bandcamp" && selectedRelease?.cover
     && unavailableCover !== selectedRelease.cover
     && (!customBandcampPreview || playedReleaseSlug === selectedRelease.slug);
+  const showReleaseArtwork = Boolean(artworkAvailable && displayMode !== "wordmark");
 
   useEffect(() => {
     const frame = requestAnimationFrame(() => setCaptureSupport(RadioBetaTabAudio.supportMessage()));
@@ -283,13 +290,12 @@ export function RadioBeta({ releases, customBandcampPreview = false }: {
     purchaseTimerRef.current = setTimeout(() => setPurchaseActive(false), 15_000);
   };
 
-  const choosePalette = (path?: string) => {
+  useEffect(() => {
+    const path = selectedRelease?.cover;
     const version = ++paletteVersionRef.current;
-    if (!path) {
-      colorsRef.current = GRAY;
-      setPaletteName("Monochrome");
-      return;
-    }
+    // The visualizer always follows the selected release, regardless of display mode.
+    colorsRef.current = GRAY;
+    if (!path) return;
     const image = new Image();
     image.onload = () => {
       if (!aliveRef.current || version !== paletteVersionRef.current) return;
@@ -303,7 +309,6 @@ export function RadioBeta({ releases, customBandcampPreview = false }: {
         pixels = context.getImageData(0, 0, 96, 96).data;
       } catch {
         colorsRef.current = GRAY;
-        setPaletteName("Monochrome");
         return;
       }
       const counts = new Map<string, number>();
@@ -319,20 +324,27 @@ export function RadioBeta({ releases, customBandcampPreview = false }: {
       };
       const colors = popular.map((color) => color.every((v) => v === 0) ? GRAY[0] : color.map(linear) as RadioColor);
       colorsRef.current = [colors[0] ?? GRAY[0], colors[1] ?? colors[0] ?? GRAY[1], colors[2] ?? colors[0] ?? GRAY[2]];
-      if (aliveRef.current) setPaletteName("Artwork colors");
     };
     image.onerror = () => {
       if (aliveRef.current && version === paletteVersionRef.current) {
         colorsRef.current = GRAY;
-        setPaletteName("Monochrome");
       }
     };
     image.crossOrigin = "anonymous";
-    image.src = path;
-  };
+    // Bandcamp artwork displays cross-origin but doesn't allow direct pixel reads.
+    // Next's host-restricted optimizer gives the sampler a same-origin thumbnail.
+    image.src = path.startsWith("https://f4.bcbits.com/img/")
+      ? `/_next/image?${new URLSearchParams({ url: path, w: "128", q: "75" })}`
+      : path;
+    return () => {
+      paletteVersionRef.current += 1;
+      image.onload = null;
+      image.onerror = null;
+    };
+  }, [selectedRelease?.cover]);
 
   return <section className={styles.radio} aria-label="Radio beta" data-playing={playing} data-purchase={purchaseActive}
-    data-artwork={Boolean(showReleaseArtwork)}
+    data-artwork={showReleaseArtwork} data-display={displayMode}
     data-audio-source={audioSource} data-tab-capture={captureActive}>
     <canvas ref={canvasRef} className={styles.canvas} aria-hidden="true" />
     <div className={styles.centerMark} aria-hidden="true">
@@ -374,7 +386,6 @@ export function RadioBeta({ releases, customBandcampPreview = false }: {
               setPlaying(false);
               setPosition(0);
               setDuration(0);
-              choosePalette(releases.find((release) => release.slug === event.target.value)?.cover);
             }}>
             {releases.map((release) => <option key={release.slug} value={release.slug}>{release.artist} — {release.title}</option>)}
           </select>
@@ -385,6 +396,12 @@ export function RadioBeta({ releases, customBandcampPreview = false }: {
           </button>}
         </>}
       </div>
+      <div className={styles.optionGroup}>
+        <div className={styles.options} role="group" aria-label="Display">
+          {DISPLAY_MODES.map(({ value, label }) => <button key={value} type="button"
+            aria-pressed={displayMode === value} onClick={() => setDisplayMode(value)}>{label}</button>)}
+        </div>
+      </div>
       <div className={styles.optionGroup} aria-label="Audio input levels">
         <span className={styles.optionLabel}>Audio input</span>
         {(["Bass", "Mids", "Treble"] as const).map((label, index) => <label key={label} className={styles.audioLevel}>
@@ -392,17 +409,6 @@ export function RadioBeta({ releases, customBandcampPreview = false }: {
           <meter min={0} max={1} value={audioLevels[index]} aria-label={`${label} audio level`} />
           <span className={styles.levelValue} aria-hidden="true">{Math.round(audioLevels[index] * 100)}%</span>
         </label>)}
-      </div>
-      <div className={styles.optionGroup}>
-        <span className={styles.optionLabel}>Palette · {paletteName}</span>
-        <div className={styles.palettes}>
-          <button onClick={() => choosePalette()} aria-label="Use monochrome palette" className={styles.graySwatch} />
-          {["like-dat-riddim", "sirene-fdp-2", "losing-sleep"].map((slug) => <button key={slug}
-            onClick={() => choosePalette(`/covers/${slug}.jpg`)} aria-label={`Use ${slug.replaceAll("-", " ")} artwork colors`}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={`/covers/${slug}.jpg`} alt="" width={36} height={36} />
-          </button>)}
-        </div>
       </div>
       <button className={styles.cosign} onClick={testPurchase} aria-pressed={purchaseActive}>
         {purchaseActive ? "Cosign effect" : "Test cosign"}<span aria-hidden="true"> ↗</span>

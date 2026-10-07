@@ -22,7 +22,8 @@
 .hochiMark { display: block; max-width: 100%; height: auto; user-select: none; }
 /* Match the reference's visible height and ink center, preserving Hochi's proportions. */
 .hochiMark { width: 96.32107%; transform: translate(-1.3573%, -21.53%); }
-.radio[data-artwork="true"] .wordmarkLayer { visibility: hidden; }
+.radio[data-display="artwork"][data-artwork="true"] .wordmarkLayer { visibility: hidden; }
+.radio[data-display="both"] .wordmarkLayer { z-index: 20; opacity: 0.65; }
 .nowPlaying { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 15; width: calc(min(56vw, calc(100dvh - 240px), 900px) * 0.85); margin: 0; display: grid; justify-items: center; gap: 18px; pointer-events: none; }
 .nowPlayingArtwork { display: block; width: 100%; aspect-ratio: 1; object-fit: contain; }
 .nowPlaying figcaption { display: grid; gap: 4px; max-width: 100%; text-align: center; overflow-wrap: anywhere; }
@@ -41,10 +42,6 @@
 .options button:hover { color: #fafafa; }
 .captureButton { display: flex; align-items: center; gap: 8px; justify-self: start; border: 0; padding: 6px 0; background: transparent; color: #ddd; font: inherit; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; }
 .captureButton:disabled { opacity: .5; }
-.palettes { display: flex; gap: 8px; }
-.palettes button { width: 36px; height: 36px; overflow: hidden; padding: 0; border: 1px solid #555; }
-.palettes img { width: 100%; height: 100%; object-fit: cover; }
-.graySwatch { background: linear-gradient(135deg,#888,#333); }
 .fine { color: #999; font-size: 11px; line-height: 1.5; }
 .releaseSelect { width: 100%; padding: 8px; background: #262626; border: 1px solid #555; color: #eee; font: inherit; }
 .audioLevel { display: grid; grid-template-columns: 50px 1fr 36px; align-items: center; gap: 8px; color: #aaa; font-size: 10px; }
