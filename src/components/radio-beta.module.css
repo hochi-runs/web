@@ -14,12 +14,10 @@
 .radio button { cursor: pointer; }
 .radio button:disabled { cursor: default; }
 .canvas { display: block; width: 100%; height: 100%; }
-.centerMark { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; mix-blend-mode: overlay; }
+.centerMark { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; }
+.centerMark .referenceMark { mix-blend-mode: overlay; }
 .referenceMark { display: block; width: min(600px, 80vw); height: auto; user-select: none; }
-.hochiMark { width: min(600px, 80vw); position: relative; height: min(220px, 30vw); }
-.hochiCrop { height: 90%; overflow: hidden; }
-.hochiCrop img { width: 100%; height: auto; transform: translateY(-8%); filter: invert(1); mix-blend-mode: screen; }
-.hochiMark > span { display: block; position: absolute; right: 7%; bottom: -7%; font: italic clamp(48px, 8vw, 90px) Georgia, serif; color: #e6e6e6; }
+.hochiMark { display: block; width: min(560px, 78vw); height: auto; user-select: none; }
 .header { position: absolute; inset: 0 0 auto; height: 60px; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; border-bottom: 1px solid #404040; background: #26262640; backdrop-filter: blur(20px); }
 .home { display: flex; align-items: center; }
 .home img { object-fit: contain; filter: invert(1); mix-blend-mode: screen; }

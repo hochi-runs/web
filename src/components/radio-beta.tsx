@@ -33,13 +33,8 @@ function Wordmark({ reference }: { reference: boolean }) {
     // eslint-disable-next-line @next/next/no-img-element
     <img src={REFERENCE_WORDMARK} alt="Catalog Radio reference" className={styles.referenceMark} draggable={false} />
   ) : (
-    <div className={styles.hochiMark} aria-label="Hochi Runs radio">
-      <div className={styles.hochiCrop}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/hochi-wordmark.png" alt="Hochi" draggable={false} />
-      </div>
-      <span>Radio</span>
-    </div>
+    // eslint-disable-next-line @next/next/no-img-element
+    <img src="/hochi-radio-wordmark.svg" alt="Hochi Runs" className={styles.hochiMark} draggable={false} />
   );
 }
 
