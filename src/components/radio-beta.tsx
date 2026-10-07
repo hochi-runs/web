@@ -342,11 +342,9 @@ export function RadioBeta({ releases, customBandcampPreview = false }: {
       <div className={styles.optionGroup}>
         <div className={styles.options}>
           <button aria-pressed={audioSource === "bandcamp"} disabled={busy} onClick={() => switchSource("bandcamp")}>Bandcamp</button>
-          <button aria-pressed={audioSource === "local"} disabled={busy} onClick={() => switchSource("local")}>Local audio</button>
         </div>
         {audioSource === "bandcamp" && <>
-          <label className={styles.optionLabel} htmlFor="radio-bandcamp-release">Release</label>
-          <select id="radio-bandcamp-release" className={styles.releaseSelect} value={selectedRelease?.slug ?? ""} disabled={busy}
+          <select id="radio-bandcamp-release" aria-label="Release" className={styles.releaseSelect} value={selectedRelease?.slug ?? ""} disabled={busy}
             onChange={(event) => {
               setReleaseSlug(event.target.value);
               if (streamRef.current) {
