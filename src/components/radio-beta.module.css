@@ -15,9 +15,9 @@
 .radio button:disabled { cursor: default; }
 .canvas { display: block; width: 100%; height: 100%; }
 .centerMark { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; }
-.centerMark .referenceMark { mix-blend-mode: overlay; }
-.referenceMark { display: block; width: min(600px, 80vw); height: auto; user-select: none; }
-.hochiMark { display: block; width: min(560px, 78vw); height: auto; user-select: none; }
+/* Match the original radio: blend the transparent wordmark layer with the canvas. */
+.wordmarkLayer { position: absolute; z-index: 10; max-width: 80vw; mix-blend-mode: overlay; user-select: none; }
+.referenceMark, .hochiMark { display: block; width: min(600px, 80vw); height: auto; user-select: none; }
 .header { position: absolute; inset: 0 0 auto; height: 60px; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; border-bottom: 1px solid #404040; background: #26262640; backdrop-filter: blur(20px); }
 .home { display: flex; align-items: center; }
 .home img { object-fit: contain; filter: invert(1); mix-blend-mode: screen; }
@@ -58,7 +58,7 @@
 .volume:hover .volumePopover, .volume:focus-within .volumePopover { visibility: visible; opacity: 1; }
 .volumePopover input { appearance: slider-vertical; writing-mode: vertical-lr; direction: rtl; width: 12px; height: 104px; accent-color: #fff; }
 .splash { position: absolute; inset: 0; z-index: 1000; display: grid; place-items: center; width: 100%; height: 100%; border: 0; padding: 0; background: #262626; color: #c6c6c6; opacity: 1; transition: opacity 1s linear; }
-.splash > .referenceMark { opacity: .75; width: min(550px, 80vw); }
+.splash > :is(.referenceMark, .hochiMark) { opacity: .75; width: min(550px, 80vw); }
 .splashGone { pointer-events: none; opacity: 0; }
 .startPrompt { position: absolute; bottom: 15vh; max-width: 80vw; font-size: 16px; text-align: center; }
 

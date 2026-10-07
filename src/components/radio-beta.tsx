@@ -54,7 +54,7 @@ export function RadioBeta() {
   const [playing, setPlaying] = useState(false);
   const [busy, setBusy] = useState(false);
   const [infoOpen, setInfoOpen] = useState(false);
-  const [reference, setReference] = useState(true);
+  const [reference, setReference] = useState(false);
   const [volume, setVolume] = useState(0.2);
   const [sourceName, setSourceName] = useState("Generated test signal");
   const [purchaseActive, setPurchaseActive] = useState(false);
@@ -212,7 +212,9 @@ export function RadioBeta() {
 
   return <section className={styles.radio} aria-label="Radio beta" data-playing={playing} data-purchase={purchaseActive}>
     <canvas ref={canvasRef} className={styles.canvas} aria-hidden="true" />
-    <div className={styles.centerMark} aria-hidden="true"><Wordmark reference={reference} /></div>
+    <div className={styles.centerMark} aria-hidden="true">
+      <div className={styles.wordmarkLayer}><Wordmark reference={reference} /></div>
+    </div>
 
     <header className={styles.header}>
       <Link href="/" aria-label="Return to Hochi Runs archive" className={styles.home}>

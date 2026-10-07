@@ -51,6 +51,11 @@ body {
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
+/* Text glow is prohibited across the site, including future component styles. */
+:where(body, body *) {
+  text-shadow: none !important;
+}
+
 a {
   color: inherit;
   text-decoration: none;
@@ -94,10 +99,6 @@ body[data-custom-background="true"] :is(.reading-surface, .reading-label) {
 
 .corner-surface {
   background: transparent;
-  /* Protect only the letter edges where the wordmark passes behind them. */
-  text-shadow:
-    0 0 1px var(--background),
-    0 0 2px var(--background);
 }
 
 :where(a, button, input, textarea, select):focus-visible {
