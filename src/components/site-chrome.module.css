@@ -12,7 +12,7 @@
 }
 
 .radioLogo img {
-  filter: invert(1);
+  filter: none;
 }
 
 .radioMenu {
