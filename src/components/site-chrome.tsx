@@ -108,7 +108,7 @@ function RadioSiteChrome({ logoUrl }: { logoUrl?: string }) {
 
       <nav
         aria-label="Primary"
-        className="corner-surface fixed right-[20px] top-[20px] z-50 hidden items-center gap-[15px] text-xs uppercase tracking-widest sm:flex"
+        className={`${styles.navigation} corner-surface fixed right-[20px] top-[20px] z-50 hidden items-center gap-[15px] text-xs uppercase tracking-widest sm:flex`}
       >
         {PRIMARY.map((link) => link.disabled ? (
           <span key={link.href} role="link" aria-disabled="true" title="Shop is not available yet" className="cursor-default text-muted opacity-50">
@@ -134,10 +134,10 @@ function RadioSiteChrome({ logoUrl }: { logoUrl?: string }) {
         Menu
       </button>
 
-      <SocialLinks className={`${styles.radioSocials} corner-surface fixed bottom-[16px] left-[16px] z-50 hidden sm:block`} />
+      <SocialLinks className={`${styles.footerSocials} corner-surface fixed bottom-[16px] left-[16px] z-50 hidden sm:block`} />
       <nav
         aria-label="Secondary"
-        className={`${styles.radioSecondary} corner-surface fixed bottom-[20px] right-[20px] z-50 hidden items-center gap-[15px] text-xs uppercase tracking-widest text-muted sm:flex`}
+        className={`${styles.navigation} ${styles.footerNavigation} corner-surface fixed bottom-[20px] right-[20px] z-50 hidden items-center gap-[15px] text-xs uppercase tracking-widest text-muted sm:flex`}
       >
         {SECONDARY.map((link) => (
           <Link key={link.href} href={link.href} className="transition-colors hover:text-accent">{link.label}</Link>
@@ -192,7 +192,7 @@ export function SiteChrome({ logoUrl, variant = "archive" }: { logoUrl?: string;
       {/* Top-right: primary nav (desktop) */}
       <nav
         aria-label="Primary"
-        className="corner-surface fixed right-[20px] top-[20px] z-50 hidden items-center gap-[15px] text-xs uppercase tracking-widest sm:flex"
+        className={`${styles.navigation} corner-surface fixed right-[20px] top-[20px] z-50 hidden items-center gap-[15px] text-xs uppercase tracking-widest sm:flex`}
       >
         {PRIMARY.map((link) => {
           if (link.disabled) {
@@ -243,12 +243,12 @@ export function SiteChrome({ logoUrl, variant = "archive" }: { logoUrl?: string;
       </div>
 
       {/* Bottom-left: social profiles (desktop) */}
-      <SocialLinks className="corner-surface fixed bottom-[16px] left-[16px] z-50 hidden sm:block" />
+      <SocialLinks className={`${styles.footerSocials} corner-surface fixed bottom-[16px] left-[16px] z-50 hidden sm:block`} />
 
       {/* Bottom-right: secondary nav */}
       <nav
         aria-label="Secondary"
-        className="corner-surface fixed bottom-[20px] right-[20px] z-50 hidden items-center gap-[15px] text-xs uppercase tracking-widest text-muted sm:flex"
+        className={`${styles.navigation} ${styles.footerNavigation} corner-surface fixed bottom-[20px] right-[20px] z-50 hidden items-center gap-[15px] text-xs uppercase tracking-widest text-muted sm:flex`}
       >
         {SECONDARY.map((link) => (
           <Link

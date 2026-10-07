@@ -21,8 +21,13 @@
 }
 
 @media (min-width: 640px) and (max-width: 899px) {
-  .radioSocials,
-  .radioSecondary {
+  .footerSocials,
+  .footerNavigation {
     bottom: calc(78px + env(safe-area-inset-bottom));
   }
+}
+
+.navigation {
+  width: var(--site-navigation-width);
+  justify-content: flex-start;
 }
