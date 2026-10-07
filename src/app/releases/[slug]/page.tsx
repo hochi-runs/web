@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { getRelease, getReleases } from "@/lib/wordpress";
 import { ReleasePrototype } from "@/components/release-prototype";
 import { ReleaseArtwork } from "@/components/release-artwork";
+import { getReleaseLinks } from "@/lib/release-links";
 
 export const revalidate = 60;
 export const dynamic = "force-static";
@@ -39,6 +40,7 @@ export default async function ReleasePage({
   if (!release) notFound();
 
   if (slug === "like-dat-riddim") return <ReleasePrototype release={release} />;
+  const links = getReleaseLinks(release);
 
   return (
     <article className="px-5 pb-28 pt-24 sm:px-8 sm:pb-32 sm:pt-28">
@@ -67,9 +69,9 @@ export default async function ReleasePage({
             />
 
             {/* Streaming links as small text icons under the art */}
-            {release.links && release.links.length > 0 && (
+            {links.length > 0 && (
               <ul className="reading-label mt-5 flex w-fit flex-wrap gap-x-5 gap-y-2 text-xs uppercase tracking-widest">
-                {release.links.map((link) => (
+                {links.map((link) => (
                   <li key={link.url}>
                     <a
                       href={link.url}
@@ -82,16 +84,6 @@ export default async function ReleasePage({
                   </li>
                 ))}
               </ul>
-            )}
-            {release.buyUrl && (
-              <a
-                href={release.buyUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="reading-label mt-3 inline-block text-xs uppercase tracking-widest text-muted transition-colors hover:text-accent"
-              >
-                Buy ↗
-              </a>
             )}
           </div>
 

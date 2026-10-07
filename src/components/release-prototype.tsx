@@ -1,12 +1,12 @@
 import Link from "next/link";
 import type { Release } from "@/data/releases";
 import { ReleaseArtwork } from "./release-artwork";
+import { getReleaseLinks } from "@/lib/release-links";
 import styles from "./release-prototype.module.css";
 
 /** A single-release study; the remaining archive retains its existing layout. */
 export function ReleasePrototype({ release }: { release: Release }) {
-  const purchaseUrl = release.buyUrl;
-  const otherLinks = release.links?.filter((link) => link.url !== purchaseUrl) ?? [];
+  const links = getReleaseLinks(release);
 
   return (
     <article className={styles.page}>
@@ -26,12 +26,7 @@ export function ReleasePrototype({ release }: { release: Release }) {
           />
 
           <div className={styles.links}>
-            {purchaseUrl && (
-              <a href={purchaseUrl} target="_blank" rel="noopener noreferrer">
-                Buy on Bandcamp <span aria-hidden="true">↗</span>
-              </a>
-            )}
-            {otherLinks.map((link) => (
+            {links.map((link) => (
               <a key={link.url} href={link.url} target="_blank" rel="noopener noreferrer">
                 {link.platform} <span aria-hidden="true">↗</span>
               </a>
