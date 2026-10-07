@@ -61,6 +61,23 @@ test("featured public streaming track is selected, with first eligible fallback"
   assert.equal(parseBandcampPreview(html(metadata({ tracks: [track(1, preview, false), track(2, second)] }))), second);
 });
 
+test("standalone public track metadata uses track_private instead of album_private", async () => {
+  const standalone = metadata({ album_id: null, album_private: undefined, track_private: null });
+  assert.equal(parseBandcampPreview(html(standalone)), preview);
+  let calls = 0;
+  const response = await run(request(), {
+    releases: [{ ...releases[0], bandcampType: "track" }],
+    fetchImpl: async () => ++calls === 1 ? new Response(html(standalone)) : audio(),
+  });
+  assert.equal(response.status, 200);
+  assert.equal(await response.text(), "fixture bytes");
+  for (const overrides of [
+    { track_private: true }, { track_private: undefined }, { album_id: undefined },
+    { album_private: true },
+  ]) assert.throws(() => parseBandcampPreview(html({ ...standalone, ...overrides })));
+  assert.throws(() => parseBandcampPreview(html(metadata({ track_private: true }))));
+});
+
 test("private, subscriber, exclusive, disabled and non-streaming metadata fails closed", () => {
   for (const overrides of [
     { album_private: true }, { killed: 1 }, { band_enabled: 0 }, { subscriber_only: true },

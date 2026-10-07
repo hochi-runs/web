@@ -85,8 +85,13 @@ export function RadioBeta({ releases, customBandcampPreview = false }: {
   const [audioLevels, setAudioLevels] = useState<[number, number, number]>([0, 0, 0]);
   const [position, setPosition] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [playedReleaseSlug, setPlayedReleaseSlug] = useState<string>();
+  const [unavailableCover, setUnavailableCover] = useState<string>();
   const selectedRelease = releases.find((release) => release.slug === releaseSlug) ?? releases[0];
   const customControls = audioSource === "local" || customBandcampPreview;
+  const showReleaseArtwork = audioSource === "bandcamp" && selectedRelease?.cover
+    && unavailableCover !== selectedRelease.cover
+    && (!customBandcampPreview || playedReleaseSlug === selectedRelease.slug);
 
   useEffect(() => {
     const frame = requestAnimationFrame(() => setCaptureSupport(RadioBetaTabAudio.supportMessage()));
@@ -174,7 +179,10 @@ export function RadioBeta({ releases, customBandcampPreview = false }: {
     if (!selectedRelease) throw new Error("No Bandcamp preview is available.");
     if (!streamRef.current) {
       const stream = new RadioBetaStreamAudio((active) => {
-        if (aliveRef.current && sourceRef.current === "bandcamp") setPlaying(active);
+        if (aliveRef.current && sourceRef.current === "bandcamp") {
+          setPlaying(active);
+          if (active) setPlayedReleaseSlug(streamReleaseRef.current);
+        }
       }, (message) => {
         if (aliveRef.current && sourceRef.current === "bandcamp") setError(message);
       });
@@ -296,7 +304,6 @@ export function RadioBeta({ releases, customBandcampPreview = false }: {
       } catch {
         colorsRef.current = GRAY;
         setPaletteName("Monochrome");
-        setError("This artwork cannot supply a color palette. Audio analysis is still available.");
         return;
       }
       const counts = new Map<string, number>();
@@ -318,7 +325,6 @@ export function RadioBeta({ releases, customBandcampPreview = false }: {
       if (aliveRef.current && version === paletteVersionRef.current) {
         colorsRef.current = GRAY;
         setPaletteName("Monochrome");
-        setError("The artwork palette could not be loaded. Audio analysis is still available.");
       }
     };
     image.crossOrigin = "anonymous";
@@ -326,11 +332,22 @@ export function RadioBeta({ releases, customBandcampPreview = false }: {
   };
 
   return <section className={styles.radio} aria-label="Radio beta" data-playing={playing} data-purchase={purchaseActive}
+    data-artwork={Boolean(showReleaseArtwork)}
     data-audio-source={audioSource} data-tab-capture={captureActive}>
     <canvas ref={canvasRef} className={styles.canvas} aria-hidden="true" />
     <div className={styles.centerMark} aria-hidden="true">
       <div className={styles.wordmarkLayer}><Wordmark /></div>
     </div>
+    {showReleaseArtwork && selectedRelease && <figure className={styles.nowPlaying} aria-label="Now playing" data-release={selectedRelease.slug}>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img key={selectedRelease.slug} className={styles.nowPlayingArtwork} src={selectedRelease.cover}
+        alt={`${selectedRelease.artist} — ${selectedRelease.title} cover artwork`} draggable={false}
+        onError={() => setUnavailableCover(selectedRelease.cover)} />
+      <figcaption>
+        <span className={styles.nowPlayingTitle}>{selectedRelease.title}</span>
+        <span className={styles.nowPlayingArtist}>{selectedRelease.artist}</span>
+      </figcaption>
+    </figure>}
     <SiteChrome variant="radio" />
 
     <button className={styles.infoToggle} aria-label={infoOpen ? "Close radio information" : "Open radio information"}
@@ -346,6 +363,9 @@ export function RadioBeta({ releases, customBandcampPreview = false }: {
         {audioSource === "bandcamp" && <>
           <select id="radio-bandcamp-release" aria-label="Release" className={styles.releaseSelect} value={selectedRelease?.slug ?? ""} disabled={busy}
             onChange={(event) => {
+              setError("");
+              setPlayedReleaseSlug(undefined);
+              setUnavailableCover(undefined);
               setReleaseSlug(event.target.value);
               if (streamRef.current) {
                 streamRef.current.setSource(`/beta/radio/stream/${encodeURIComponent(event.target.value)}`);

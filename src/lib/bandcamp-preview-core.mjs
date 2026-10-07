@@ -42,6 +42,14 @@ function isOff(value) {
   return value === null || value === false || value === 0;
 }
 
+function isPublicRelease(metadata) {
+  if (metadata.track_private !== undefined && !isOff(metadata.track_private)) return false;
+  // Standalone tracks use track_private; only album embeds have album_private.
+  // Require the track's explicit public flag rather than treating absence as public.
+  return isOff(metadata.album_private)
+    || (metadata.album_private === undefined && metadata.album_id === null && isOff(metadata.track_private));
+}
+
 /** Parse only explicitly public, streaming MP3 previews from the embed metadata. */
 export function parseBandcampPreview(html) {
   const $ = load(html);
@@ -50,7 +58,7 @@ export function parseBandcampPreview(html) {
   const metadata = JSON.parse(scripts.attr("data-player-data") ?? "");
   if (!metadata || typeof metadata !== "object" || Array.isArray(metadata)
     || ![1, true].includes(metadata.band_enabled)
-    || !isOff(metadata.killed) || !isOff(metadata.album_private)
+    || !isOff(metadata.killed) || !isPublicRelease(metadata)
     || !isOff(metadata.subscriber_only) || !isOff(metadata.exclusive_show_anywhere)
     || ![1, true].includes(metadata.no_exclusive_data)
     || !Array.isArray(metadata.exclusive_permitted_domains) || metadata.exclusive_permitted_domains.length
