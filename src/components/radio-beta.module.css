@@ -30,16 +30,15 @@
 .optionGroup { margin-top: 22px; display: grid; gap: 10px; }
 .optionLabel { font-size: 12px; color: #999; }
 .options { display: flex; gap: 18px; }
-.options button, .fileButton { background: transparent; color: #aaa; padding: 4px 0; border: 0; font: inherit; text-transform: uppercase; letter-spacing: .06em; }
+.options button { background: transparent; color: #aaa; padding: 4px 0; border: 0; font: inherit; text-transform: uppercase; letter-spacing: .06em; }
 .options button[aria-pressed="true"] { color: #fafafa; text-decoration: underline; text-underline-offset: 5px; }
-.options button:hover, .fileButton:hover { color: #fafafa; }
+.options button:hover { color: #fafafa; }
 .captureButton { display: flex; align-items: center; gap: 8px; justify-self: start; border: 0; padding: 6px 0; background: transparent; color: #ddd; font: inherit; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; }
 .captureButton:disabled { opacity: .5; }
 .palettes { display: flex; gap: 8px; }
 .palettes button { width: 36px; height: 36px; overflow: hidden; padding: 0; border: 1px solid #555; }
 .palettes img { width: 100%; height: 100%; object-fit: cover; }
 .graySwatch { background: linear-gradient(135deg,#888,#333); }
-.fileButton { justify-self: start; }
 .fine { color: #999; font-size: 11px; line-height: 1.5; }
 .releaseSelect { width: 100%; padding: 8px; background: #262626; border: 1px solid #555; color: #eee; font: inherit; }
 .audioLevel { display: grid; grid-template-columns: 50px 1fr 36px; align-items: center; gap: 8px; color: #aaa; font-size: 10px; }
@@ -50,7 +49,7 @@
 .archiveLink { display: inline-block; margin-top: 24px; color: #ccc; font-size: 12px; }
 .notice, .error { position: absolute; left: 16px; bottom: 72px; max-width: calc(100% - 32px); margin: 0; z-index: 1002; font-size: 12px; color: #ddd; }
 .error { padding: 8px 12px; background: #262626; border: 1px solid #666; }
-.soundbar { position: absolute; left: 50%; bottom: calc(12px + env(safe-area-inset-bottom)); transform: translateX(-50%); z-index: 30; width: min(700px, calc(100% - 440px)); height: 42px; display: flex; align-items: center; background: transparent; }
+.soundbar { position: absolute; left: 50%; bottom: calc(12px + env(safe-area-inset-bottom)); transform: translateX(-50%); z-index: 30; width: calc(100% - 440px); height: 42px; display: flex; align-items: center; gap: 8px; background: transparent; }
 .transport { display: flex; flex-shrink: 0; align-items: center; gap: 8px; height: 42px; padding: 0 12px; background: transparent; border: 0; color: #fafafa; }
 .transport:hover { background: #ffffff04; }
 .bandcampPlayer { flex: 1; min-width: 0; display: flex; align-items: center; justify-content: center; }
@@ -60,6 +59,15 @@
 .airDot[data-active="true"] { background: #ff4f4f; }
 .airText { font-size: 12px; font-weight: 400; letter-spacing: .06em; }
 .trackName { flex: 1; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; padding: 0 16px; color: #aaa; font-size: 12px; }
+.seek { width: clamp(70px, 12vw, 180px); min-width: 0; height: 24px; padding: 0; appearance: none; background: transparent; accent-color: #ddd; cursor: pointer; }
+.seek::-webkit-slider-runnable-track { height: 1px; background: #666; }
+.seek::-moz-range-track { height: 1px; background: #666; }
+.seek::-webkit-slider-thumb { width: 7px; height: 7px; margin-top: -3px; appearance: none; background: #ddd; border-radius: 50%; }
+.seek::-moz-range-thumb { width: 7px; height: 7px; border: 0; background: #ddd; border-radius: 50%; }
+.seek:disabled { opacity: .4; cursor: default; }
+.time { flex-shrink: 0; color: #999; font-size: 10px; white-space: nowrap; }
+.buy { flex-shrink: 0; padding: 0 6px; color: #aaa; font-size: 10px; letter-spacing: .06em; }
+.buy:hover { color: #fafafa; }
 .cosign { display: block; height: 30px; margin-top: 24px; padding: 0; background: transparent; color: #c6c6c6; border: 0; font: inherit; letter-spacing: .06em; text-transform: uppercase; }
 .cosign:hover { color: #fff; border-color: #ddd; }
 .cosign[aria-pressed="true"] { color: #d3b3ff; border-color: #ad7ade; }
@@ -79,6 +87,8 @@
   .transport { flex: 0 0 auto; min-width: 0; padding: 0 8px; }
   .transport svg { margin-left: 8px; }
   .trackName { padding: 0 8px; font-size: 10px; }
+  .seek { width: 60px; }
+  .time { display: none; }
   .airText { font-size: 10px; }
   .volume, .volume > button { width: 42px; }
   .volumePopover { left: 2px; }

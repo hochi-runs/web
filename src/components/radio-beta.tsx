@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { RadioBetaAudio } from "@/lib/radio-beta-audio";
 import { RadioBetaTabAudio } from "@/lib/radio-beta-tab-audio";
+import { RadioBetaStreamAudio } from "@/lib/radio-beta-stream-audio";
 import { createRadioVisualizer, type RadioColor } from "@/lib/radio-beta-visualizer";
 import { SiteChrome } from "@/components/site-chrome";
 import styles from "./radio-beta.module.css";
@@ -20,6 +21,7 @@ type BandcampRelease = {
   title: string;
   artist: string;
   cover?: string;
+  buyUrl?: string;
 };
 
 function VolumeIcon({ muted }: { muted: boolean }) {
@@ -44,10 +46,20 @@ function Wordmark() {
   );
 }
 
-export function RadioBeta({ releases }: { releases: BandcampRelease[] }) {
+function playbackTime(seconds: number) {
+  const time = Number.isFinite(seconds) ? Math.max(0, Math.floor(seconds)) : 0;
+  return `${Math.floor(time / 60)}:${String(time % 60).padStart(2, "0")}`;
+}
+
+export function RadioBeta({ releases, customBandcampPreview = false }: {
+  releases: BandcampRelease[];
+  customBandcampPreview?: boolean;
+}) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const engineRef = useRef<RadioBetaAudio | null>(null);
   const tabAudioRef = useRef<RadioBetaTabAudio | null>(null);
+  const streamRef = useRef<RadioBetaStreamAudio | null>(null);
+  const streamReleaseRef = useRef<string | undefined>(undefined);
   const sourceRef = useRef<AudioSource>("bandcamp");
   const busyRef = useRef(false);
   const aliveRef = useRef(true);
@@ -56,14 +68,12 @@ export function RadioBeta({ releases }: { releases: BandcampRelease[] }) {
   const volumeRef = useRef(0.2);
   const previousVolumeRef = useRef(0.2);
   const purchaseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const fileRef = useRef<HTMLInputElement>(null);
   const paletteVersionRef = useRef(0);
   const bandsRef = useRef<[number, number, number]>([0, 0, 0]);
   const [playing, setPlaying] = useState(false);
   const [busy, setBusy] = useState(false);
   const [infoOpen, setInfoOpen] = useState(false);
   const [volume, setVolume] = useState(0.2);
-  const [sourceName, setSourceName] = useState("Generated test signal");
   const [purchaseActive, setPurchaseActive] = useState(false);
   const [error, setError] = useState("");
   const [webglUnavailable, setWebglUnavailable] = useState(false);
@@ -73,7 +83,10 @@ export function RadioBeta({ releases }: { releases: BandcampRelease[] }) {
   const [captureSupport, setCaptureSupport] = useState<string>();
   const [releaseSlug, setReleaseSlug] = useState(releases[0]?.slug);
   const [audioLevels, setAudioLevels] = useState<[number, number, number]>([0, 0, 0]);
+  const [position, setPosition] = useState(0);
+  const [duration, setDuration] = useState(0);
   const selectedRelease = releases.find((release) => release.slug === releaseSlug) ?? releases[0];
+  const customControls = audioSource === "local" || customBandcampPreview;
 
   useEffect(() => {
     const frame = requestAnimationFrame(() => setCaptureSupport(RadioBetaTabAudio.supportMessage()));
@@ -89,6 +102,9 @@ export function RadioBeta({ releases }: { releases: BandcampRelease[] }) {
       engineRef.current = null;
       void tabAudioRef.current?.dispose();
       tabAudioRef.current = null;
+      void streamRef.current?.dispose();
+      streamRef.current = null;
+      streamReleaseRef.current = undefined;
     };
   }, []);
 
@@ -103,7 +119,9 @@ export function RadioBeta({ releases }: { releases: BandcampRelease[] }) {
         const engine = engineRef.current;
         const capture = tabAudioRef.current;
         const analyser = sourceRef.current === "bandcamp"
-          ? capture?.active ? capture.analyser : undefined
+          ? customBandcampPreview
+            ? streamRef.current?.playing ? streamRef.current.analyser : undefined
+            : capture?.active ? capture.analyser : undefined
           : engine?.playing ? engine.analyser : undefined;
         let bands: [number, number, number] = [0.35, 0.35, 0.35];
         if (analyser) {
@@ -128,7 +146,7 @@ export function RadioBeta({ releases }: { releases: BandcampRelease[] }) {
       const timer = setTimeout(() => setWebglUnavailable(true), 0);
       return () => clearTimeout(timer);
     }
-  }, []);
+  }, [customBandcampPreview]);
 
   useEffect(() => {
     if (!infoOpen) return;
@@ -152,13 +170,39 @@ export function RadioBeta({ releases }: { releases: BandcampRelease[] }) {
     return engineRef.current;
   }, []);
 
+  const getStream = () => {
+    if (!selectedRelease) throw new Error("No Bandcamp preview is available.");
+    if (!streamRef.current) {
+      const stream = new RadioBetaStreamAudio((active) => {
+        if (aliveRef.current && sourceRef.current === "bandcamp") setPlaying(active);
+      }, (message) => {
+        if (aliveRef.current && sourceRef.current === "bandcamp") setError(message);
+      });
+      const updateProgress = () => {
+        if (aliveRef.current && sourceRef.current === "bandcamp") {
+          setPosition(stream.position);
+          setDuration(stream.duration);
+        }
+      };
+      stream.element.addEventListener("timeupdate", updateProgress);
+      stream.element.addEventListener("durationchange", updateProgress);
+      streamRef.current = stream;
+      stream.setVolume(volumeRef.current);
+    }
+    if (streamReleaseRef.current !== selectedRelease.slug) {
+      streamRef.current.setSource(`/beta/radio/stream/${encodeURIComponent(selectedRelease.slug)}`);
+      streamReleaseRef.current = selectedRelease.slug;
+    }
+    return streamRef.current;
+  };
+
   const togglePlaying = async () => {
-    if (busyRef.current || sourceRef.current !== "local") return;
+    if (busyRef.current || (sourceRef.current === "bandcamp" && !customBandcampPreview)) return;
     busyRef.current = true;
     setBusy(true);
     setError("");
     try {
-      const engine = getEngine();
+      const engine = sourceRef.current === "bandcamp" ? getStream() : getEngine();
       if (engine.playing) engine.pause();
       else await engine.play();
       if (aliveRef.current) {
@@ -176,10 +220,13 @@ export function RadioBeta({ releases }: { releases: BandcampRelease[] }) {
     if (busyRef.current) return;
     tabAudioRef.current?.stop();
     engineRef.current?.pause();
+    streamRef.current?.pause();
     sourceRef.current = next;
     setAudioSource(next);
     setCaptureActive(false);
     setPlaying(false);
+    setPosition(0);
+    setDuration(0);
     setError("");
   };
 
@@ -218,6 +265,7 @@ export function RadioBeta({ releases }: { releases: BandcampRelease[] }) {
     if (value > 0) previousVolumeRef.current = value;
     setVolume(value);
     engineRef.current?.setVolume(value);
+    streamRef.current?.setVolume(value);
   };
 
   const testPurchase = () => {
@@ -225,29 +273,6 @@ export function RadioBeta({ releases }: { releases: BandcampRelease[] }) {
     setPurchaseActive(true);
     if (purchaseTimerRef.current) clearTimeout(purchaseTimerRef.current);
     purchaseTimerRef.current = setTimeout(() => setPurchaseActive(false), 15_000);
-  };
-
-  const loadLocalFile = async (file?: File) => {
-    if (!file || busyRef.current) return;
-    switchSource("local");
-    busyRef.current = true;
-    setBusy(true);
-    setError("");
-    try {
-      const engine = getEngine();
-      await engine.loadFile(file);
-      await engine.play();
-      if (aliveRef.current) {
-        setSourceName(file.name);
-        setPlaying(engine.playing);
-      }
-    } catch {
-      if (aliveRef.current) setError("That audio file could not be decoded. Try an MP3, WAV, or M4A.");
-    } finally {
-      busyRef.current = false;
-      if (aliveRef.current) setBusy(false);
-      if (fileRef.current) fileRef.current.value = "";
-    }
   };
 
   const choosePalette = (path?: string) => {
@@ -313,7 +338,7 @@ export function RadioBeta({ releases }: { releases: BandcampRelease[] }) {
 
     {infoOpen && <aside id="radio-beta-info" className={styles.info} aria-label="Radio beta settings">
       <p className={styles.infoTitle}>Radio</p>
-      <p>Bandcamp plays without audio-sharing permission. Enable reactive audio to make the visualizer follow the sound.</p>
+      {!customBandcampPreview && <p>Bandcamp plays without audio-sharing permission. Enable reactive audio to make the visualizer follow the sound.</p>}
       <div className={styles.optionGroup}>
         <div className={styles.options}>
           <button aria-pressed={audioSource === "bandcamp"} disabled={busy} onClick={() => switchSource("bandcamp")}>Bandcamp</button>
@@ -321,18 +346,25 @@ export function RadioBeta({ releases }: { releases: BandcampRelease[] }) {
         </div>
         {audioSource === "bandcamp" && <>
           <label className={styles.optionLabel} htmlFor="radio-bandcamp-release">Release</label>
-          <select id="radio-bandcamp-release" className={styles.releaseSelect} value={selectedRelease?.slug ?? ""}
+          <select id="radio-bandcamp-release" className={styles.releaseSelect} value={selectedRelease?.slug ?? ""} disabled={busy}
             onChange={(event) => {
               setReleaseSlug(event.target.value);
+              if (streamRef.current) {
+                streamRef.current.setSource(`/beta/radio/stream/${encodeURIComponent(event.target.value)}`);
+                streamReleaseRef.current = event.target.value;
+              }
+              setPlaying(false);
+              setPosition(0);
+              setDuration(0);
               choosePalette(releases.find((release) => release.slug === event.target.value)?.cover);
             }}>
             {releases.map((release) => <option key={release.slug} value={release.slug}>{release.artist} — {release.title}</option>)}
           </select>
-          <button className={styles.captureButton} onClick={() => void toggleTabCapture()}
+          {!customBandcampPreview && <button className={styles.captureButton} onClick={() => void toggleTabCapture()}
             disabled={busy || Boolean(captureSupport)} aria-pressed={captureActive} title={captureSupport}>
             <span className={styles.airDot} data-active={captureActive} aria-hidden="true" />
             {busy ? "Connecting…" : captureActive ? "Disconnect reactive audio" : "Enable reactive audio"}
-          </button>
+          </button>}
         </>}
       </div>
       <div className={styles.optionGroup} aria-label="Audio input levels">
@@ -354,11 +386,6 @@ export function RadioBeta({ releases }: { releases: BandcampRelease[] }) {
           </button>)}
         </div>
       </div>
-      <div className={styles.optionGroup}>
-        <button className={styles.fileButton} onClick={() => fileRef.current?.click()} disabled={busy}>Try your own audio ↗</button>
-        <input ref={fileRef} type="file" accept="audio/*" hidden onChange={(event) => void loadLocalFile(event.target.files?.[0])} />
-        <span className={styles.fine}>The file stays in this browser. It is never uploaded.</span>
-      </div>
       <button className={styles.cosign} onClick={testPurchase} aria-pressed={purchaseActive}>
         {purchaseActive ? "Cosign effect" : "Test cosign"}<span aria-hidden="true"> ↗</span>
       </button>
@@ -369,7 +396,7 @@ export function RadioBeta({ releases }: { releases: BandcampRelease[] }) {
     {error && <p className={styles.error} role="alert">{error}</p>}
 
     <footer className={styles.soundbar} aria-label="Radio audio controls">
-      {audioSource === "bandcamp" ? <>
+      {!customControls ? <>
         <div className={styles.bandcampPlayer}>
           {selectedRelease ? <iframe
             key={selectedRelease.slug}
@@ -377,14 +404,28 @@ export function RadioBeta({ releases }: { releases: BandcampRelease[] }) {
             title={`Bandcamp player: ${selectedRelease.artist} — ${selectedRelease.title}`} className={styles.bandcampFrame} />
             : <span className={styles.fine}>No Bandcamp releases are available.</span>}
         </div>
-      </> : <><button className={styles.transport} onClick={() => void togglePlaying()} disabled={busy}
+      </> : <><button className={styles.transport} onClick={() => void togglePlaying()} disabled={busy || (audioSource === "bandcamp" && !selectedRelease)}
         aria-label={playing ? "Pause radio" : "Play radio"}>
         <span className={styles.airDot} data-active={playing} />
-        <span className={styles.airText}>{playing ? "LOCAL AUDIO" : "PLAY"}</span>
+        <span className={styles.airText}>{busy ? "…" : playing ? "PAUSE" : "PLAY"}</span>
         <PlayIcon playing={playing} />
       </button>
-      <span className={styles.trackName}>{sourceName}</span></>}
-      {audioSource === "local" && <div className={styles.volume}>
+      <span className={styles.trackName} title={audioSource === "bandcamp" ? `${selectedRelease?.title} / ${selectedRelease?.artist}` : undefined}>
+        {audioSource === "bandcamp" ? selectedRelease?.title ?? "No preview available" : "Generated test signal"}
+      </span>
+      {audioSource === "bandcamp" && <>
+        <input className={styles.seek} type="range" aria-label="Playback position" min={0} max={duration || 1}
+          step={0.1} value={position} disabled={!duration}
+          onChange={(event) => {
+            const next = Number(event.target.value);
+            streamRef.current?.seek(next);
+            setPosition(next);
+          }} />
+        <span className={styles.time}>{playbackTime(position)} / {playbackTime(duration)}</span>
+        {selectedRelease?.buyUrl && <a className={styles.buy} href={selectedRelease.buyUrl} target="_blank" rel="noopener noreferrer"
+          aria-label="Buy this release on Bandcamp">BUY ↗</a>}
+      </>}</>}
+      {customControls && <div className={styles.volume}>
         <button aria-label={volume === 0 ? "Unmute radio" : "Mute radio"}
           onClick={() => updateVolume(volume === 0 ? previousVolumeRef.current : 0)}><VolumeIcon muted={volume === 0} /></button>
         <div className={styles.volumePopover}>

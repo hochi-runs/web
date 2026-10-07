@@ -17,6 +17,7 @@
 
 .radioMenu {
   background: var(--background);
+  z-index: 80;
 }
 
 @media (min-width: 640px) and (max-width: 899px) {
