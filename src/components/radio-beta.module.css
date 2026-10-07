@@ -19,10 +19,7 @@
 .centerMark { position: absolute; inset: 0; pointer-events: none; }
 /* Match the original radio: blend the transparent wordmark layer with the canvas. */
 .wordmarkLayer { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 10; width: min(600px, 80vw); display: grid; place-items: center; mix-blend-mode: overlay; user-select: none; }
-.wordmarkLayer[data-blend="multiply"] { mix-blend-mode: multiply; }
-.wordmarkLayer[data-blend="multiply"] img { filter: brightness(.38); }
-.referenceMark, .hochiMark { display: block; max-width: 100%; height: auto; user-select: none; }
-.referenceMark { width: 100%; }
+.hochiMark { display: block; max-width: 100%; height: auto; user-select: none; }
 /* Match the reference's visible height and ink center, preserving Hochi's proportions. */
 .hochiMark { width: 96.32107%; transform: translate(-1.3573%, -21.53%); }
 .infoToggle { position: absolute; top: 104px; left: 20px; z-index: 40; padding: 0; border: 0; background: transparent; color: #ddd; font: inherit; letter-spacing: .08em; mix-blend-mode: difference; }

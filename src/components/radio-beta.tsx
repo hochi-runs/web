@@ -11,7 +11,6 @@ import styles from "./radio-beta.module.css";
 const GRAY: [RadioColor, RadioColor, RadioColor] = [
   [0.102, 0.102, 0.102], [0.102, 0.102, 0.102], [0.102, 0.102, 0.102],
 ];
-const REFERENCE_WORDMARK = "https://catalog.radio/assets/icons/logo/logo-wordmark.svg";
 
 type AudioSource = "local" | "bandcamp";
 type BandcampRelease = {
@@ -38,13 +37,8 @@ function PlayIcon({ playing }: { playing: boolean }) {
   </svg>;
 }
 
-function Wordmark({ reference }: { reference: boolean }) {
-  return reference ? (
-    // Remote reference asset stays in this comparison beta; it is not bundled
-    // or used anywhere in the Hochi archive or public navigation.
-    // eslint-disable-next-line @next/next/no-img-element
-    <img src={REFERENCE_WORDMARK} alt="Catalog Radio reference" className={styles.referenceMark} draggable={false} />
-  ) : (
+function Wordmark() {
+  return (
     // eslint-disable-next-line @next/next/no-img-element
     <img src="/hochi-radio-wordmark.svg" alt="Hochi Runs" className={styles.hochiMark} draggable={false} />
   );
@@ -68,7 +62,6 @@ export function RadioBeta({ releases }: { releases: BandcampRelease[] }) {
   const [playing, setPlaying] = useState(false);
   const [busy, setBusy] = useState(false);
   const [infoOpen, setInfoOpen] = useState(false);
-  const [reference, setReference] = useState(false);
   const [volume, setVolume] = useState(0.2);
   const [sourceName, setSourceName] = useState("Generated test signal");
   const [purchaseActive, setPurchaseActive] = useState(false);
@@ -80,7 +73,6 @@ export function RadioBeta({ releases }: { releases: BandcampRelease[] }) {
   const [captureSupport, setCaptureSupport] = useState<string>();
   const [releaseSlug, setReleaseSlug] = useState(releases[0]?.slug);
   const [audioLevels, setAudioLevels] = useState<[number, number, number]>([0, 0, 0]);
-  const [wordmarkBlend, setWordmarkBlend] = useState<"overlay" | "multiply">("overlay");
   const selectedRelease = releases.find((release) => release.slug === releaseSlug) ?? releases[0];
 
   useEffect(() => {
@@ -312,7 +304,7 @@ export function RadioBeta({ releases }: { releases: BandcampRelease[] }) {
     data-audio-source={audioSource} data-tab-capture={captureActive}>
     <canvas ref={canvasRef} className={styles.canvas} aria-hidden="true" />
     <div className={styles.centerMark} aria-hidden="true">
-      <div className={styles.wordmarkLayer} data-blend={wordmarkBlend}><Wordmark reference={reference} /></div>
+      <div className={styles.wordmarkLayer}><Wordmark /></div>
     </div>
     <SiteChrome variant="radio" />
 
@@ -322,9 +314,7 @@ export function RadioBeta({ releases }: { releases: BandcampRelease[] }) {
     {infoOpen && <aside id="radio-beta-info" className={styles.info} aria-label="Radio beta settings">
       <p className={styles.infoTitle}>Radio</p>
       <p>Bandcamp plays without audio-sharing permission. Enable reactive audio to make the visualizer follow the sound.</p>
-      <p>Audio analysis stays in your browser.</p>
       <div className={styles.optionGroup}>
-        <span className={styles.optionLabel}>Audio source</span>
         <div className={styles.options}>
           <button aria-pressed={audioSource === "bandcamp"} disabled={busy} onClick={() => switchSource("bandcamp")}>Bandcamp</button>
           <button aria-pressed={audioSource === "local"} disabled={busy} onClick={() => switchSource("local")}>Local audio</button>
@@ -338,9 +328,8 @@ export function RadioBeta({ releases }: { releases: BandcampRelease[] }) {
             }}>
             {releases.map((release) => <option key={release.slug} value={release.slug}>{release.artist} — {release.title}</option>)}
           </select>
-          <span className={styles.fine}>{captureSupport ?? "Choose this tab in the browser prompt. If it offers Share tab audio, turn that on. Desktop Chrome or Edge supports tab-audio sharing."}</span>
           <button className={styles.captureButton} onClick={() => void toggleTabCapture()}
-            disabled={busy || Boolean(captureSupport)} aria-pressed={captureActive}>
+            disabled={busy || Boolean(captureSupport)} aria-pressed={captureActive} title={captureSupport}>
             <span className={styles.airDot} data-active={captureActive} aria-hidden="true" />
             {busy ? "Connecting…" : captureActive ? "Disconnect reactive audio" : "Enable reactive audio"}
           </button>
@@ -353,20 +342,6 @@ export function RadioBeta({ releases }: { releases: BandcampRelease[] }) {
           <meter min={0} max={1} value={audioLevels[index]} aria-label={`${label} audio level`} />
           <span className={styles.levelValue} aria-hidden="true">{Math.round(audioLevels[index] * 100)}%</span>
         </label>)}
-      </div>
-      <div className={styles.optionGroup}>
-        <span className={styles.optionLabel}>Wordmark</span>
-        <div className={styles.options}>
-          <button aria-pressed={reference} onClick={() => setReference(true)}>Reference</button>
-          <button aria-pressed={!reference} onClick={() => setReference(false)}>Hochi Runs</button>
-        </div>
-      </div>
-      <div className={styles.optionGroup}>
-        <span className={styles.optionLabel}>Wordmark blend</span>
-        <div className={styles.options}>
-          <button aria-pressed={wordmarkBlend === "overlay"} onClick={() => setWordmarkBlend("overlay")}>Overlay</button>
-          <button aria-pressed={wordmarkBlend === "multiply"} onClick={() => setWordmarkBlend("multiply")}>Multiply</button>
-        </div>
       </div>
       <div className={styles.optionGroup}>
         <span className={styles.optionLabel}>Palette · {paletteName}</span>
@@ -387,7 +362,6 @@ export function RadioBeta({ releases }: { releases: BandcampRelease[] }) {
       <button className={styles.cosign} onClick={testPurchase} aria-pressed={purchaseActive}>
         {purchaseActive ? "Cosign effect" : "Test cosign"}<span aria-hidden="true"> ↗</span>
       </button>
-      <span className={styles.fine}>A 15-second preview of the purchase effect. No payment is made.</span>
       <Link className={styles.archiveLink} href="/">Return to archive ↗</Link>
     </aside>}
 
