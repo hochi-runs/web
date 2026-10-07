@@ -25,9 +25,5 @@
 
 /* Center the capped player in the footer gap, keeping both link groups clear. */
 @media (min-width: 640px) {
-  .player { width: auto; left: 156px; right: calc(var(--site-navigation-width) + 40px); }
-}
-
-@media (min-width: 640px) and (max-width: 899px) {
-  .player { left: 20px; right: 20px; }
+  .player { width: auto; left: 156px; right: 213px; }
 }

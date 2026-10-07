@@ -15,7 +15,7 @@ import styles from "./site-chrome.module.css";
  *   top-left     → logo
  *   top-right    → primary nav (Releases · Live · Shop) + mobile menu button
  *   bottom-left  → label social profiles
- *   bottom-right → About · Legal · Contact
+ *   bottom-right → Radio (archive) · About · Legal · Contact
  *
  * On small screens the nav collapses into a single overlay menu so the fixed
  * corners never collide.
@@ -37,6 +37,11 @@ const SECONDARY: readonly NavigationItem[] = [
   { label: "About", href: "/about" },
   { label: "Legal", href: "/legal" },
   { label: "Contact", href: "/contact" },
+];
+
+const ARCHIVE_SECONDARY: readonly NavigationItem[] = [
+  { label: "Radio", href: "/beta/radio" },
+  ...SECONDARY,
 ];
 
 function RadioSiteChrome({ logoUrl }: { logoUrl?: string }) {
@@ -108,7 +113,7 @@ function RadioSiteChrome({ logoUrl }: { logoUrl?: string }) {
 
       <nav
         aria-label="Primary"
-        className={`${styles.navigation} corner-surface fixed right-[20px] top-[20px] z-50 hidden items-center gap-[15px] text-xs uppercase tracking-widest sm:flex`}
+        className="corner-surface fixed right-[20px] top-[20px] z-50 hidden items-center gap-[15px] text-xs uppercase tracking-widest sm:flex"
       >
         {PRIMARY.map((link) => link.disabled ? (
           <span key={link.href} role="link" aria-disabled="true" title="Shop is not available yet" className="cursor-default text-muted opacity-50">
@@ -134,10 +139,10 @@ function RadioSiteChrome({ logoUrl }: { logoUrl?: string }) {
         Menu
       </button>
 
-      <SocialLinks className={`${styles.footerSocials} corner-surface fixed bottom-[16px] left-[16px] z-50 hidden sm:block`} />
+      <SocialLinks className={`${styles.radioSocials} corner-surface fixed bottom-[16px] left-[16px] z-50 hidden sm:block`} />
       <nav
         aria-label="Secondary"
-        className={`${styles.navigation} ${styles.footerNavigation} corner-surface fixed bottom-[20px] right-[20px] z-50 hidden items-center gap-[15px] text-xs uppercase tracking-widest text-muted sm:flex`}
+        className={`${styles.radioSecondary} corner-surface fixed bottom-[20px] right-[20px] z-50 hidden items-center gap-[15px] text-xs uppercase tracking-widest text-muted sm:flex`}
       >
         {SECONDARY.map((link) => (
           <Link key={link.href} href={link.href} className="transition-colors hover:text-accent">{link.label}</Link>
@@ -192,7 +197,7 @@ export function SiteChrome({ logoUrl, variant = "archive" }: { logoUrl?: string;
       {/* Top-right: primary nav (desktop) */}
       <nav
         aria-label="Primary"
-        className={`${styles.navigation} corner-surface fixed right-[20px] top-[20px] z-50 hidden items-center gap-[15px] text-xs uppercase tracking-widest sm:flex`}
+        className="corner-surface fixed right-[20px] top-[20px] z-50 hidden items-center gap-[15px] text-xs uppercase tracking-widest sm:flex"
       >
         {PRIMARY.map((link) => {
           if (link.disabled) {
@@ -243,14 +248,14 @@ export function SiteChrome({ logoUrl, variant = "archive" }: { logoUrl?: string;
       </div>
 
       {/* Bottom-left: social profiles (desktop) */}
-      <SocialLinks className={`${styles.footerSocials} corner-surface fixed bottom-[16px] left-[16px] z-50 hidden sm:block`} />
+      <SocialLinks className="corner-surface fixed bottom-[16px] left-[16px] z-50 hidden sm:block" />
 
       {/* Bottom-right: secondary nav */}
       <nav
         aria-label="Secondary"
-        className={`${styles.navigation} ${styles.footerNavigation} corner-surface fixed bottom-[20px] right-[20px] z-50 hidden items-center gap-[15px] text-xs uppercase tracking-widest text-muted sm:flex`}
+        className="corner-surface fixed bottom-[20px] right-[20px] z-50 hidden items-center gap-[15px] text-xs uppercase tracking-widest text-muted sm:flex"
       >
-        {SECONDARY.map((link) => (
+        {ARCHIVE_SECONDARY.map((link) => (
           <Link
             key={link.href}
             href={link.href}
@@ -265,7 +270,7 @@ export function SiteChrome({ logoUrl, variant = "archive" }: { logoUrl?: string;
       {menuOpen && (
         <div className="fixed inset-0 z-40 flex flex-col justify-center gap-8 bg-background px-8 sm:hidden">
           <nav aria-label="Mobile" className="flex flex-col gap-5 text-sm uppercase tracking-widest">
-            {[...PRIMARY, ...SECONDARY].map((link) =>
+            {[...PRIMARY, ...ARCHIVE_SECONDARY].map((link) =>
               link.disabled ? (
                 <span
                   key={link.href}

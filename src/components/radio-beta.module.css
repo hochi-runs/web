@@ -49,7 +49,7 @@
 .archiveLink { display: inline-block; margin-top: 24px; color: #ccc; font-size: 12px; }
 .notice, .error { position: absolute; left: 16px; bottom: 72px; max-width: calc(100% - 32px); margin: 0; z-index: 1002; font-size: 12px; color: #ddd; }
 .error { padding: 8px 12px; background: #262626; border: 1px solid #666; }
-.soundbar { position: absolute; left: 156px; right: calc(var(--site-navigation-width) + 40px); bottom: calc(12px + env(safe-area-inset-bottom)); z-index: 30; height: 42px; display: flex; align-items: center; gap: 8px; background: transparent; }
+.soundbar { position: absolute; left: 50%; bottom: calc(12px + env(safe-area-inset-bottom)); transform: translateX(-50%); z-index: 30; width: calc(100% - 440px); height: 42px; display: flex; align-items: center; gap: 8px; background: transparent; }
 .transport { display: flex; flex-shrink: 0; align-items: center; gap: 8px; height: 42px; padding: 0 12px; background: transparent; border: 0; color: #fafafa; }
 .transport:hover { background: #ffffff04; }
 .bandcampPlayer { flex: 1; min-width: 0; display: flex; align-items: center; justify-content: center; }
@@ -78,7 +78,7 @@
 .volumePopover input { appearance: slider-vertical; writing-mode: vertical-lr; direction: rtl; width: 12px; height: 104px; accent-color: #fff; }
 
 @media (max-width: 899px) {
-  .soundbar { left: 20px; right: 20px; }
+  .soundbar { width: calc(100% - 40px); }
 }
 
 @media (max-width: 639px) {
