@@ -225,7 +225,7 @@ export function RadioBeta() {
     </header>
 
     <button className={styles.infoToggle} aria-label={infoOpen ? "Close radio information" : "Open radio information"}
-      aria-expanded={infoOpen} aria-controls="radio-beta-info" onClick={() => setInfoOpen(!infoOpen)}>i</button>
+      aria-expanded={infoOpen} aria-controls="radio-beta-info" onClick={() => setInfoOpen(!infoOpen)}>INFO</button>
 
     {infoOpen && <aside id="radio-beta-info" className={styles.info} aria-label="Radio beta settings">
       <p className={styles.infoTitle}>Radio study</p>
@@ -283,7 +283,7 @@ export function RadioBeta() {
 
     <button className={`${styles.splash} ${started ? styles.splashGone : ""}`} aria-label="Start radio beta"
       tabIndex={started ? -1 : 0} disabled={busy || started} onClick={() => void togglePlaying()} aria-hidden={started}>
-      <Wordmark reference={reference} />
+      <span className={styles.splashWordmark}><Wordmark reference={reference} /></span>
       <span className={styles.startPrompt}>{busy ? "Starting…" : "Click anywhere to start listening"}</span>
     </button>
   </section>;
