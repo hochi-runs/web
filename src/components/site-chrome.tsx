@@ -103,7 +103,7 @@ function RadioSiteChrome({ logoUrl }: { logoUrl?: string }) {
         className={`${styles.radioLogo} fixed left-[20px] top-[5px] z-50 transition-opacity hover:opacity-70 sm:top-[17px]`}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={logoUrl ?? "/logo.png"} alt="Hochi Runs" width={75} height={63} className="w-[75px]" />
+        <img src={logoUrl ?? "/logo.svg"} alt="Hochi Runs" width={75} height={63} className="w-[75px]" />
       </Link>
 
       <nav
@@ -181,7 +181,7 @@ export function SiteChrome({ logoUrl, variant = "archive" }: { logoUrl?: string;
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src={logoUrl ?? "/logo.png"}
+          src={logoUrl ?? "/logo.svg"}
           alt="Hochi Runs"
           width={75}
           height={63}
