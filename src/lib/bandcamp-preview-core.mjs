@@ -8,13 +8,45 @@ const RESPONSE_HEADERS = {
   "X-Robots-Tag": "noindex, nofollow",
 };
 
-/** This unsupported streaming experiment must never be exposed by a deployment. */
+/** Development previews remain available only on the local browser origin. */
 export function isLocalBandcampPreviewRequest(request, environment = process.env.NODE_ENV) {
   if (environment !== "development") return false;
   try {
     const url = new URL(request.url);
     if (!["http:", "https:"].includes(url.protocol) || url.username || url.password) return false;
     if (!["localhost", "127.0.0.1", "[::1]"].includes(url.hostname)) return false;
+    const origin = request.headers.get("origin");
+    if (origin !== null && origin !== url.origin) return false;
+    const site = request.headers.get("sec-fetch-site");
+    return site === null || site === "same-origin" || site === "none";
+  } catch {
+    return false;
+  }
+}
+
+/** Configured hosted previews require an exact public HTTPS origin, never a URL path. */
+export function isBandcampPreviewOrigin(value) {
+  if (typeof value !== "string" || value.length > 261) return false;
+  try {
+    const url = new URL(value);
+    return value === url.origin && url.protocol === "https:"
+      && !url.username && !url.password && !url.port
+      && url.hostname.length <= 253
+      && /^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z](?:[a-z0-9-]{0,61}[a-z0-9])?$/.test(url.hostname)
+      && !/\.(?:localhost|local|localdomain|internal|home|lan|test|invalid|example|arpa|onion)$/.test(url.hostname);
+  } catch {
+    return false;
+  }
+}
+
+/** Hosted previews are opt-in and restricted to server-configured same-origin requests. */
+export function isBandcampPreviewRequest(request, environment = process.env.NODE_ENV, allowedOrigins = []) {
+  if (isLocalBandcampPreviewRequest(request, environment)) return true;
+  if (environment !== "production" || !Array.isArray(allowedOrigins)) return false;
+  try {
+    const url = new URL(request.url);
+    if (url.protocol !== "https:" || url.username || url.password || url.port
+      || !allowedOrigins.some((origin) => origin === url.origin && isBandcampPreviewOrigin(origin))) return false;
     const origin = request.headers.get("origin");
     if (origin !== null && origin !== url.origin) return false;
     const site = request.headers.get("sec-fetch-site");
@@ -198,17 +230,19 @@ function streamPreview(response, scope, idleTimeoutMs) {
 }
 
 /**
- * Local proof only: a public Bandcamp preview through a same-origin audio element.
- * No cookies, browser-supplied URLs, stored audio copies, or production access.
+ * A public Bandcamp preview through a same-origin audio element, local by default
+ * and available on hosted origins only when explicitly configured by the server.
+ * No cookies, browser-supplied URLs, or stored audio copies.
  * @param {{request: Request, slug: string,
  *   releases: Array<{slug: string, bandcampId?: number, bandcampType?: "album" | "track"}>,
- *   environment?: string, fetchImpl?: typeof fetch, timeoutMs?: number, idleTimeoutMs?: number}} options
+ *   environment?: string, allowedOrigins?: string[], fetchImpl?: typeof fetch,
+ *   timeoutMs?: number, idleTimeoutMs?: number}} options
  */
 export async function createBandcampPreviewResponse({
-  request, slug, releases, environment = process.env.NODE_ENV, fetchImpl = fetch,
+  request, slug, releases, environment = process.env.NODE_ENV, allowedOrigins = [], fetchImpl = fetch,
   timeoutMs = 10_000, idleTimeoutMs = 30_000,
 }) {
-  if (!isLocalBandcampPreviewRequest(request, environment)) return unavailable(request, 404);
+  if (!isBandcampPreviewRequest(request, environment, allowedOrigins)) return unavailable(request, 404);
   if (!["GET", "HEAD"].includes(request.method)) return unavailable(request, 405, { Allow: "GET, HEAD" });
   const release = releases.find((entry) => entry.slug === slug);
   if (!release || !Number.isSafeInteger(release.bandcampId) || release.bandcampId <= 0

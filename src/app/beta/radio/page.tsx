@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { RadioBeta } from "@/components/radio-beta";
 import { getReleases } from "@/lib/wordpress";
 import { releaseArchive } from "@/data/releases";
+import { hasCustomBandcampPreview } from "@/lib/bandcamp-preview-config";
 
 export const metadata: Metadata = {
   title: "Radio beta · Hochi Runs",
@@ -20,5 +21,5 @@ export default async function RadioBetaPage() {
       }]
       : [],
   );
-  return <RadioBeta releases={releases} customBandcampPreview={process.env.NODE_ENV === "development"} />;
+  return <RadioBeta releases={releases} customBandcampPreview={hasCustomBandcampPreview()} />;
 }

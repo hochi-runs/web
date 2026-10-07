@@ -1,6 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { createBandcampPreviewResponse, isBandcampPreviewUrl, parseBandcampPreview } from "../src/lib/bandcamp-preview-core.mjs";
+import {
+  createBandcampPreviewResponse, isBandcampPreviewOrigin, isBandcampPreviewRequest,
+  isLocalBandcampPreviewRequest, isBandcampPreviewUrl, parseBandcampPreview,
+} from "../src/lib/bandcamp-preview-core.mjs";
 
 const releases = [{ slug: "demo", bandcampId: 123, bandcampType: "album" }];
 const preview = "https://t1.bcbits.com/stream/example/mp3-128?token=synthetic-fixture";
@@ -33,6 +36,117 @@ test("production, non-loopback, and cross-origin requests cannot reach any upstr
   for (const headers of [{ origin: "https://evil.example" }, { origin: "null" }, { "sec-fetch-site": "cross-site" }]) {
     assert.equal((await run(request({ headers }), { fetchImpl: forbiddenFetch })).status, 404);
   }
+});
+
+test("hosted preview origins must be exact public HTTPS origins", () => {
+  for (const origin of ["https://hochiruns.com", "https://www.hochiruns.com", "https://hochi-runs-example.vercel.app"]) {
+    assert.equal(isBandcampPreviewOrigin(origin), true, origin);
+  }
+  for (const origin of [
+    undefined, null, [], "", "https://", "http://hochiruns.com", "https://user@hochiruns.com",
+    "https://hochiruns.com:443", "https://hochiruns.com:8443", "https://hochiruns.com/",
+    "https://hochiruns.com/path", "https://hochiruns.com?enabled=true", "https://hochiruns.com#fragment",
+    " https://hochiruns.com", "https://hochiruns.com\n", "https://*.vercel.app",
+    "https://localhost", "https://127.0.0.1", "https://[::1]", "https://10.0.0.1",
+    "https://172.16.0.1", "https://192.168.1.2", "https://169.254.169.254", "https://[fc00::1]",
+    "https://radio.local", "https://radio.localhost", "https://radio.localdomain", "https://radio.internal",
+    "https://radio.test", "https://radio.lan", "https://radio.home", "https://radio.invalid",
+    "https://bad_host.vercel.app", "https://-bad.vercel.app", "https://hochiruns.com.",
+  ]) assert.equal(isBandcampPreviewOrigin(origin), false, String(origin));
+});
+
+test("production requests require explicit exact origins and same-origin browser headers", async () => {
+  const origin = "https://hochiruns.com";
+  const publicUrl = `${origin}/beta/radio/stream/demo`;
+  const allowedOrigins = [origin, "https://www.hochiruns.com", "https://hochi-runs-example.vercel.app"];
+  assert.equal(isLocalBandcampPreviewRequest(request(), "development"), true);
+  assert.equal(isLocalBandcampPreviewRequest(request({ url: publicUrl }), "production"), false);
+  for (const configured of [[], ["https://other.vercel.app"], ["https://*.vercel.app"], ["https://hochiruns.com/"], null]) {
+    assert.equal((await run(request({ url: publicUrl }), {
+      environment: "production", allowedOrigins: configured, fetchImpl: forbiddenFetch,
+    })).status, 404);
+  }
+  for (const url of [
+    "https://unlisted.vercel.app/beta/radio/stream/demo", "https://hochiruns.com.evil.example/beta/radio/stream/demo",
+    "http://hochiruns.com/beta/radio/stream/demo", "https://hochiruns.com:8443/beta/radio/stream/demo",
+    "https://127.0.0.1/beta/radio/stream/demo", "https://radio.local/beta/radio/stream/demo",
+  ]) {
+    assert.equal((await run(request({ url }), {
+      environment: "production", allowedOrigins, fetchImpl: forbiddenFetch,
+    })).status, 404, url);
+  }
+  for (const headers of [
+    { origin: "https://evil.example" }, { origin: "https://www.hochiruns.com" }, { origin: "null" },
+    { "sec-fetch-site": "cross-site" }, { "sec-fetch-site": "same-site" },
+  ]) {
+    assert.equal((await run(request({ url: publicUrl, headers }), {
+      environment: "production", allowedOrigins, fetchImpl: forbiddenFetch,
+    })).status, 404);
+  }
+  for (const environment of ["development", "test", ""]) {
+    assert.equal(isBandcampPreviewRequest(request({ url: publicUrl }), environment, allowedOrigins), false);
+  }
+  for (const origin of allowedOrigins) {
+    for (const headers of [{}, { origin }, { origin, "sec-fetch-site": "same-origin" }, { "sec-fetch-site": "none" }]) {
+      assert.equal(isBandcampPreviewRequest(request({ url: `${origin}/beta/radio/stream/demo`, headers }), "production", allowedOrigins), true);
+    }
+  }
+});
+
+test("opted-in hosted previews retain public metadata restrictions and reject untrusted audio URLs", async () => {
+  for (const overrides of [
+    { album_private: true }, { subscriber_only: true }, { exclusive_show_anywhere: true },
+    { exclusive_permitted_domains: ["https://hochiruns.com"] },
+    { tracks: [track(1, "https://evil.example/stream/a")] },
+  ]) {
+    let calls = 0;
+    const response = await run(request({ url: "https://hochiruns.com/beta/radio/stream/demo" }), {
+      environment: "production", allowedOrigins: ["https://hochiruns.com"],
+      fetchImpl: async () => {
+        calls += 1;
+        return new Response(html(metadata(overrides)));
+      },
+    });
+    assert.equal(response.status, 502);
+    assert.equal(calls, 1);
+    assert.equal(await response.text(), "Audio preview unavailable.");
+  }
+});
+
+test("opted-in hosted GET and HEAD support seeking without forwarding cookies or following redirects", async () => {
+  for (const method of ["GET", "HEAD"]) {
+    const calls = [];
+    const response = await run(request({ url: "https://hochiruns.com/beta/radio/stream/demo", method,
+      headers: { origin: "https://hochiruns.com", "sec-fetch-site": "same-origin", range: "bytes=2-4", cookie: "private=do-not-send" },
+    }), {
+      environment: "production", allowedOrigins: ["https://hochiruns.com"],
+      fetchImpl: async (url, init) => {
+        calls.push({ url, init });
+        return calls.length === 1 ? new Response(html()) : audio(method === "HEAD" ? null : "123", {
+          status: 206, headers: { "content-length": "3", "content-range": "bytes 2-4/10", "set-cookie": "private=do-not-return" },
+        });
+      },
+    });
+    assert.equal(response.status, 206);
+    assert.equal(calls[0].url, "https://bandcamp.com/EmbeddedPlayer/album=123/size=small/bgcol=ffffff/linkcol=333333/artwork=none/transparent=true/");
+    assert.equal(calls[1].url, preview);
+    assert.equal(calls[1].init.method, method);
+    assert.equal(calls[1].init.headers.Range, "bytes=2-4");
+    for (const { init } of calls) {
+      assert.equal(init.redirect, "error");
+      assert.equal(init.credentials, "omit");
+      assert.equal(init.cache, "no-store");
+      assert.equal(init.headers.Cookie, undefined);
+      assert.equal(init.headers.cookie, undefined);
+    }
+    assert.equal(response.headers.get("cache-control"), "no-store");
+    assert.equal(response.headers.get("cross-origin-resource-policy"), "same-origin");
+    assert.equal(response.headers.get("set-cookie"), null);
+    assert.equal(await response.text(), method === "HEAD" ? "" : "123");
+  }
+  assert.equal((await run(request({ url: "https://hochiruns.com/beta/radio/stream/demo", method: "POST" }), {
+    environment: "production", allowedOrigins: ["https://hochiruns.com"], fetchImpl: forbiddenFetch,
+  })).status, 405);
 });
 
 test("unknown slugs, invalid catalog identifiers, and malformed byte ranges never fetch", async () => {
