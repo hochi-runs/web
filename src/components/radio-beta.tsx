@@ -5,6 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { RadioBetaAudio } from "@/lib/radio-beta-audio";
 import { RadioBetaTabAudio } from "@/lib/radio-beta-tab-audio";
 import { createRadioVisualizer, type RadioColor } from "@/lib/radio-beta-visualizer";
+import { SiteChrome } from "@/components/site-chrome";
 import styles from "./radio-beta.module.css";
 
 const GRAY: [RadioColor, RadioColor, RadioColor] = [
@@ -64,7 +65,6 @@ export function RadioBeta({ releases }: { releases: BandcampRelease[] }) {
   const fileRef = useRef<HTMLInputElement>(null);
   const paletteVersionRef = useRef(0);
   const bandsRef = useRef<[number, number, number]>([0, 0, 0]);
-  const [started, setStarted] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [busy, setBusy] = useState(false);
   const [infoOpen, setInfoOpen] = useState(false);
@@ -80,6 +80,7 @@ export function RadioBeta({ releases }: { releases: BandcampRelease[] }) {
   const [captureSupport, setCaptureSupport] = useState<string>();
   const [releaseSlug, setReleaseSlug] = useState(releases[0]?.slug);
   const [audioLevels, setAudioLevels] = useState<[number, number, number]>([0, 0, 0]);
+  const [wordmarkBlend, setWordmarkBlend] = useState<"overlay" | "multiply">("overlay");
   const selectedRelease = releases.find((release) => release.slug === releaseSlug) ?? releases[0];
 
   useEffect(() => {
@@ -160,11 +161,7 @@ export function RadioBeta({ releases }: { releases: BandcampRelease[] }) {
   }, []);
 
   const togglePlaying = async () => {
-    if (busyRef.current) return;
-    if (sourceRef.current === "bandcamp") {
-      setStarted(true);
-      return;
-    }
+    if (busyRef.current || sourceRef.current !== "local") return;
     busyRef.current = true;
     setBusy(true);
     setError("");
@@ -174,7 +171,6 @@ export function RadioBeta({ releases }: { releases: BandcampRelease[] }) {
       else await engine.play();
       if (aliveRef.current) {
         setPlaying(engine.playing);
-        setStarted(true);
       }
     } catch (reason) {
       if (aliveRef.current) setError(reason instanceof Error ? reason.message : "Could not start audio. Try again.");
@@ -252,7 +248,6 @@ export function RadioBeta({ releases }: { releases: BandcampRelease[] }) {
       if (aliveRef.current) {
         setSourceName(file.name);
         setPlaying(engine.playing);
-        setStarted(true);
       }
     } catch {
       if (aliveRef.current) setError("That audio file could not be decoded. Try an MP3, WAV, or M4A.");
@@ -317,25 +312,17 @@ export function RadioBeta({ releases }: { releases: BandcampRelease[] }) {
     data-audio-source={audioSource} data-tab-capture={captureActive}>
     <canvas ref={canvasRef} className={styles.canvas} aria-hidden="true" />
     <div className={styles.centerMark} aria-hidden="true">
-      <div className={styles.wordmarkLayer}><Wordmark reference={reference} /></div>
+      <div className={styles.wordmarkLayer} data-blend={wordmarkBlend}><Wordmark reference={reference} /></div>
     </div>
-
-    <header className={styles.header}>
-      <Link href="/" aria-label="Return to Hochi Runs archive" className={styles.home}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/logo.png" alt="Hochi Runs" width={31} height={26} />
-      </Link>
-      <span className={styles.beta}>LOCAL BETA</span>
-    </header>
+    <SiteChrome variant="radio" />
 
     <button className={styles.infoToggle} aria-label={infoOpen ? "Close radio information" : "Open radio information"}
       aria-expanded={infoOpen} aria-controls="radio-beta-info" onClick={() => setInfoOpen(!infoOpen)}>INFO</button>
 
     {infoOpen && <aside id="radio-beta-info" className={styles.info} aria-label="Radio beta settings">
-      <p className={styles.infoTitle}>Radio study</p>
-      <p>The Catalog Radio layout and audio-reactive effect, reconstructed for this local beta.</p>
-      <p>Choose a Bandcamp release and press its play button. Enable reactive audio and approve sharing this browser tab with sound.</p>
-      <p>Audio analysis stays in your browser. Test cosign simulates the 15-second purchase effect; it makes no payment.</p>
+      <p className={styles.infoTitle}>Radio</p>
+      <p>Bandcamp plays without audio-sharing permission. Enable reactive audio to make the visualizer follow the sound.</p>
+      <p>Audio analysis stays in your browser.</p>
       <div className={styles.optionGroup}>
         <span className={styles.optionLabel}>Audio source</span>
         <div className={styles.options}>
@@ -352,6 +339,11 @@ export function RadioBeta({ releases }: { releases: BandcampRelease[] }) {
             {releases.map((release) => <option key={release.slug} value={release.slug}>{release.artist} — {release.title}</option>)}
           </select>
           <span className={styles.fine}>{captureSupport ?? "Choose this tab in the browser prompt. If it offers Share tab audio, turn that on. Desktop Chrome or Edge supports tab-audio sharing."}</span>
+          <button className={styles.captureButton} onClick={() => void toggleTabCapture()}
+            disabled={busy || Boolean(captureSupport)} aria-pressed={captureActive}>
+            <span className={styles.airDot} data-active={captureActive} aria-hidden="true" />
+            {busy ? "Connecting…" : captureActive ? "Disconnect reactive audio" : "Enable reactive audio"}
+          </button>
         </>}
       </div>
       <div className={styles.optionGroup} aria-label="Audio input levels">
@@ -370,6 +362,13 @@ export function RadioBeta({ releases }: { releases: BandcampRelease[] }) {
         </div>
       </div>
       <div className={styles.optionGroup}>
+        <span className={styles.optionLabel}>Wordmark blend</span>
+        <div className={styles.options}>
+          <button aria-pressed={wordmarkBlend === "overlay"} onClick={() => setWordmarkBlend("overlay")}>Overlay</button>
+          <button aria-pressed={wordmarkBlend === "multiply"} onClick={() => setWordmarkBlend("multiply")}>Multiply</button>
+        </div>
+      </div>
+      <div className={styles.optionGroup}>
         <span className={styles.optionLabel}>Palette · {paletteName}</span>
         <div className={styles.palettes}>
           <button onClick={() => choosePalette()} aria-label="Use monochrome palette" className={styles.graySwatch} />
@@ -385,6 +384,10 @@ export function RadioBeta({ releases }: { releases: BandcampRelease[] }) {
         <input ref={fileRef} type="file" accept="audio/*" hidden onChange={(event) => void loadLocalFile(event.target.files?.[0])} />
         <span className={styles.fine}>The file stays in this browser. It is never uploaded.</span>
       </div>
+      <button className={styles.cosign} onClick={testPurchase} aria-pressed={purchaseActive}>
+        {purchaseActive ? "Cosign effect" : "Test cosign"}<span aria-hidden="true"> ↗</span>
+      </button>
+      <span className={styles.fine}>A 15-second preview of the purchase effect. No payment is made.</span>
       <Link className={styles.archiveLink} href="/">Return to archive ↗</Link>
     </aside>}
 
@@ -393,11 +396,6 @@ export function RadioBeta({ releases }: { releases: BandcampRelease[] }) {
 
     <footer className={styles.soundbar} aria-label="Radio audio controls">
       {audioSource === "bandcamp" ? <>
-        <button className={`${styles.transport} ${styles.captureTransport}`} onClick={() => void toggleTabCapture()}
-          disabled={busy || Boolean(captureSupport)} aria-label={captureActive ? "Disconnect reactive audio" : "Enable reactive audio"}>
-          <span className={styles.airDot} data-active={captureActive} />
-          <span className={styles.airText}>{busy ? "CONNECTING" : captureActive ? "REACTIVE ON" : "ENABLE REACTIVE"}</span>
-        </button>
         <div className={styles.bandcampPlayer}>
           {selectedRelease ? <iframe
             key={selectedRelease.slug}
@@ -408,13 +406,10 @@ export function RadioBeta({ releases }: { releases: BandcampRelease[] }) {
       </> : <><button className={styles.transport} onClick={() => void togglePlaying()} disabled={busy}
         aria-label={playing ? "Pause radio" : "Play radio"}>
         <span className={styles.airDot} data-active={playing} />
-        <span className={styles.airText}>{playing ? "TEST SIGNAL" : started ? "PAUSED" : "OFF AIR"}</span>
-        {started && <PlayIcon playing={playing} />}
+        <span className={styles.airText}>{playing ? "LOCAL AUDIO" : "PLAY"}</span>
+        <PlayIcon playing={playing} />
       </button>
-      <span className={styles.trackName}>{started ? sourceName : ""}</span></>}
-      <button className={styles.cosign} onClick={testPurchase} aria-pressed={purchaseActive}>
-        {purchaseActive ? "COSIGN EFFECT" : "TEST COSIGN"}<span aria-hidden="true"> ↗</span>
-      </button>
+      <span className={styles.trackName}>{sourceName}</span></>}
       {audioSource === "local" && <div className={styles.volume}>
         <button aria-label={volume === 0 ? "Unmute radio" : "Mute radio"}
           onClick={() => updateVolume(volume === 0 ? previousVolumeRef.current : 0)}><VolumeIcon muted={volume === 0} /></button>
@@ -425,10 +420,5 @@ export function RadioBeta({ releases }: { releases: BandcampRelease[] }) {
       </div>}
     </footer>
 
-    <button className={`${styles.splash} ${started ? styles.splashGone : ""}`} aria-label="Start radio beta"
-      tabIndex={started ? -1 : 0} disabled={busy || started} onClick={() => void togglePlaying()} aria-hidden={started}>
-      <span className={styles.splashWordmark}><Wordmark reference={reference} /></span>
-      <span className={styles.startPrompt}>{busy ? "Starting…" : audioSource === "bandcamp" ? "Click anywhere to open Bandcamp radio" : "Click anywhere to start listening"}</span>
-    </button>
   </section>;
 }

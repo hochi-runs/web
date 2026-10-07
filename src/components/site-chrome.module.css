@@ -1,0 +1,27 @@
+.radioChrome {
+  --background: #262626;
+  --foreground: #fafafa;
+  --accent: #ffffff;
+  --muted: #b8b8b8;
+  display: contents;
+  color: var(--foreground);
+}
+
+.radioChrome :is(a, button):focus-visible {
+  outline-color: var(--foreground);
+}
+
+.radioLogo img {
+  filter: invert(1);
+}
+
+.radioMenu {
+  background: var(--background);
+}
+
+@media (min-width: 640px) and (max-width: 899px) {
+  .radioSocials,
+  .radioSecondary {
+    bottom: calc(78px + env(safe-area-inset-bottom));
+  }
+}
