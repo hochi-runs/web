@@ -16,14 +16,15 @@
 .radio button { cursor: pointer; }
 .radio button:disabled { cursor: default; }
 .canvas { display: block; width: 100%; height: 100%; }
-.centerMark { position: absolute; inset: 0; pointer-events: none; }
-/* Match the original radio: blend the transparent wordmark layer with the canvas. */
-.wordmarkLayer { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 10; width: min(600px, 80vw); display: grid; place-items: center; mix-blend-mode: overlay; user-select: none; }
+/* Blend directly with the canvas. Safari can lose blending on a nested,
+   transformed layer; keep centering and the SVG offset on its children. */
+.centerMark { position: absolute; inset: 0; z-index: 10; display: grid; place-items: center; mix-blend-mode: overlay; pointer-events: none; }
+.wordmarkLayer { width: min(600px, 80vw); display: grid; place-items: center; user-select: none; }
 .hochiMark { display: block; max-width: 100%; height: auto; user-select: none; }
 /* Match the reference's visible height and ink center, preserving Hochi's proportions. */
 .hochiMark { width: 96.32107%; transform: translate(-1.3573%, -21.53%); }
 .radio[data-display="artwork"][data-artwork="true"] .wordmarkLayer { visibility: hidden; }
-.radio[data-display="both"] .wordmarkLayer { z-index: 20; opacity: 0.65; }
+.radio[data-display="both"] .centerMark { z-index: 20; opacity: 0.65; }
 .nowPlaying { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 15; width: calc(min(56vw, calc(100dvh - 240px), 900px) * 0.85); margin: 0; display: grid; justify-items: center; gap: 18px; pointer-events: none; }
 .nowPlayingArtwork { display: block; width: 100%; aspect-ratio: 1; object-fit: contain; }
 .nowPlaying figcaption { display: grid; gap: 4px; max-width: 100%; text-align: center; overflow-wrap: anywhere; }
