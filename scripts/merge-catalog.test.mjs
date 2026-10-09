@@ -93,3 +93,45 @@ test('invalid or duplicate metadata fails instead of producing broken routes', (
   assert.throws(() => mergeBandcampCatalog([], { version: 2, releases: [] }));
   assert.throws(() => mergeBandcampCatalog([], snapshot([remote, remote])));
 });
+
+test('ambiguous curated identities fail rather than silently assigning an established URL', () => {
+  assert.throws(() => mergeBandcampCatalog([
+    existing, { ...existing, slug: 'another-release', code: 'HR021' },
+  ], snapshot([remote])), /Duplicate curated/);
+  assert.throws(() => mergeBandcampCatalog([
+    existing, { ...existing, slug: existing.slug, bandcampId: 456, buyUrl: 'https://example.bandcamp.com/album/other' },
+  ], snapshot([])), /Duplicate curated/);
+  assert.throws(() => mergeBandcampCatalog([existing], snapshot([
+    { ...remote, bandcampId: 456, buyUrl: existing.buyUrl },
+  ])), /Conflicting Bandcamp identity/);
+  assert.throws(() => mergeBandcampCatalog([
+    existing, { ...existing, slug: 'another-release', bandcampId: 456, buyUrl: remote.buyUrl },
+  ], snapshot([remote])), /Conflicting Bandcamp identity/);
+});
+
+test('duplicate upstream purchase paths and mismatched release types cannot duplicate profile routes', () => {
+  assert.throws(() => mergeBandcampCatalog([], snapshot([
+    remote, { ...remote, bandcampId: 456 },
+  ])), /Duplicate Bandcamp/);
+  assert.throws(() => mergeBandcampCatalog([], snapshot([
+    { ...remote, bandcampType: 'track' },
+  ])), /Invalid Bandcamp/);
+});
+
+test('explicit multi-artist relationships survive refresh and curated removal without inferred credits', () => {
+  const curated = { ...existing, memberSlugs: ['artist', 'collaborator', 'artist'] };
+  assert.deepEqual(mergeBandcampCatalog([curated], snapshot([]))[0].memberSlugs, ['artist', 'collaborator']);
+  const [refreshed] = mergeBandcampCatalog([curated], snapshot([
+    { ...remote, artist: 'Someone Else', memberSlugs: ['upstream-name'], releaseSlugs: ['inferred'] },
+  ]));
+  assert.deepEqual(refreshed.memberSlugs, ['artist', 'collaborator']);
+  assert.deepEqual(curated.memberSlugs, ['artist', 'collaborator', 'artist']);
+  const retained = mergeBandcampCatalog([refreshed], snapshot([]));
+  assert.deepEqual(retained[0].memberSlugs, ['artist', 'collaborator']);
+  assert.equal(retained[0].slug, existing.slug);
+  assert.equal(retained[0].code, existing.code);
+  const [unassociated] = mergeBandcampCatalog([], snapshot([
+    { ...remote, artist: 'artist, collaborator', memberSlugs: ['artist', 'collaborator'] },
+  ]));
+  assert.equal(unassociated.memberSlugs, undefined);
+});

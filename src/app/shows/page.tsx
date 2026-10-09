@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 export default async function ShowsPage() {
   const { upcoming, past } = partitionShows(await getShows());
   return (
-    <div className="mx-auto max-w-3xl px-5 pb-28 pt-24 sm:px-8 sm:pb-32 sm:pt-28">
+    <div className="mx-auto max-w-3xl px-5 pb-12 pt-6 sm:px-8 sm:pb-16">
       <PageHeading title="Live" />
       <section aria-labelledby="upcoming-shows">
         <h2 id="upcoming-shows" className="reading-label mb-3 w-fit text-xs uppercase tracking-widest text-muted">

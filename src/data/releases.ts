@@ -46,6 +46,7 @@ export type Release = {
   links?: StreamingLink[];
   buyUrl?: string;
   tags?: string[];
+  /** Editorially confirmed roster identities; imported artist names do not assign membership. */
   memberSlugs?: string[];
   bandcampId?: number;
   bandcampType?: "album" | "track";

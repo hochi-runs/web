@@ -4,6 +4,7 @@ import path from 'node:path';
 import { spawn } from 'node:child_process';
 import { randomBytes } from 'node:crypto';
 import { readSiteData } from './read-site-data.mjs';
+import { createWordPressArtists } from '../src/lib/wordpress-catalog.mjs';
 
 // An isolated, temporary WordPress + Next.js preview. No hosted account or
 // project environment file is changed. Restarting resets WordPress demo edits.
@@ -16,11 +17,9 @@ const [catalogData, rosterData, merchData] = await Promise.all([
   readSiteData('releases'), readSiteData('roster'), readSiteData('merch'),
 ]);
 const catalog = catalogData.releases;
-const artists = rosterData.members.map((artist) => ({
+const artists = createWordPressArtists(rosterData.members, catalog).map((artist) => ({
   ...artist,
   bio: 'LOCAL DEMO: Edit this biography in WordPress and reload the connected preview. ' + (artist.bio ?? ''),
-  releaseSlugs: catalog.filter((release) => release.memberSlugs?.includes(artist.slug) ||
-    release.artist.toLowerCase().split(/\s*[,/&]\s*/).includes(artist.name.toLowerCase())).map((release) => release.slug),
 }));
 const assets = await Promise.all(['logo.png', 'hochi-wordmark.png'].map(async (name) => {
   const bytes = await readFile(path.join(root, 'public', name));
@@ -72,7 +71,7 @@ function hochi_demo_entry($type, $title, $fields, $publish = true) {
 foreach ($demo['artists'] as $artist) {
     $socials = array();
     foreach (($artist['socials'] ?? array()) as $social) { $socials[] = $social['platform'] . ' | ' . $social['url']; }
-    hochi_demo_entry('hochi_artist', $artist['name'], array('slug' => $artist['slug'], 'role' => $artist['role'], 'bio' => $artist['bio'], 'socials' => implode("\\n", $socials), 'release_slugs' => implode("\\n", $artist['releaseSlugs'])));
+    hochi_demo_entry('hochi_artist', $artist['name'], array('slug' => $artist['slug'], 'role' => $artist['role'], 'bio' => $artist['bio'], 'photo' => $artist['photo'] ?? '', 'socials' => implode("\\n", $socials), 'release_slugs' => implode("\\n", $artist['releaseSlugs'])));
 }
 foreach ($demo['products'] as $product) {
     hochi_demo_entry('hochi_product', $product['name'] . ' — Demo', array('price' => $product['price'] . ' (demo)', 'buy_url' => $product['buyUrl'] ?? ''));

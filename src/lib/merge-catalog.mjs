@@ -14,15 +14,36 @@ export function mergeBandcampCatalog(archive, snapshot) {
     throw new Error('Unsupported Bandcamp catalog snapshot');
   }
 
-  const byUrl = new Map(archive.map((release) => [release.buyUrl, release]));
-  const byId = new Map(
-    archive
-      .filter((release) => release.bandcampId && release.bandcampType)
-      .map((release) => [`${release.bandcampType}:${release.bandcampId}`, release]),
-  );
+  const byUrl = new Map();
+  const byId = new Map();
+  const archiveSlugs = new Set();
+  for (const release of archive) {
+    if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(release.slug ?? '')) {
+      throw new Error('Invalid curated release slug');
+    }
+    if (archiveSlugs.has(release.slug) || (release.buyUrl && byUrl.has(release.buyUrl))) {
+      throw new Error('Duplicate curated release identity');
+    }
+    archiveSlugs.add(release.slug);
+    if (release.buyUrl) byUrl.set(release.buyUrl, release);
+    if (release.bandcampId != null || release.bandcampType != null) {
+      if (!Number.isSafeInteger(release.bandcampId) || release.bandcampId <= 0 ||
+        !['album', 'track'].includes(release.bandcampType)) {
+        throw new Error('Invalid curated Bandcamp identity');
+      }
+      const id = `${release.bandcampType}:${release.bandcampId}`;
+      if (byId.has(id)) throw new Error('Duplicate curated release identity');
+      byId.set(id, release);
+    }
+    if (release.memberSlugs != null && (!Array.isArray(release.memberSlugs) ||
+      release.memberSlugs.some((slug) => typeof slug !== 'string' || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)))) {
+      throw new Error('Invalid curated artist relationship');
+    }
+  }
   const matched = new Set();
   const usedSlugs = new Set(archive.map((release) => release.slug));
   const seen = new Set();
+  const seenUrls = new Set();
   const catalog = snapshot.releases.map((live) => {
     const url = new URL(live.buyUrl ?? '');
     if (
@@ -30,6 +51,7 @@ export function mergeBandcampCatalog(archive, snapshot) {
       url.username || url.password || url.port ||
       !/^[a-z0-9-]+\.bandcamp\.com$/.test(url.hostname) ||
       !/^\/(album|track)\/[a-z0-9-]+$/.test(url.pathname) ||
+      url.pathname.split('/')[1] !== live.bandcampType ||
       url.search || url.hash ||
       !live.title || !live.artist ||
       !Number.isInteger(live.year) ||
@@ -41,10 +63,19 @@ export function mergeBandcampCatalog(archive, snapshot) {
     }
 
     const id = `${live.bandcampType}:${live.bandcampId}`;
-    if (seen.has(id)) throw new Error('Duplicate Bandcamp release');
+    if (seen.has(id) || seenUrls.has(live.buyUrl)) throw new Error('Duplicate Bandcamp release');
     seen.add(id);
+    seenUrls.add(live.buyUrl);
 
-    const local = byId.get(id) ?? byUrl.get(live.buyUrl);
+    const idMatch = byId.get(id);
+    const urlMatch = byUrl.get(live.buyUrl);
+    // A purchase path can be reused or renamed. Once an immutable ID exists,
+    // contradictory evidence needs review instead of taking another URL.
+    if ((idMatch && urlMatch && idMatch !== urlMatch) ||
+      (urlMatch?.bandcampId && `${urlMatch.bandcampType}:${urlMatch.bandcampId}` !== id)) {
+      throw new Error('Conflicting Bandcamp identity; review the curated release');
+    }
+    const local = idMatch ?? urlMatch;
     if (local) matched.add(local.slug);
     let slug = local?.slug ?? `bandcamp-${live.bandcampType}-${live.bandcampId}`;
     if (!local && usedSlugs.has(slug)) {
@@ -77,7 +108,7 @@ export function mergeBandcampCatalog(archive, snapshot) {
         role: credit.role, name: credit.name,
       })),
       tags: local?.tags ?? live.tags,
-      memberSlugs: local?.memberSlugs,
+      memberSlugs: local?.memberSlugs ? [...new Set(local.memberSlugs)] : undefined,
       links: [
         { platform: 'Bandcamp', url: live.buyUrl },
         ...(local?.links ?? []).filter((link) => link.platform !== 'Bandcamp'),
@@ -87,5 +118,9 @@ export function mergeBandcampCatalog(archive, snapshot) {
 
   // Retain the manually curated archive if a release leaves the public grid.
   // New, uncurated records follow the current successful snapshot instead.
-  return [...catalog, ...archive.filter((release) => !matched.has(release.slug))];
+  return [...catalog, ...archive
+    .filter((release) => !matched.has(release.slug))
+    .map((release) => release.memberSlugs
+      ? { ...release, memberSlugs: [...new Set(release.memberSlugs)] }
+      : release)];
 }

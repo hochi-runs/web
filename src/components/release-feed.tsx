@@ -3,11 +3,16 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import type { Release } from "@/data/releases";
+import { getReleaseListenUrl } from "@/lib/release-links";
+import { useSitePlayer } from "./site-player";
+import { SiteContextLinks } from "./site-chrome";
+import chromeStyles from "./site-chrome.module.css";
+import styles from "./release-feed.module.css";
 
 /**
  * The release archive view: a centered scrolling feed of album art with
- * sparse captions, plus two fixed edge rails (year0001 model):
- *   left edge  → format filters (Albums / Singles)
+ * titles revealed over the covers on hover/focus, plus two fixed edge rails:
+ *   left edge  → format filters, About and Radio in one container
  *   right edge → year index (also filters)
  * Both are pinned with position:fixed and reflect the active filter state.
  * On small screens the rails collapse into an inline filter bar above the feed.
@@ -22,6 +27,7 @@ function matchesFormat(release: Release, filter: FormatFilter): boolean {
 }
 
 export function ReleaseFeed({ releases }: { releases: Release[] }) {
+  const { playRelease } = useSitePlayer();
   const [format, setFormat] = useState<FormatFilter>("All");
   const [year, setYear] = useState<number | "All">("All");
 
@@ -41,8 +47,9 @@ export function ReleaseFeed({ releases }: { releases: Release[] }) {
 
   return (
     <>
-      {/* Left edge: format filters (fixed, desktop only) */}
-      <aside className="corner-surface fixed left-[20px] top-1/2 z-40 hidden -translate-y-1/2 lg:block">
+      {/* One fixed desktop rail owns the filters and site links together. */}
+      <aside className={chromeStyles.archiveRail} aria-label="Release filters and site links">
+        <nav aria-label="Release format">
         <ul className="space-y-1.5 text-xs uppercase tracking-widest">
           {(["All", "Albums", "Singles"] as const).map((f) => (
             <li key={f}>
@@ -56,11 +63,13 @@ export function ReleaseFeed({ releases }: { releases: Release[] }) {
                     : "text-muted transition-colors hover:text-accent"
                 }
               >
-                {f}
+                {f.toUpperCase()}
               </button>
             </li>
           ))}
         </ul>
+        </nav>
+        <SiteContextLinks />
       </aside>
 
       {/* Right edge: year index (fixed, desktop only) */}
@@ -77,7 +86,7 @@ export function ReleaseFeed({ releases }: { releases: Release[] }) {
                   : "text-muted transition-colors hover:text-accent"
               }
             >
-              All
+              ALL
             </button>
           </li>
           {years.map((y) => (
@@ -109,7 +118,7 @@ export function ReleaseFeed({ releases }: { releases: Release[] }) {
             aria-pressed={format === f}
             className={format === f ? "text-accent" : "text-muted"}
           >
-            {f}
+            {f.toUpperCase()}
           </button>
         ))}
         <span className="text-hairline">·</span>
@@ -119,7 +128,7 @@ export function ReleaseFeed({ releases }: { releases: Release[] }) {
           aria-pressed={year === "All"}
           className={year === "All" ? "text-accent" : "text-muted"}
         >
-          All yrs
+          ALL YEARS
         </button>
         {years.map((y) => (
           <button
@@ -140,40 +149,34 @@ export function ReleaseFeed({ releases }: { releases: Release[] }) {
           No releases match these filters.
         </p>
       ) : (
-        <ul className="mx-auto max-w-xl space-y-20">
-          {visible.map((release) => (
-            <li key={release.slug}>
-              <Link href={`/releases/${release.slug}`} className="group block">
-                <div className="aspect-square w-full overflow-hidden bg-surface">
-                  {release.cover ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={release.cover}
-                      alt={`${release.artist} — ${release.title}`}
-                      className="h-full w-full object-cover transition-opacity group-hover:opacity-90"
-                    />
-                  ) : (
-                    <div className="flex h-full w-full items-center justify-center text-xs uppercase tracking-widest text-muted">
-                      {release.code}
-                    </div>
-                  )}
-                </div>
-                <div className="release-caption mt-3 flex items-baseline justify-between gap-4">
-                  <div className="min-w-0">
-                    <p className="truncate text-xs group-hover:underline">
-                      {release.title}
-                    </p>
-                    <p className="truncate text-xs text-muted">
-                      {release.artist}
-                    </p>
-                  </div>
-                  <span className="shrink-0 text-xs text-muted">
-                    {release.code}
-                  </span>
-                </div>
+        <ul className={styles.feed}>
+          {visible.map((release) => {
+            const listenUrl = getReleaseListenUrl(release);
+            return <li key={release.slug} className={styles.release}>
+              <Link href={listenUrl ?? `/releases/${release.slug}`} className={styles.artworkLink}
+                // onNavigate runs within the activation gesture, while leaving
+                // modified/new-tab clicks free to follow the link normally.
+                onNavigate={listenUrl ? () => playRelease(release.slug) : undefined}
+                aria-label={listenUrl
+                  ? `Play ${release.artist} — ${release.title} in the visualizer`
+                  : `View release details and credits for ${release.artist} — ${release.title}`}>
+                {release.cover ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={release.cover} alt="" className={styles.image} />
+                ) : (
+                  <span className={styles.empty}>{release.code}</span>
+                )}
               </Link>
-            </li>
-          ))}
+              <div className={styles.details}>
+                {/* The artwork link supplies the accessible name. Text clicks
+                    pass through this transparent overlay to that same link. */}
+                <span className={styles.metadata} aria-hidden="true">
+                  <span className={styles.title}>{release.title}</span>
+                  <span className={styles.artist}>{release.artist}</span>
+                </span>
+              </div>
+            </li>;
+          })}
         </ul>
       )}
     </>

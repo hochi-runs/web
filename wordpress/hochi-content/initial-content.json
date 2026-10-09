@@ -4,45 +4,86 @@
     {
       "slug": "amal",
       "name": "AMAL",
-      "role": "Artist",
-      "bio": "Artist on Hochi Runs. Placeholder bio — replace with the real one.",
+      "role": "DJ / Producer",
+      "photo": "https://f4.bcbits.com/img/0047546930_10.jpg",
+      "bio": "AMAL is a Washington, D.C. producer and DJ, founder of Hochi Runs and a member of Black Rave Culture. His releases span techno, house and club music.",
       "socials": [
+        {
+          "platform": "Bandcamp",
+          "url": "https://amaldc.bandcamp.com/"
+        },
+        {
+          "platform": "Resident Advisor",
+          "url": "https://ra.co/dj/amal"
+        },
         {
           "platform": "Instagram",
           "url": "https://www.instagram.com/_amaldc/"
+        },
+        {
+          "platform": "SoundCloud",
+          "url": "https://soundcloud.com/ama_l"
         }
       ],
       "releaseSlugs": [
-        "like-dat-riddim",
-        "sneaky-link",
         "side-orders-v1",
-        "stuck-in-sp",
-        "wip",
-        "stadium",
-        "vague-amal-nedaj",
-        "dance-concept-2",
-        "hit-dat",
-        "remix-pack-vol-1",
-        "pressure",
-        "black-kray-bow-bow-amal-mix",
-        "pink-pantheress-passion-amal-mix",
-        "the-villain",
-        "gleam"
+        "vague-amal-nedaj"
       ]
     },
     {
       "slug": "dj-swisha",
       "name": "DJ Swisha",
       "role": "DJ / Producer",
-      "bio": "DJ and producer. Placeholder bio — replace with the real one.",
-      "releaseSlugs": [
-        "hit-dat"
-      ]
+      "photo": "https://f4.bcbits.com/img/0047391981_10.jpg",
+      "bio": "DJ Swisha is a New York-based DJ and producer, born in Philadelphia and raised in Los Angeles. A member of Juke Bounce Werk, his work moves across footwork, juke and club music.",
+      "socials": [
+        {
+          "platform": "Bandcamp",
+          "url": "https://djswisha.bandcamp.com/"
+        },
+        {
+          "platform": "Resident Advisor",
+          "url": "https://ra.co/dj/djswisha"
+        },
+        {
+          "platform": "Instagram",
+          "url": "https://www.instagram.com/djswisha/"
+        },
+        {
+          "platform": "SoundCloud",
+          "url": "https://soundcloud.com/dj-swisha"
+        }
+      ],
+      "releaseSlugs": []
     },
     {
       "slug": "tromac",
       "name": "Tromac",
-      "role": "Artist",
+      "role": "DJ / Producer",
+      "photo": "https://f4.bcbits.com/img/0045851500_10.jpg",
+      "bio": "Originally from Prince George's County, Maryland, Tromac is a Baltimore-based DJ, producer and event curator. Tromac's work draws on Go-Go and Baltimore club, with collaborations including Movement and Her Majesty with Hunch.",
+      "socials": [
+        {
+          "platform": "Bandcamp",
+          "url": "https://tromac.bandcamp.com/"
+        },
+        {
+          "platform": "Resident Advisor",
+          "url": "https://ra.co/dj/tromac"
+        },
+        {
+          "platform": "Instagram",
+          "url": "https://www.instagram.com/tromac/"
+        },
+        {
+          "platform": "SoundCloud",
+          "url": "https://soundcloud.com/tromac"
+        },
+        {
+          "platform": "Website",
+          "url": "https://www.tromac.net/"
+        }
+      ],
       "releaseSlugs": [
         "side-orders-v1",
         "movement",
@@ -51,12 +92,18 @@
     },
     {
       "slug": "taylor-spencer",
-      "name": "Taylor Spencer",
-      "role": "Artist",
+      "name": "Taylor Spenxer",
+      "role": "DJ / Producer",
+      "photo": "https://i1.sndcdn.com/avatars-nviQiQfVFK6eP3DW-73z8Hw-t500x500.jpg",
+      "bio": "Taylor Spenxer is an Atlanta-born DJ and producer based in Washington, D.C., also known as TAYBAND$$$$. Taylor's music connects Atlanta influences with club sounds, including the debut EP TAYBAND$$$$.",
       "socials": [
         {
           "platform": "Instagram",
           "url": "https://www.instagram.com/taylorspenxer/"
+        },
+        {
+          "platform": "SoundCloud",
+          "url": "https://soundcloud.com/user-2866603"
         }
       ],
       "releaseSlugs": []
@@ -64,11 +111,21 @@
     {
       "slug": "hunch",
       "name": "Hunch",
-      "role": "Artist",
+      "role": "DJ / Producer",
+      "photo": "https://f4.bcbits.com/img/0024860313_10.jpg",
+      "bio": "Hunch is a Maryland-based producer, DJ and multi-genre artist. Hunch's catalog includes the Second Nature EP and ongoing r/USB series, alongside collaborations with Tromac including Movement and Her Majesty.",
       "socials": [
+        {
+          "platform": "Bandcamp",
+          "url": "https://hunchhunch.bandcamp.com/"
+        },
         {
           "platform": "Instagram",
           "url": "https://www.instagram.com/hunch.pn/"
+        },
+        {
+          "platform": "SoundCloud",
+          "url": "https://soundcloud.com/0989"
         }
       ],
       "releaseSlugs": [
@@ -80,7 +137,23 @@
     {
       "slug": "geno",
       "name": "Geno",
-      "role": "Artist",
+      "role": "DJ / Producer",
+      "photo": "https://f4.bcbits.com/img/0045359123_10.jpg",
+      "bio": "Geno, who releases as whoisgeno, is a producer and DJ from New Orleans, now based in Baton Rouge. A member of the Frequency collective, his club productions include LOSING SLEEP on Hochi Runs.",
+      "socials": [
+        {
+          "platform": "Bandcamp",
+          "url": "https://whoisgeno.bandcamp.com/"
+        },
+        {
+          "platform": "Instagram",
+          "url": "https://www.instagram.com/whoisgeno/"
+        },
+        {
+          "platform": "SoundCloud",
+          "url": "https://soundcloud.com/user-763065491"
+        }
+      ],
       "releaseSlugs": [
         "losing-sleep"
       ]
@@ -88,7 +161,31 @@
     {
       "slug": "nedaj",
       "name": "Nedaj",
-      "role": "Artist",
+      "role": "Artist / Producer",
+      "photo": "https://f4.bcbits.com/img/0034594399_10.jpg",
+      "bio": "Nedaj is a Maryland-based artist working in jungle and drum & bass. His releases include VAGUE with Amal, and contributions to Hochi Runs' Side Orders v1 compilation.",
+      "socials": [
+        {
+          "platform": "Bandcamp",
+          "url": "https://notnedaj.bandcamp.com/"
+        },
+        {
+          "platform": "Resident Advisor",
+          "url": "https://ra.co/dj/nedaj"
+        },
+        {
+          "platform": "Instagram",
+          "url": "https://www.instagram.com/notnedaj/"
+        },
+        {
+          "platform": "SoundCloud",
+          "url": "https://soundcloud.com/notnedaj/"
+        },
+        {
+          "platform": "Website",
+          "url": "https://www.nedaj.us/"
+        }
+      ],
       "releaseSlugs": [
         "side-orders-v1",
         "vague-amal-nedaj"
@@ -189,14 +286,12 @@
   "pages": {
     "about": {
       "paragraphs": [
-        "Hochi Runs is an independent record label, collective, and agency. We put out music, make videos, and put on shows.",
-        "This is placeholder copy — replace it with the real story of the label whenever you're ready. The structure is here; just swap the words."
+        "About information is not yet published."
       ]
     },
     "legal": {
       "paragraphs": [
-        "© 2026 Hochi Runs. All rights reserved. This media is under exclusive right to its creators.",
-        "Placeholder legal copy — replace with the label's real terms, privacy policy, and licensing information when ready."
+        "Legal information is not yet published."
       ]
     }
   },
@@ -298,9 +393,7 @@
       "cover": "https://f4.bcbits.com/img/a4268976832_10.jpg",
       "date": "01 May 2026",
       "buyUrl": "https://amaldc.bandcamp.com/track/like-dat-riddim",
-      "memberSlugs": [
-        "amal"
-      ],
+      "memberSlugs": [],
       "description": "",
       "format": "Single",
       "tags": [
@@ -379,9 +472,7 @@
       "cover": "https://f4.bcbits.com/img/a0327455422_10.jpg",
       "date": "25 Feb 2026",
       "buyUrl": "https://amaldc.bandcamp.com/track/sneaky-link",
-      "memberSlugs": [
-        "amal"
-      ],
+      "memberSlugs": [],
       "description": "“sneaky link” a smooth, late-night house banger built for dim rooms, side-eyes, and unspoken agreements.\n\nWarm lows. Slick percussion. Tension that lingers longer than it should.\n\nThis one feels like 2:17am when the function’s thinning out but nobody’s ready to go home.",
       "format": "Single",
       "tags": [
@@ -415,8 +506,8 @@
       "buyUrl": "https://hochiruns.bandcamp.com/album/side-orders-v1-2",
       "memberSlugs": [
         "amal",
-        "tromac",
         "hunch",
+        "tromac",
         "nedaj"
       ],
       "description": "Hochi runs presents our first ever compilation \"Side Orders\"",
@@ -440,9 +531,7 @@
       "cover": "https://f4.bcbits.com/img/a2710504683_10.jpg",
       "date": "01 Aug 2025",
       "buyUrl": "https://amaldc.bandcamp.com/track/stuck-in-sp",
-      "memberSlugs": [
-        "amal"
-      ],
+      "memberSlugs": [],
       "description": "you ever been detained by immigration while on tour? it feels like this.",
       "format": "Single",
       "tags": [
@@ -471,9 +560,7 @@
       "cover": "https://f4.bcbits.com/img/a0303330143_10.jpg",
       "date": "25 Apr 2025",
       "buyUrl": "https://amaldc.bandcamp.com/track/wip",
-      "memberSlugs": [
-        "amal"
-      ],
+      "memberSlugs": [],
       "description": "Amal's next single from his debut album Madness, features BIYDIY's head honcho, Stonie Blue. A fun, bouncy summer anthem GAS UP!!!",
       "format": "Single",
       "tags": [
@@ -501,9 +588,7 @@
       "cover": "https://f4.bcbits.com/img/a3625104045_10.jpg",
       "date": "17 Feb 2025",
       "buyUrl": "https://amaldc.bandcamp.com/track/stadium",
-      "memberSlugs": [
-        "amal"
-      ],
+      "memberSlugs": [],
       "description": "NEW DC ANTHEM",
       "format": "Single",
       "tags": [
@@ -566,8 +651,8 @@
       "date": "31 May 2024",
       "buyUrl": "https://hunchhunch.bandcamp.com/album/movement",
       "memberSlugs": [
-        "tromac",
-        "hunch"
+        "hunch",
+        "tromac"
       ],
       "description": "Hunch, a Maryland based multi-genre artist is an artist, producer and DJ . His last EP “Second Nature '' dropped in fall under D.C label “Hochi Runs”. Since this release, Hunch has been emerging as an eclectic selector and creative force in a new wave of electronic music.\nTromac, is a seasoned DJ, curator, and producer hailing from Prince George’s County currently based in Baltimore, MD. Tromac's outspoken artistry shines through dynamic performances and creative approach to music production.",
       "format": "Album",
@@ -594,9 +679,7 @@
       "cover": "https://f4.bcbits.com/img/a0266589904_10.jpg",
       "date": "02 May 2024",
       "buyUrl": "https://hochiruns.bandcamp.com/album/dance-concept-2",
-      "memberSlugs": [
-        "amal"
-      ],
+      "memberSlugs": [],
       "description": "a tribute to all dancers",
       "format": "Album",
       "tags": [
@@ -626,8 +709,8 @@
       "date": "12 Apr 2024",
       "buyUrl": "https://hochiruns.bandcamp.com/track/her-majesty",
       "memberSlugs": [
-        "tromac",
-        "hunch"
+        "hunch",
+        "tromac"
       ],
       "description": "Hunch and Tromac team up for their debut single together. Her Majesty's fast-paced club track with breaks, catchy vocal shots and a hypnotic baseline.",
       "format": "Single",
@@ -653,10 +736,7 @@
       "cover": "https://f4.bcbits.com/img/a1963883115_10.jpg",
       "date": "16 Feb 2024",
       "buyUrl": "https://amaldc.bandcamp.com/track/hit-dat",
-      "memberSlugs": [
-        "amal",
-        "dj-swisha"
-      ],
+      "memberSlugs": [],
       "description": "",
       "format": "Single",
       "tags": [
@@ -701,9 +781,7 @@
       "cover": "https://f4.bcbits.com/img/a4248626786_10.jpg",
       "date": "07 Oct 2023",
       "buyUrl": "https://amaldc.bandcamp.com/album/remix-pack-vol-1",
-      "memberSlugs": [
-        "amal"
-      ],
+      "memberSlugs": [],
       "description": "First remix pack for the free enjoy!\n\n- mal",
       "format": "Album",
       "tags": [
@@ -731,9 +809,7 @@
       "cover": "https://f4.bcbits.com/img/a1604258301_10.jpg",
       "date": "02 Mar 2023",
       "buyUrl": "https://amaldc.bandcamp.com/album/pressure",
-      "memberSlugs": [
-        "amal"
-      ],
+      "memberSlugs": [],
       "description": "",
       "format": "Album",
       "tags": [
@@ -761,9 +837,7 @@
       "cover": "https://f4.bcbits.com/img/a0375928121_10.jpg",
       "date": "09 Feb 2023",
       "buyUrl": "https://amaldc.bandcamp.com/track/black-kray-bow-bow-amal-mix",
-      "memberSlugs": [
-        "amal"
-      ],
+      "memberSlugs": [],
       "description": "twin pop yo shit wanna c u do yo thang\n\n-mal",
       "format": "Single",
       "tags": [
@@ -795,9 +869,7 @@
       "cover": "https://f4.bcbits.com/img/a0891805632_10.jpg",
       "date": "16 Aug 2022",
       "buyUrl": "https://amaldc.bandcamp.com/track/pink-pantheress-passion-amal-mix",
-      "memberSlugs": [
-        "amal"
-      ],
+      "memberSlugs": [],
       "description": "<3",
       "format": "Single",
       "tags": [
@@ -825,9 +897,7 @@
       "cover": "https://f4.bcbits.com/img/a0611877459_10.jpg",
       "date": "01 Apr 2022",
       "buyUrl": "https://amaldc.bandcamp.com/track/the-villain",
-      "memberSlugs": [
-        "amal"
-      ],
+      "memberSlugs": [],
       "description": "rip doom",
       "format": "Single",
       "tags": [
@@ -853,9 +923,7 @@
       "cover": "https://f4.bcbits.com/img/a3272590363_10.jpg",
       "date": "09 Mar 2021",
       "buyUrl": "https://amaldc.bandcamp.com/album/gleam",
-      "memberSlugs": [
-        "amal"
-      ],
+      "memberSlugs": [],
       "description": "remain\n\n potent\n\n overcome \n\n everything",
       "format": "Album",
       "tags": [

@@ -21,6 +21,8 @@ export class RadioBetaStreamAudio {
   constructor(
     private readonly onStateChange?: (playing: boolean) => void,
     private readonly onError?: (message: string) => void,
+    private readonly onStatusChange?: (status: string) => void,
+    private readonly onProgress?: (position: number, duration: number) => void,
   ) {
     if (typeof window === "undefined" || !window.AudioContext) {
       throw new Error("This browser does not support Web Audio.");
@@ -48,6 +50,8 @@ export class RadioBetaStreamAudio {
       this.element.addEventListener("ended", this.handleEnded);
       this.element.addEventListener("waiting", this.handleWaiting);
       this.element.addEventListener("error", this.handleError);
+      this.element.addEventListener("timeupdate", this.handleProgress);
+      this.element.addEventListener("durationchange", this.handleProgress);
       this.context.addEventListener("statechange", this.handleContextState);
     } catch (error) {
       void this.context.close().catch(() => undefined);
@@ -60,16 +64,31 @@ export class RadioBetaStreamAudio {
       && this.context.state === "running";
   }
 
+  get active(): boolean { return this.shouldPlay && !this.disposed; }
+
   get duration(): number {
+    if (!this.element.getAttribute("src")) return 0;
     return Number.isFinite(this.element.duration) ? Math.max(0, this.element.duration) : 0;
   }
 
   get position(): number {
+    if (!this.element.getAttribute("src")) return 0;
     return Number.isFinite(this.element.currentTime) ? Math.max(0, this.element.currentTime) : 0;
   }
 
   get sampleRate(): number {
     return this.context.sampleRate;
+  }
+
+  /** Retain the click's Web Audio activation while preview identity is fetched. */
+  unlock(): Promise<void> {
+    if (this.disposed) return Promise.reject(new Error("The preview player has been closed."));
+    try {
+      // Resume synchronously from the gesture; no source or playback is started.
+      return this.context.resume();
+    } catch {
+      return Promise.reject(new Error(PREVIEW_ERROR));
+    }
   }
 
   play(): Promise<void> {
@@ -82,6 +101,7 @@ export class RadioBetaStreamAudio {
     if (this.element.ended) this.element.currentTime = 0;
     const version = ++this.version;
     this.shouldPlay = true;
+    this.onStatusChange?.("Loading");
     this.lastError = undefined;
 
     let resume: Promise<void>;
@@ -124,6 +144,7 @@ export class RadioBetaStreamAudio {
     this.shouldPlay = false;
     this.started = false;
     this.element.pause();
+    this.onStatusChange?.("Paused");
     this.rampGain(0);
     this.notifyState();
   }
@@ -139,6 +160,18 @@ export class RadioBetaStreamAudio {
     this.lastError = undefined;
     this.element.src = parsed.href;
     this.element.load();
+    this.handleProgress();
+    this.notifyState(true);
+  }
+
+  /** Release an old selection while retaining the activated audio graph. */
+  clearSource(): void {
+    if (this.disposed) return;
+    this.pause();
+    this.lastError = undefined;
+    this.element.removeAttribute("src");
+    this.element.load();
+    this.handleProgress();
     this.notifyState(true);
   }
 
@@ -165,6 +198,8 @@ export class RadioBetaStreamAudio {
     this.element.removeEventListener("ended", this.handleEnded);
     this.element.removeEventListener("waiting", this.handleWaiting);
     this.element.removeEventListener("error", this.handleError);
+    this.element.removeEventListener("timeupdate", this.handleProgress);
+    this.element.removeEventListener("durationchange", this.handleProgress);
     this.context.removeEventListener("statechange", this.handleContextState);
     this.element.pause();
     this.element.removeAttribute("src");
@@ -184,6 +219,7 @@ export class RadioBetaStreamAudio {
       return;
     }
     this.started = true;
+    this.onStatusChange?.("Playing");
     this.rampGain(this.volume);
     this.notifyState();
   };
@@ -196,12 +232,14 @@ export class RadioBetaStreamAudio {
   private handleEnded = (): void => {
     this.shouldPlay = false;
     this.started = false;
+    this.onStatusChange?.("Ended");
     this.rampGain(0);
     this.notifyState();
   };
 
   private handleWaiting = (): void => {
     this.started = false;
+    if (this.shouldPlay) this.onStatusChange?.("Buffering");
     this.notifyState();
   };
 
@@ -217,9 +255,13 @@ export class RadioBetaStreamAudio {
     } else {
       this.started = false;
       this.element.pause();
+      if (this.shouldPlay) this.onStatusChange?.("Interrupted — press Play to resume");
+      this.shouldPlay = false;
       this.notifyState();
     }
   };
+
+  private handleProgress = (): void => { if (!this.disposed) this.onProgress?.(this.position, this.duration); };
 
   private notifyState(force = false): void {
     const playing = this.playing;
@@ -231,6 +273,7 @@ export class RadioBetaStreamAudio {
   private reportError(message: string): void {
     if (this.disposed || this.lastError === message) return;
     this.lastError = message;
+    this.onStatusChange?.("Unavailable");
     this.onError?.(message);
   }
 

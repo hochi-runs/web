@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hochi synthetic media compatibility proof</title>
+<style>
+body{margin:0;background:#262626;color:#fafafa;font:16px/1.5 monospace}canvas{position:fixed;inset:0;width:100%;height:100%;z-index:-1}main{max-width:680px;margin:40px auto;padding:24px;background:#262626}button,input{font:inherit;padding:10px;margin:6px}button:focus-visible,input:focus-visible{outline:2px solid #fafafa}button{background:#fafafa;color:#262626}output{display:block}a{color:#fafafa}
+</style>
+<canvas id="visual" aria-hidden="true"></canvas><main>
+<h1>Generated test tone</h1><p>Local engineering proof. Synthetic PCM audio only; no catalog recording, upload, or broadcast.</p>
+<p>Release: Compatibility fixture · Track: Three-band tone · Credit: Local signal generator</p>
+<button id="play">Play test tone</button><button id="pause">Pause test tone</button>
+<label>Test playback position <input id="seek" type="range" min="0" max="6" value="0" step="0.1"></label>
+<output id="state" aria-live="polite">Paused</output><output id="progress">0.00 / 6.00</output>
+<output id="bands">Bands: 0.00 / 0.00 / 0.00</output><p id="graphics">Original local renderer; ambient until audio starts.</p>
+<p>Leaving this page tears down the audio graph. Reduced motion uses the player's static rendering policy.</p>
+</main><script type="module">
+import { RadioBetaStreamAudio } from '/player.mjs';
+import { createRadioVisualizer } from '/visualizer.mjs';
+const state = document.querySelector('#state');
+const seek = document.querySelector('#seek');
+const player = new RadioBetaStreamAudio(
+  playing => { state.dataset.playing = String(playing); },
+  error => { state.textContent = error; },
+  status => { state.textContent = status; },
+  (position, duration) => { seek.value = String(position); document.querySelector('#progress').textContent = `${position.toFixed(2)} / ${duration.toFixed(2)}`; },
+);
+player.setSource('/beta/radio/stream/poc-tone'); player.setVolume(0.2);
+const frequencies = new Float32Array(512); let latest = [0,0,0];
+function readState() {
+  latest = [0,0,0];
+  if (player.playing) {
+    player.analyser.getFloatFrequencyData(frequencies);
+    const bin = hz => Math.min(511, Math.round(hz * player.analyser.fftSize / player.sampleRate));
+    const average = (from,to) => { let total=0; for(let i=from;i<=to;i++) total+=(Math.min(-30,Math.max(-100,frequencies[i]))+100)/70; return total/(to-from+1); };
+    latest = [average(0,bin(300)),average(bin(300)+2,bin(2000)),average(bin(2000)+2,bin(12000))];
+  }
+  return { bands: latest, colors: [[0.1,0.2,0.5],[0.5,0.1,0.15],[0.1,0.5,0.25]], purchase:false };
+}
+let disposeVisual = () => {};
+try { disposeVisual = createRadioVisualizer(document.querySelector('#visual'), readState, () => { document.querySelector('#graphics').textContent = 'Graphics fallback active; audio controls remain usable.'; }); }
+catch { document.querySelector('#graphics').textContent = 'Graphics unavailable; audio controls remain usable.'; }
+const timer = setInterval(() => {
+  // One test read on this diagnostic cadence also works when the static renderer does not sample audio.
+  readState(); document.querySelector('#bands').textContent = `Bands: ${latest.map(value => value.toFixed(2)).join(' / ')}`;
+}, 250);
+document.querySelector('#play').onclick = () => { void player.play().catch(error => { state.textContent = error.message; }); };
+document.querySelector('#pause').onclick = () => player.pause();
+seek.oninput = () => player.seek(Number(seek.value));
+window.addEventListener('pagehide', () => { clearInterval(timer); disposeVisual(); void player.dispose(); }, {once:true});
+window.addEventListener('pageshow', event => { if (event.persisted) window.location.reload(); });
+</script></html>

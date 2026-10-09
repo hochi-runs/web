@@ -1,46 +1,29 @@
 "use client";
 
-import { useState } from "react";
-import { usePathname } from "next/navigation";
-import styles from "./site-player.module.css";
+import { createContext, Suspense, useCallback, useContext, useMemo, useRef } from "react";
+import { RadioBeta, type RadioController, type RadioRelease } from "./radio-beta";
 
-export type PlayerRelease = {
-  id: number;
-  type: "album" | "track";
-  slug: string;
-  title: string;
-  artist: string;
-};
+const SitePlayerContext = createContext<{ playRelease: (slug: string) => void } | null>(null);
 
-const releaseKey = (release: Pick<PlayerRelease, "id" | "type">) => `${release.type}-${release.id}`;
-
-/** The shared layout retains this iframe while Next.js replaces page content. */
-export function SitePlayerProvider({ releases, children }: {
-  releases: PlayerRelease[];
+/** The root layout owns one native player, independent of the page being read. */
+export function SitePlayerProvider({ releases, customBandcampPreview, children }: {
+  releases: RadioRelease[];
+  customBandcampPreview: boolean;
   children: React.ReactNode;
 }) {
-  const pathname = usePathname();
-  // The first visit to a release loads that release. Later page visits leave
-  // the selected iframe alone: navigation must not interrupt someone listening.
-  const [selected] = useState<PlayerRelease | undefined>(() => {
-    const slug = pathname.match(/^\/releases\/([^/]+)\/?$/)?.[1];
-    return releases.find((release) => release.slug === slug) ?? releases[0];
-  });
-  const activeKey = selected ? releaseKey(selected) : undefined;
+  const controllerRef = useRef<RadioController>(null);
+  const playRelease = useCallback((slug: string) => controllerRef.current?.playRelease(slug), []);
+  const value = useMemo(() => ({ playRelease }), [playRelease]);
+  return <SitePlayerContext.Provider value={value}>
+    {children}
+    <Suspense fallback={null}>
+      <RadioBeta releases={releases} customBandcampPreview={customBandcampPreview} controllerRef={controllerRef} />
+    </Suspense>
+  </SitePlayerContext.Provider>;
+}
 
-  return (
-    <>
-      {children}
-      {selected && !pathname.startsWith("/beta/radio") && (
-        <section id="site-music-player" className={styles.player} aria-label="Music player">
-          <iframe
-            key={activeKey}
-            src={`https://bandcamp.com/EmbeddedPlayer/${selected.type}=${selected.id}/size=small/bgcol=ffffff/linkcol=333333/artwork=none/transparent=true/`}
-            title={`Bandcamp player: ${selected.artist} — ${selected.title}`}
-            className={styles.iframe}
-          />
-        </section>
-      )}
-    </>
-  );
+export function useSitePlayer() {
+  const player = useContext(SitePlayerContext);
+  if (!player) throw new Error("Music controls require the site player.");
+  return player;
 }

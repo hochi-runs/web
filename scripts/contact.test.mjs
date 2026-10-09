@@ -29,6 +29,41 @@ test("cross-origin and unsupported browser requests never reach email delivery",
   assert.equal(response.status, 415);
 });
 
+test("the Next internal URL does not reject the visitor's exact Host origin", async () => {
+  for (const [host, origin, protocol] of [
+    ["127.0.0.1:3000", "http://127.0.0.1:3000", "http"],
+    ["hochiruns.com", "https://hochiruns.com", "https"],
+    ["hochiruns.com:443", "https://hochiruns.com", "https"],
+  ]) {
+    const proxied = new Request("http://localhost:3000/api/contact", {
+      method: "POST", headers: { host, origin, "x-forwarded-proto": protocol, "content-type": "application/json" },
+      body: JSON.stringify(message),
+    });
+    const response = await handleContactRequest(proxied, { environment: {}, fetchImpl: forbiddenFetch });
+    assert.equal(response.status, 503, "same-origin request must reach the unavailable-config check");
+  }
+});
+
+test("Origin remains exact and forwarded authority/malformed headers cannot authorize sending", async () => {
+  const invalid = [
+    { host: "hochiruns.com", origin: "https://evil.example", "x-forwarded-host": "evil.example" },
+    { host: "hochiruns.com", origin: "https://hochiruns.com.evil.example" },
+    { host: "hochiruns.com", origin: "https://hochiruns.com:8443" },
+    { host: "hochiruns.com,evil.example" },
+    { host: "hochiruns.com/evil" },
+    { host: "user:password@hochiruns.com" },
+    { host: "hochiruns.com", "x-forwarded-proto": "https,http" },
+    { host: "hochiruns.com", "x-forwarded-proto": "file" },
+    { host: "hochiruns.com", origin: "https://hochiruns.com/path" },
+    { host: "hochiruns.com", "sec-fetch-site": "cross-site" },
+    { host: "hochiruns.com", origin: "http://hochiruns.com", "x-forwarded-proto": "http" },
+  ];
+  for (const extraHeaders of invalid) {
+    const response = await handleContactRequest(request(message, extraHeaders), { environment, fetchImpl: forbiddenFetch });
+    assert.equal(response.status, 403);
+  }
+});
+
 test("invalid data, address injection and honeypot submissions cannot send", async () => {
   const invalid = [
     null, [], "not-json", { ...message, name: "" }, { ...message, name: "A\nB" },
@@ -94,4 +129,26 @@ test("provider failures and timeouts return failure without leaking provider det
     assert.ok(!body.includes("private provider"));
     assert.ok(!body.includes(environment.CONTACT_TO_EMAIL));
   }
+});
+
+test("a provider response timeout is an unconfirmed submission, never a receipt claim", async () => {
+  let deliverySignal;
+  const response = await handleContactRequest(request(), {
+    environment,
+    timeoutMs: 10,
+    fetchImpl: async (_, { signal }) => {
+      deliverySignal = signal;
+      // The provider returned 200, but its acceptance response never completed.
+      // The server cannot determine whether a message was accepted or delivered.
+      return new Response(new ReadableStream({
+        start(controller) { controller.enqueue(new TextEncoder().encode('{"id":')); },
+      }), { headers: { "content-type": "application/json" } });
+    },
+  });
+  assert.equal(response.status, 502);
+  assert.equal(deliverySignal.aborted, true);
+  const result = await response.json();
+  assert.equal(result.ok, undefined);
+  assert.match(result.error, /could not confirm submission/i);
+  assert.doesNotMatch(result.error, /has been sent|received|could not be sent/i);
 });

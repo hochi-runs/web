@@ -6,14 +6,17 @@ export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Merch · Hochi Runs",
-  description: "Hochi Runs merch.",
+  description: "Hochi Runs merch showcase.",
 };
 
 export default async function MerchPage() {
   const products = await getProducts();
   return (
-    <div className="mx-auto max-w-5xl px-5 pb-28 pt-24 sm:px-8 sm:pb-32 sm:pt-28">
-      <PageHeading title="Shop" />
+    <div className="mx-auto max-w-5xl px-5 pb-12 pt-6 sm:px-8 sm:pb-16">
+      <PageHeading title="Merch showcase" />
+      <p className="reading-surface mb-8 max-w-xl text-sm leading-relaxed text-muted">
+        These listings are for reference. Available purchase links open an external store.
+      </p>
 
       <ul className="grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-3">
         {products.map((product) => {
@@ -32,8 +35,11 @@ export default async function MerchPage() {
                 )}
               </div>
               <div className="reading-surface mt-3">
-                <p className="text-sm group-hover:underline">{product.name}</p>
+                <p className={product.buyUrl ? "text-sm group-hover:underline" : "text-sm"}>{product.name}</p>
                 <p className="text-sm text-muted">{product.price}</p>
+                <p className="mt-2 text-xs uppercase tracking-widest text-muted">
+                  {product.buyUrl ? "View in store ↗" : "Purchase link unavailable"}
+                </p>
               </div>
             </div>
           );

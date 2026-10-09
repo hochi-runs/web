@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {
   createBandcampPreviewResponse, isBandcampPreviewOrigin, isBandcampPreviewRequest,
-  isLocalBandcampPreviewRequest, isBandcampPreviewUrl, parseBandcampPreview,
+  isLocalBandcampPreviewRequest, isBandcampPreviewUrl, parseBandcampPreview, parseBandcampPreviewSelection,
 } from "../src/lib/bandcamp-preview-core.mjs";
 
 const releases = [{ slug: "demo", bandcampId: 123, bandcampType: "album" }];
@@ -173,6 +173,54 @@ test("featured public streaming track is selected, with first eligible fallback"
   assert.equal(parseBandcampPreview(html(metadata({ tracks: [track(2, second), track(1)] }))), preview);
   assert.equal(parseBandcampPreview(html(metadata({ featured_track_id: 9, tracks: [track(2, second), track(1)] }))), second);
   assert.equal(parseBandcampPreview(html(metadata({ tracks: [track(1, preview, false), track(2, second)] }))), second);
+});
+
+test("preview identity follows the selected eligible track rather than the release or first track", () => {
+  const selected = parseBandcampPreviewSelection(html(metadata({ tracks: [
+    { ...track(2, second), title: "First track", artist: "First credit" },
+    { ...track(1), title: "Featured track", artist: "Featured credit" },
+  ] })));
+  assert.equal(selected.url, preview);
+  assert.equal(selected.title, "Featured track");
+  assert.equal(selected.artist, "Featured credit");
+  assert.equal(selected.trackId, 1);
+  const fallback = parseBandcampPreviewSelection(html(metadata({ featured_track_id: 9, tracks: [
+    { ...track(2, second), title: "Fallback track", artist: "Fallback credit" }, track(1),
+  ] })));
+  assert.equal(fallback.url, second);
+  assert.equal(fallback.title, "Fallback track");
+  assert.equal(fallback.artist, "Fallback credit");
+  assert.equal(parseBandcampPreviewSelection(html()).title, undefined);
+  assert.equal(parseBandcampPreviewSelection(html()).artist, undefined);
+});
+
+test("metadata publishes safe identity without audio URLs and streams reject changed selections", async () => {
+  const data = metadata({ tracks: [{ ...track(), title: "Actual preview", artist: "Actual credit" }] });
+  const result = await run(request({ url: "http://127.0.0.1:3001/beta/radio/stream/demo?metadata=1" }), {
+    fetchImpl: async () => new Response(html(data)),
+  });
+  assert.equal(result.status, 200);
+  assert.equal(result.headers.get("cache-control"), "no-store");
+  const identity = await result.json();
+  assert.equal(identity.title, "Actual preview");
+  assert.equal(identity.artist, "Actual credit");
+  assert.equal(identity.url, undefined);
+  assert.equal(identity.streamUrl.includes("bcbits"), false);
+  let calls = 0;
+  const changed = await run(request({ url: `http://127.0.0.1:3001${identity.streamUrl}` }), {
+    fetchImpl: async () => {
+      calls += 1;
+      return new Response(html(metadata({ tracks: [{ ...track(2, second), title: "Different track" }] })));
+    },
+  });
+  assert.equal(changed.status, 409);
+  assert.equal(calls, 1, "changed identity cannot reach the new audio source");
+  calls = 0;
+  const match = await run(request({ url: `http://127.0.0.1:3001${identity.streamUrl}` }), {
+    fetchImpl: async () => ++calls === 1 ? new Response(html(data)) : audio(),
+  });
+  assert.equal(match.status, 200);
+  assert.equal(await match.text(), "fixture bytes");
 });
 
 test("standalone public track metadata uses track_private instead of album_private", async () => {

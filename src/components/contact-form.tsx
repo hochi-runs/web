@@ -30,13 +30,14 @@ export function ContactForm({ available }: { available: boolean }) {
       });
       const result = await response.json();
       if (!response.ok || result.ok !== true) {
-        setStatus({ message: typeof result.error === "string" ? result.error : "Your message could not be sent. Please try again later.", error: true });
+        setStatus({ message: typeof result.error === "string" ? result.error : "We could not confirm submission. Your message is still here; please try again later.", error: true });
         return;
       }
       form.reset();
-      setStatus({ message: "Thanks. Your message has been submitted.", error: false });
+      setStatus({ message: "Thanks. Your message has been submitted for delivery.", error: false });
     } catch {
-      setStatus({ message: "Your message could not be sent. Please try again later.", error: true });
+      // A lost response can happen after the provider accepts the message.
+      setStatus({ message: "We could not confirm submission. Your message is still here; please try again later.", error: true });
     } finally {
       window.clearTimeout(timer);
       setPending(false);
@@ -64,7 +65,7 @@ export function ContactForm({ available }: { available: boolean }) {
           <label htmlFor="contact-website">Website</label>
           <input id="contact-website" name="website" tabIndex={-1} autoComplete="off" />
         </div>
-        <button type="submit" className="contact-submit" disabled={!available || pending}>{pending ? "Sending…" : "Send message"}</button>
+        <button type="submit" className="contact-submit" disabled={!available || pending}>{pending ? "SENDING…" : "SEND MESSAGE"}</button>
       </fieldset>
       <div aria-live="polite" aria-atomic="true">
         {status && <p className="contact-status" role={status.error ? "alert" : "status"}>{status.message}</p>}

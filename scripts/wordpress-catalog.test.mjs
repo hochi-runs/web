@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createWordPressCatalog } from '../src/lib/wordpress-catalog.mjs';
+import { createWordPressArtists, createWordPressCatalog } from '../src/lib/wordpress-catalog.mjs';
 
 test('picker export normalizes archive artwork and strips non-picker fields', () => {
   const source = {
@@ -25,4 +25,21 @@ test('picker export retains upstream public artwork and requires an HTTPS origin
   assert.equal(createWordPressCatalog([source], 'https://hochiruns.com').releases[0].cover, source.cover);
   assert.throws(() => createWordPressCatalog([source], 'http://hochiruns.com'));
   assert.throws(() => createWordPressCatalog([source], 'https://user:password@hochiruns.com'));
+});
+
+test('artist seeds use stable explicit identities instead of matching names or collaborator credits', () => {
+  const artists = [
+    { slug: 'artist-one', name: 'Same Name', role: 'Artist' },
+    { slug: 'artist-two', name: 'Same Name', role: 'DJ' },
+    { slug: 'collaborator', name: 'Collaborator', role: 'Producer' },
+  ];
+  const releases = [
+    { slug: 'confirmed', artist: 'Different Name', memberSlugs: ['artist-two', 'collaborator', 'artist-two'] },
+    { slug: 'name-match', artist: 'Same Name, Collaborator' },
+  ];
+  const seeded = createWordPressArtists(artists, releases);
+  assert.deepEqual(seeded.map((artist) => artist.releaseSlugs), [[], ['confirmed'], ['confirmed']]);
+  assert.deepEqual(artists.map((artist) => artist.releaseSlugs), [undefined, undefined, undefined]);
+  assert.throws(() => createWordPressArtists(artists, [{ slug: 'unknown', memberSlugs: ['not-on-roster'] }]), /Unknown explicit/);
+  assert.throws(() => createWordPressArtists([artists[0], artists[0]], []), /duplicate roster/);
 });

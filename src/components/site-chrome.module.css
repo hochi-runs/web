@@ -1,9 +1,98 @@
+.siteHeader {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  min-height: 72px;
+  padding-inline: var(--site-edge);
+  pointer-events: none;
+}
+
+/* Navigation stays transparent, including over artwork. No text/icon backplates. */
+.siteHeader :is(a, button, nav) {
+  pointer-events: auto;
+}
+
+.siteHeader[data-menu-open="true"] {
+  z-index: 120;
+}
+
+.logo {
+  flex-shrink: 0;
+  margin-top: 5px;
+}
+
+.archiveChrome {
+  background: transparent;
+}
+
+.primary {
+  margin-top: var(--site-edge);
+}
+
+.primary a {
+  display: flex;
+  align-items: center;
+  min-height: 28px;
+}
+
+.menuTrigger {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  margin-top: 7px;
+  padding: 0 4px;
+  cursor: pointer;
+}
+
+.contextRail {
+  position: relative;
+  z-index: 10;
+  padding-inline: var(--site-edge);
+  margin-top: 8px;
+}
+
+.contextGroup {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 16px;
+}
+
+.archiveRail {
+  display: none;
+}
+
+.contextLinks {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--muted);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.contextLinks a {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+.contextLinks a:hover,
+.contextLinks a[aria-current="page"] {
+  color: var(--accent);
+}
+
 .radioChrome {
   --background: #262626;
   --foreground: #fafafa;
   --accent: #ffffff;
   --muted: #b8b8b8;
-  display: contents;
+  position: absolute;
+  inset: 0 0 auto;
   color: var(--foreground);
 }
 
@@ -11,18 +100,117 @@
   outline-color: var(--foreground);
 }
 
-.radioLogo img {
+.radioChrome .logo img {
   filter: none;
 }
 
-.radioMenu {
-  background: var(--background);
-  z-index: 80;
+.radioSiteInfo {
+  --muted: #b8b8b8;
+  --accent: #ffffff;
+  margin-top: 24px;
+  display: grid;
+  gap: 12px;
 }
 
-@media (min-width: 640px) and (max-width: 899px) {
-  .radioSocials,
-  .radioSecondary {
-    bottom: calc(78px + env(safe-area-inset-bottom));
+.radioSiteInfo > nav:first-child {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  color: #ccc;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.radioSiteInfo > nav:first-child a {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+.radioSiteInfo :is(a:hover, a:focus-visible) {
+  color: #fafafa;
+}
+
+.mobileMenu {
+  z-index: 80;
+  overflow-y: auto;
+  padding-top: 88px;
+  padding-bottom: calc(32px + env(safe-area-inset-bottom, 0px));
+  background: var(--background);
+  pointer-events: auto;
+}
+
+.menuClose {
+  position: fixed;
+  right: var(--site-edge);
+  top: 7px;
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 4px;
+  cursor: pointer;
+}
+
+@media (min-width: 640px) {
+  .siteHeader {
+    min-height: 88px;
+  }
+
+  .logo {
+    margin-top: 17px;
+  }
+
+  .menuTrigger {
+    display: none;
+  }
+
+  .contextGroup {
+    gap: 24px;
+  }
+
+  .contextLinks a {
+    min-height: 28px;
+  }
+
+}
+
+@media (min-width: 1024px) {
+  .homeContext {
+    display: none;
+  }
+
+  /* One positioning owner for filters and About/Radio links. The available
+     height excludes both the header and the live player's measured clearance. */
+  .archiveRail {
+    position: fixed;
+    left: calc(var(--site-edge) - 4px);
+    top: calc(88px + (100dvh - 88px - var(--site-player-clearance)) / 2);
+    z-index: 40;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    max-height: max(0px, calc(100dvh - 120px - var(--site-player-clearance)));
+    padding: 4px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    transform: translateY(-50%);
+  }
+
+  .archiveRail .contextGroup {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .archiveRail .contextLinks {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+  }
+
+  .archiveRail > * {
+    flex-shrink: 0;
   }
 }

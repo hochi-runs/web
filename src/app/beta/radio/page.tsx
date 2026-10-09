@@ -1,25 +1,14 @@
 import type { Metadata } from "next";
-import { RadioBeta } from "@/components/radio-beta";
-import { getReleases } from "@/lib/wordpress";
-import { releaseArchive } from "@/data/releases";
-import { hasCustomBandcampPreview } from "@/lib/bandcamp-preview-config";
 
 export const metadata: Metadata = {
-  title: "Radio beta · Hochi Runs",
+  title: "Radio · Hochi Runs",
   robots: { index: false, follow: false },
 };
 
-export default async function RadioBetaPage() {
-  const catalog = await getReleases();
-  const releases = catalog.flatMap((release) =>
-    release.bandcampId && Number.isSafeInteger(release.bandcampId) && release.bandcampId > 0 && release.bandcampType
-      ? [{
-        id: release.bandcampId, type: release.bandcampType, slug: release.slug, title: release.title, artist: release.artist,
-        buyUrl: release.buyUrl,
-        // The shipped artwork can be sampled locally without cross-origin canvas access.
-        cover: releaseArchive.find((entry) => entry.bandcampId === release.bandcampId)?.cover ?? release.cover,
-      }]
-      : [],
-  );
-  return <RadioBeta releases={releases} customBandcampPreview={hasCustomBandcampPreview()} />;
+/** The shared layout expands its existing player for this route. */
+export default async function RadioBetaPage({ searchParams }: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  await searchParams;
+  return null;
 }

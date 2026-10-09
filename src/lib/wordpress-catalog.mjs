@@ -24,3 +24,30 @@ export function createWordPressCatalog(releases, origin) {
     })),
   };
 }
+
+/**
+ * Seed the editor from explicit roster identities. Imported display credits
+ * are evidence for review, never permission to assign a roster relationship.
+ * @param {import('../data/roster').Member[]} artists
+ * @param {import('../data/releases').Release[]} releases
+ */
+export function createWordPressArtists(artists, releases) {
+  const knownArtists = new Set();
+  for (const artist of artists) {
+    if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(artist.slug) || knownArtists.has(artist.slug)) {
+      throw new Error('Invalid or duplicate roster identity');
+    }
+    knownArtists.add(artist.slug);
+  }
+  for (const release of releases) {
+    if (release.memberSlugs?.some((slug) => !knownArtists.has(slug))) {
+      throw new Error('Unknown explicit roster identity');
+    }
+  }
+  return artists.map((artist) => ({
+    ...artist,
+    releaseSlugs: [...new Set(releases
+      .filter((release) => release.memberSlugs?.includes(artist.slug))
+      .map((release) => release.slug))],
+  }));
+}

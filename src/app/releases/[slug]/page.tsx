@@ -4,7 +4,8 @@ import type { Metadata } from "next";
 import { getRelease, getReleases } from "@/lib/wordpress";
 import { ReleasePrototype } from "@/components/release-prototype";
 import { ReleaseArtwork } from "@/components/release-artwork";
-import { getReleaseLinks } from "@/lib/release-links";
+import { getReleaseLinks, getReleaseListenUrl } from "@/lib/release-links";
+import { PlayReleaseButton } from "@/components/play-release-button";
 
 export const revalidate = 60;
 export const dynamic = "force-static";
@@ -41,9 +42,10 @@ export default async function ReleasePage({
 
   if (slug === "like-dat-riddim") return <ReleasePrototype release={release} />;
   const links = getReleaseLinks(release);
+  const listenUrl = getReleaseListenUrl(release);
 
   return (
-    <article className="px-5 pb-28 pt-24 sm:px-8 sm:pb-32 sm:pt-28">
+    <article className="px-5 pb-12 pt-6 sm:px-8 sm:pb-16">
       <div className="mx-auto max-w-[100rem]">
         <Link
           href="/"
@@ -65,6 +67,11 @@ export default async function ReleasePage({
               title={`${release.artist} — ${release.title}`}
               code={release.code}
             />
+
+            {listenUrl && <div className="reading-label mt-5 flex w-fit flex-wrap gap-5 text-xs uppercase tracking-widest">
+              <PlayReleaseButton slug={release.slug} artist={release.artist} title={release.title} className="underline" />
+              <Link href={listenUrl} className="underline">Open visualizer ↗</Link>
+            </div>}
 
             {/* Streaming links as small text icons under the art */}
             {links.length > 0 && (

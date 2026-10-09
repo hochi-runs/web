@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function VideosPage() {
   return (
-    <div className="mx-auto max-w-3xl px-5 pb-28 pt-24 sm:px-8 sm:pb-32 sm:pt-28">
+    <div className="mx-auto max-w-3xl px-5 pb-12 pt-6 sm:px-8 sm:pb-16">
       <PageHeading title="Videos" />
       {videos.length === 0 ? (
         <p className="text-sm text-muted">Videos coming soon.</p>
@@ -32,6 +32,14 @@ export default function VideosPage() {
                 {video.credit && (
                   <p className="text-sm text-muted">{video.credit}</p>
                 )}
+                <a
+                  href={`https://www.youtube.com/watch?v=${video.youtubeId}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-2 inline-block text-xs uppercase tracking-widest text-muted underline-offset-4 hover:underline"
+                >
+                  Watch on YouTube ↗
+                </a>
               </figcaption>
             </figure>
           ))}

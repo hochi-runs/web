@@ -1,5 +1,5 @@
 .page {
-  padding: 6rem 1.25rem 7rem;
+  padding: 1.5rem 1.25rem 3rem;
   font-size: 12px;
 }
 
@@ -95,7 +95,7 @@
 }
 
 @media (min-width: 640px) {
-  .page { padding: 7rem 2rem 8rem; }
+  .page { padding: 1.5rem 2rem 4rem; }
 }
 
 @media (min-width: 768px) {

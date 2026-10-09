@@ -2,7 +2,7 @@
 
 /*
  * Hochi Runs — minimal archival label layout (Surf Gang / year0001 lineage).
- * Monospace, tiny type, neutral palette, fixed-corner chrome. Light/dark via
+ * Monospace, tiny type, neutral palette, and editorial composition. Light/dark via
  * a `.dark` class on <html> (set pre-paint by the inline script in layout).
  */
 @custom-variant dark (&:where(.dark, .dark *));
@@ -14,6 +14,9 @@
   --muted: #5f636b;
   --hairline: #e6e6e6;
   --surface: #f2f2f2;
+  /* Shared page edge and the active player's measured document clearance. */
+  --site-edge: 20px;
+  --site-player-clearance: 0px;
 }
 
 .dark {
@@ -48,7 +51,14 @@ body {
   font-size: 12px;
   line-height: 1.5;
   letter-spacing: 0.01em;
+  /* Only the active compact dock sets this measured clearance. */
+  padding-bottom: var(--site-player-clearance);
   transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+html {
+  scroll-padding-top: 96px;
+  scroll-padding-bottom: calc(var(--site-player-clearance) + 16px);
 }
 
 /* Text glow is prohibited across the site, including future component styles. */
@@ -70,11 +80,7 @@ a {
   opacity: 0.09;
 }
 
-.reading-panel,
-.release-caption {
-  background: var(--background);
-}
-
+/* Text and icons sit directly on the page, including custom backdrops. */
 .reading-surface {
   padding: 0.75rem 1rem;
 }
@@ -83,10 +89,6 @@ a {
   padding: 0.25rem 0.375rem;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
-}
-
-body[data-custom-background="true"] :is(.reading-surface, .reading-label) {
-  background: var(--background);
 }
 
 .release-caption {

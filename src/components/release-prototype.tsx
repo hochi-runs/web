@@ -1,12 +1,14 @@
 import Link from "next/link";
 import type { Release } from "@/data/releases";
 import { ReleaseArtwork } from "./release-artwork";
-import { getReleaseLinks } from "@/lib/release-links";
+import { getReleaseLinks, getReleaseListenUrl } from "@/lib/release-links";
 import styles from "./release-prototype.module.css";
+import { PlayReleaseButton } from "./play-release-button";
 
 /** A single-release study; the remaining archive retains its existing layout. */
 export function ReleasePrototype({ release }: { release: Release }) {
   const links = getReleaseLinks(release);
+  const listenUrl = getReleaseListenUrl(release);
 
   return (
     <article className={styles.page}>
@@ -24,6 +26,10 @@ export function ReleasePrototype({ release }: { release: Release }) {
           />
 
           <div className={styles.links}>
+            {listenUrl && <>
+              <PlayReleaseButton slug={release.slug} artist={release.artist} title={release.title} className="underline" />
+              <Link href={listenUrl}>Open visualizer ↗</Link>
+            </>}
             {links.map((link) => (
               <a key={link.url} href={link.url} target="_blank" rel="noopener noreferrer">
                 {link.platform} <span aria-hidden="true">↗</span>

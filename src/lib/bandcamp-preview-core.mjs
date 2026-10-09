@@ -1,4 +1,5 @@
 import { load } from "cheerio";
+import { createHash } from "node:crypto";
 
 const MAX_EMBED_BYTES = 1024 * 1024;
 const RESPONSE_HEADERS = {
@@ -83,7 +84,7 @@ function isPublicRelease(metadata) {
 }
 
 /** Parse only explicitly public, streaming MP3 previews from the embed metadata. */
-export function parseBandcampPreview(html) {
+export function parseBandcampPreviewSelection(html) {
   const $ = load(html);
   const scripts = $("script[data-player-data]");
   if (scripts.length !== 1) throw new Error("Preview unavailable");
@@ -102,7 +103,20 @@ export function parseBandcampPreview(html) {
     && isBandcampPreviewUrl(track.file?.["mp3-128"]));
   const selected = candidates.find((track) => track.id === metadata.featured_track_id) ?? candidates[0];
   if (!selected) throw new Error("Preview unavailable");
-  return selected.file["mp3-128"];
+  const text = (value) => typeof value === "string" && value.trim().length > 0 && value.length <= 500
+    ? value.trim() : undefined;
+  // Track credits are not inferred from the release artist or roster names.
+  const trackId = Number.isSafeInteger(selected.id) && selected.id > 0 ? selected.id : undefined;
+  const title = text(selected.title);
+  const artist = text(selected.artist);
+  const source = new URL(selected.file["mp3-128"]);
+  const selection = createHash("sha256").update(JSON.stringify([trackId ?? null, title ?? null, artist ?? null, source.origin + source.pathname])).digest("hex");
+  return { url: selected.file["mp3-128"], trackId, title, artist, selection };
+}
+
+/** Retained for callers that only need the eligible upstream preview. */
+export function parseBandcampPreview(html) {
+  return parseBandcampPreviewSelection(html).url;
 }
 
 function validRange(value) {
@@ -249,6 +263,10 @@ export async function createBandcampPreviewResponse({
     || !["album", "track"].includes(release.bandcampType)) return unavailable(request, 404);
   const range = request.headers.get("range");
   if (!validRange(range)) return unavailable(request, 416);
+  const query = new URL(request.url).searchParams;
+  const metadataOnly = query.get("metadata") === "1";
+  const expectedSelection = query.get("selection");
+  if (expectedSelection !== null && !/^[a-f0-9]{64}$/.test(expectedSelection)) return unavailable(request, 400);
   const scope = cancellationScope(request);
   let handedOff = false;
   try {
@@ -262,7 +280,20 @@ export async function createBandcampPreviewResponse({
       await embed.body?.cancel();
       throw new Error("Preview unavailable");
     }
-    const previewUrl = parseBandcampPreview(await readEmbed(embed, scope));
+    const selected = parseBandcampPreviewSelection(await readEmbed(embed, scope));
+    // A changed featured/fallback selection must fail rather than play different
+    // audio under the identity already presented by the browser.
+    if (expectedSelection !== null && selected.selection !== expectedSelection) return unavailable(request, 409);
+    if (metadataOnly) {
+      const identity = {
+        trackId: selected.trackId, title: selected.title, artist: selected.artist,
+        streamUrl: `/beta/radio/stream/${encodeURIComponent(slug)}?selection=${selected.selection}`,
+      };
+      return new Response(request.method === "HEAD" ? null : JSON.stringify(identity), {
+        headers: { ...RESPONSE_HEADERS, "Content-Type": "application/json; charset=utf-8" },
+      });
+    }
+    const previewUrl = selected.url;
     scope.deadline(timeoutMs);
     const upstream = await abortable(fetchImpl(previewUrl, {
       method: request.method, redirect: "error", credentials: "omit", cache: "no-store",

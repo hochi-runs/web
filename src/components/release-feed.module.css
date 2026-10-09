@@ -1,0 +1,118 @@
+.feed {
+  display: grid;
+  gap: 80px;
+  max-width: 36rem;
+  margin-inline: auto;
+}
+
+.release {
+  position: relative;
+  --cover-inset: clamp(16px, 3vw, 24px);
+}
+
+.artworkLink {
+  position: relative;
+  display: block;
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: #262626;
+  color: #fff;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: filter 160ms ease;
+}
+
+.empty {
+  display: grid;
+  height: 100%;
+  place-items: center;
+  color: #e5e5e5;
+  font-size: 12px;
+}
+
+.details {
+  position: absolute;
+  inset-inline: var(--cover-inset);
+  bottom: var(--cover-inset);
+  z-index: 1;
+  display: grid;
+  gap: 12px;
+  color: #fff;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 160ms ease;
+}
+
+.metadata {
+  display: grid;
+  gap: 6px;
+}
+
+.title {
+  font-size: clamp(14px, 1.3vw, 18px);
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.artist {
+  color: #e5e5e5;
+  font-size: 12px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.artworkLink:focus-visible {
+  outline-color: #fff;
+}
+
+.release:focus-within .image {
+  filter: brightness(0.4);
+}
+
+.release:focus-within .details {
+  opacity: 1;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .release:hover .image {
+    filter: brightness(0.4);
+  }
+
+  .release:hover .details {
+    opacity: 1;
+  }
+
+}
+
+/* Mobile/touch keeps titles visible. Fade only the lower artwork, with the
+   fade's height following wrapped metadata rather than a fixed row. */
+@media (max-width: 639px), (hover: none), (pointer: coarse) {
+  .release .image,
+  .release:focus-within .image,
+  .release:hover .image {
+    filter: none;
+  }
+
+  .details {
+    opacity: 1;
+  }
+
+  .details::before {
+    content: "";
+    position: absolute;
+    inset: -48px calc(-1 * var(--cover-inset)) calc(-1 * var(--cover-inset));
+    z-index: -1;
+    background: linear-gradient(to bottom, transparent, rgb(0 0 0 / 72%) 48px, rgb(0 0 0 / 85%));
+  }
+
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .image, .details {
+    transition: none;
+  }
+}

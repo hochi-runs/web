@@ -4,26 +4,20 @@ import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
 import { readSiteData } from './read-site-data.mjs';
-import { createWordPressCatalog } from '../src/lib/wordpress-catalog.mjs';
+import { createWordPressArtists, createWordPressCatalog } from '../src/lib/wordpress-catalog.mjs';
 import { bundleWordPressImages } from './wordpress-assets.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const [catalog, roster, merch, content, pages] = await Promise.all(
   ['releases', 'roster', 'merch', 'content', 'pages'].map(readSiteData),
 );
-const artists = roster.members.map((artist) => ({
-  ...artist,
-  releaseSlugs: catalog.releases.filter((release) =>
-    release.memberSlugs?.includes(artist.slug) ||
-    release.artist.toLowerCase().split(/\s*[,/&]\s*/).includes(artist.name.toLowerCase()),
-  ).map((release) => release.slug),
-}));
+const artists = createWordPressArtists(roster.members, catalog.releases);
 const picker = createWordPressCatalog(catalog.releases, 'https://hochiruns.com');
 const releases = picker.releases.map((release, index) => {
   const source = catalog.releases[index];
   return {
     ...release,
-    memberSlugs: artists.filter((artist) => artist.releaseSlugs.includes(release.slug)).map((artist) => artist.slug),
+    memberSlugs: [...new Set(source.memberSlugs ?? [])],
     description: source.description ?? '',
     format: source.format,
     tags: source.tags ?? [],

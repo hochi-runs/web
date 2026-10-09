@@ -2,20 +2,18 @@ import { getReleases } from "@/lib/wordpress";
 import { ReleaseFeed } from "@/components/release-feed";
 
 /**
- * Home = the release archive. The fixed-corner chrome (logo/nav/toggle/info)
- * lives in SiteChrome; this page is just the centered, scrolling feed of
- * album art + sparse captions. Filters and the year index are pinned to the
- * left/right edges from inside ReleaseFeed (a client component) so they can
- * stay fixed while reflecting filter state.
+ * Home = the release archive. SiteChrome owns the header; ReleaseFeed owns
+ * the centered scrolling art, the shared left rail (filters and site links),
+ * and the right year index. Filter state stays with the feed.
  *
- * Generous vertical padding clears the fixed top/bottom corners.
+ * Local spacing complements the shared header and normal-flow footer.
  */
 export const revalidate = 60;
 
 export default async function Home() {
   const releases = await getReleases();
   return (
-    <div className="px-5 pb-28 pt-24 sm:px-8 sm:pb-32 sm:pt-28">
+    <div className="px-5 pb-12 pt-6 sm:px-8 sm:pb-16">
       <ReleaseFeed releases={releases} />
     </div>
   );

@@ -1,0 +1,39 @@
+.footer {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 24px;
+  padding: 16px var(--site-edge);
+  color: var(--muted);
+}
+
+.legalLinks {
+  margin-inline-start: auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 16px;
+  width: fit-content;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.legalLinks a {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+.footer a:hover,
+.footer a[aria-current="page"] {
+  color: var(--accent);
+}
+
+@media (min-width: 640px) {
+  .legalLinks a {
+    min-height: 28px;
+  }
+}

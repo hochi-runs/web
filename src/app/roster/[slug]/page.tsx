@@ -39,7 +39,7 @@ export default async function MemberPage({
   const memberReleases = await getArtistReleases(member);
 
   return (
-    <article className="mx-auto max-w-3xl px-5 pb-28 pt-24 sm:px-8 sm:pb-32 sm:pt-28">
+    <article className="mx-auto max-w-3xl px-5 pb-12 pt-6 sm:px-8 sm:pb-16">
       <Link
         href="/roster"
         className="reading-label text-xs uppercase tracking-widest text-muted transition-colors hover:text-accent"
@@ -53,12 +53,13 @@ export default async function MemberPage({
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src={member.photo}
-              alt={member.name}
+              alt={`${member.name} profile image`}
+              decoding="async"
               className="h-full w-full object-cover"
             />
           ) : (
-            <div className="flex h-full items-center justify-center text-xs uppercase tracking-widest text-muted">
-              {member.name}
+            <div className="flex h-full items-center justify-center px-4 text-center text-xs uppercase tracking-widest text-muted">
+              Portrait not published
             </div>
           )}
         </div>
@@ -68,11 +69,9 @@ export default async function MemberPage({
         </div>
       </header>
 
-      {member.bio && (
-        <p className="reading-surface mt-8 max-w-xl whitespace-pre-line text-sm leading-relaxed text-muted">
-          {member.bio}
-        </p>
-      )}
+      <p className="reading-surface mt-8 max-w-xl whitespace-pre-line text-sm leading-relaxed text-muted">
+        {member.bio || "Biography not yet published."}
+      </p>
 
       {member.socials && member.socials.length > 0 && (
         <ul className="reading-surface mt-6 flex w-fit flex-wrap gap-x-5 gap-y-1 text-xs uppercase tracking-widest">
@@ -91,11 +90,11 @@ export default async function MemberPage({
         </ul>
       )}
 
-      {memberReleases.length > 0 && (
-        <section className="reading-surface mt-12">
-          <h2 className="text-xs uppercase tracking-widest text-muted">
-            Releases
-          </h2>
+      <section className="reading-surface mt-12">
+        <h2 className="text-xs uppercase tracking-widest text-muted">
+          Releases
+        </h2>
+        {memberReleases.length > 0 ? (
           <ul className="mt-4 border-t border-hairline">
             {memberReleases.map((release) => (
               <li key={release.slug} className="border-b border-hairline">
@@ -116,8 +115,12 @@ export default async function MemberPage({
               </li>
             ))}
           </ul>
-        </section>
-      )}
+        ) : (
+          <p className="mt-4 text-sm text-muted">
+            No releases are currently listed for this artist.
+          </p>
+        )}
+      </section>
     </article>
   );
 }

@@ -1,8 +1,8 @@
 /**
  * Shop products. This is a *showcase* — there is no checkout wired up in v1
- * (the original site used WooCommerce + Stripe). Each product can point to an
+ * Each product can point to an
  * external buy URL (e.g. Bandcamp merch) via `buyUrl`. Wire real checkout
- * (Stripe/Shopify) later if desired.
+ * only after the owner chooses and authorizes a purchase workflow.
  */
 
 export type Product = {

@@ -99,6 +99,26 @@ function json(body, status) {
   return Response.json(body, { status, headers: { "Cache-Control": "no-store" } });
 }
 
+function isSameOriginRequest(request) {
+  const source = request.headers.get("origin");
+  if (!source || request.headers.get("sec-fetch-site") === "cross-site") return false;
+  try {
+    const requestUrl = new URL(request.url);
+    // Next's Node adapter can use an internal localhost URL even when the
+    // visitor requested the public host. Host is browser-controlled; do not
+    // use a caller-supplied X-Forwarded-Host to select the accepted authority.
+    const host = request.headers.get("host") ?? requestUrl.host;
+    if (!/^[A-Za-z0-9.[\]:-]+$/.test(host)) return false;
+    const protocol = request.headers.get("x-forwarded-proto") ?? requestUrl.protocol.slice(0, -1);
+    if (protocol !== "https" && protocol !== "http") return false;
+    if (requestUrl.protocol === "https:" && protocol !== "https") return false;
+    const expected = new URL(`${protocol}://${host}`).origin;
+    return source === expected;
+  } catch {
+    return false;
+  }
+}
+
 /** Resend REST contract: https://resend.com/docs/api-reference/emails/send-email */
 export async function handleContactRequest(request, {
   environment = process.env,
@@ -107,7 +127,7 @@ export async function handleContactRequest(request, {
   bodyTimeoutMs = 5000,
 } = {}) {
   // This blocks cross-origin browser submissions, not scripts impersonating a browser.
-  if (request.headers.get("origin") !== new URL(request.url).origin) {
+  if (!isSameOriginRequest(request)) {
     return json({ error: "Please send your message from the website's contact form." }, 403);
   }
   if (!/^application\/json(?:\s*;\s*charset=utf-8)?$/i.test(request.headers.get("content-type") ?? "")) {
@@ -155,7 +175,8 @@ export async function handleContactRequest(request, {
   } catch (error) {
     if (error instanceof ContactInputError) return json({ error: error.message }, error.status);
     // Do not return/log email contents, recipient, credentials, or provider error bodies.
-    return json({ error: "Your message could not be sent. Please try again later." }, 502);
+    // Timeout or a lost response cannot prove that the provider did not accept it.
+    return json({ error: "We could not confirm submission. Please try again later." }, 502);
   } finally {
     clearTimeout(timer);
   }

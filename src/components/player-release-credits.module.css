@@ -1,0 +1,41 @@
+.panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 0;
+  max-height: inherit;
+  overflow: hidden;
+  border: 1px solid #555;
+  background: #262626;
+  color: #fafafa;
+  font-family: var(--font-mono), ui-monospace, "SFMono-Regular", Menlo, monospace;
+  font-size: 12px;
+  line-height: 1.6;
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+
+.panel :is(button, a):focus-visible { outline: 2px solid #fafafa; outline-offset: 3px; }
+.header { display: flex; flex-shrink: 0; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 16px; border-bottom: 1px solid #555; }
+.header h2 { margin: 0; font: inherit; text-transform: uppercase; letter-spacing: .08em; }
+.header button { flex-shrink: 0; min-height: 36px; padding: 0 4px; border: 0; background: transparent; color: #fafafa; font: inherit; cursor: pointer; }
+.header button:hover { text-decoration: underline; text-underline-offset: 4px; }
+.body { min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 16px; }
+.title { margin: 0; font: inherit; font-size: 16px; }
+.artist { margin: 4px 0 20px; color: #c6c6c6; }
+.details { margin: 0; }
+.details > div { display: grid; grid-template-columns: minmax(80px, 1fr) minmax(0, 2fr); gap: 12px; margin-top: 6px; }
+.details dt { color: #c6c6c6; }
+.details dd { margin: 0; }
+.sectionTitle { margin: 24px 0 10px; font: inherit; text-transform: uppercase; letter-spacing: .06em; }
+.credits { margin: 0; }
+.credits > div + div { margin-top: 16px; }
+.credits dt { margin-bottom: 4px; color: #c6c6c6; }
+.credits dd { margin: 0; white-space: pre-wrap; }
+.description { margin: 0; white-space: pre-wrap; }
+.empty { margin: 0; color: #c6c6c6; }
+.tracks { margin: 0; padding-left: 24px; }
+.tracks li { padding: 5px 0 5px 4px; }
+.duration { margin-left: 12px; color: #c6c6c6; white-space: nowrap; }
+.releaseLink { display: inline-block; margin-top: 24px; padding: 4px 0; color: #fafafa; text-decoration: underline; text-underline-offset: 4px; }
